@@ -11,10 +11,12 @@ To set up this project on your local machine, follow these steps:
    ```
    open the folder
 
-3. **Installaion**
+2. **Installaion**
 
 ```bash
 npm install
 ```
-4. **Run**
+3. **Run**
+```bash
 npm run dev
+```
