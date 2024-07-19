@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 
-const Login = () => {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [country, setCountry] = useState("");
+  const [serviceAgreement, setServiceAgreement] = useState(false);
+  const [declarationAgreement, setDeclarationAgreement] = useState(false);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Email:", email, "Password:", password);
@@ -16,15 +20,13 @@ const Login = () => {
           <img className="h-48" src="src\assets\buildings.svg"></img>
         </div>
         <h1 className="text-2xl mb-8 text-white text-center">
-          Sign in to Trading App
+          Sign Up to Trading App
         </h1>
 
         <div className="bg-[#161b22] p-8 rounded-lg border-[#30363d] shadow-md w-full sm:w-96">
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-[#f0f6fc] mb-2">
-                Username or email address
-              </label>
+              <label className="block text-[#f0f6fc] mb-2">Country</label>
               <input
                 type="text"
                 value={email}
@@ -33,6 +35,47 @@ const Login = () => {
                 style={{
                   color: "#ffffff", // Set text color to white
                   caretColor: "#ffffff", // Set cursor color to white
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-[#f0f6fc] mb-2">Email address</label>
+              <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-[#0d1117] p-3 border border-[#30363d] rounded"
+                style={{
+                  color: "#ffffff", // Set text color to white
+                  caretColor: "#ffffff", // Set cursor color to white
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-[#f0f6fc] mb-2">Currency</label>
+              <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-[#0d1117] p-3 border border-[#30363d] rounded"
+                style={{
+                  color: "#ffffff", // Set text color to white
+                  caretColor: "#ffffff", // Set cursor color to white
+                }}
+              />
+            </div>
+            <div className="mb-4">
+              <label className=" flex justify-between text-[#f0f6fc] mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 bg-[#0d1117] border border-[#30363d] rounded"
+                style={{
+                  color: "#ffffff", // Assuming white (#ffffff) for light-colored text
+                  caretColor: "#ffffff", // White cursor color
                 }}
               />
             </div>
@@ -93,4 +136,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

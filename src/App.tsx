@@ -1,16 +1,14 @@
-import React from 'react';
-import Login from './components/LoginComponent/Login';
-import HomePage from './components/HomePageComponents/HomePage';
-import Sidebar from './components/HomePageComponents/Sidebar';
+import React from "react";
+import Register from "./components/LoginComponent/Register";
+import HomePage from "./components/HomePageComponents/HomePage";
+import Sidebar from "./components/HomePageComponents/Sidebar";
 const App = () => {
   return (
-    
+    <div>
       <div>
-        <div>
-          <Login />
-        </div>
+        <Register />
       </div>
-    
+    </div>
   );
 };
 
