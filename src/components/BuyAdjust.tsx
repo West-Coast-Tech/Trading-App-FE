@@ -32,7 +32,7 @@ const BuyAdjust: FunctionComponent<BuyAdjustType> = ({
 
   return (
     <div
-      className={`w-[246px] !m-[0] absolute top-[-59px] left-[calc(50%_-_123px)] rounded-md bg-gainsboro box-border flex flex-row items-start justify-between pt-[19px] pb-5 pr-[23px] pl-[26px] gap-[20px] z-[1] text-center text-base text-grays-white font-inter border-[1px] border-solid border-darkgray-100 ${className}`}
+      className={`w-[246px] !m-[0] absolute top-[-59px] left-[calc(50%_-_123px)] rounded-md bg-gainsboro box-border flex flex-row items-start justify-between pt-[19px] pb-5 pr-[23px] pl-[26px] gap-[20px] z-[1] text-center text-base text-grays-white border-solid border-darkgray-100 ${className}`}
       style={buyAdjustStyle}
     >
       <input

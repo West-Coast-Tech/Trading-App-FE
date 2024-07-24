@@ -1,16 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+import { AppState } from "../../actions/types";
 
-const Login = () => {
+const Login = (_props: any) => {
+  const navigate = useNavigate();
+  
+  const { isAuthenticated } = useSelector((state: AppState) => state.auth);
+  const dispatch = useDispatch<any>();
+  useEffect(() => {
+    console.log("isAuthenticated in login",isAuthenticated)
+    if (isAuthenticated) {
+      navigate('/home')
+    }
+  },[isAuthenticated,navigate])
+
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+
+    // Create a payload object
+    const payload = {
+        email,  
+        password,
+        
+    };
+
+    try {
+            await dispatch(loginUser(payload)); // Dispatch the login action
+            // If successful, navigate to the home page
+            
+        } catch (error) {
+            console.error('Login failed:', error);
+            // Handle any additional error handling if needed
+        }
   };
 
   return (
-    <div className="min-h-screen bg-[#0d1117] flex justify-center">
+    <div className="min-h-screen bg-[#0d1117] flex justify-center font-roboto">
       <div className="flex flex-col">
         <div className="flex justify-center pb-7 pt-10">
           <img className="h-48" src="src\assets\buildings.svg"></img>
@@ -65,7 +97,7 @@ const Login = () => {
         <div className="mt-4 p-4 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
           <p className="text-[#f0f6fc]">
             New here?{" "}
-            <a href="/" className="text-blue-500 hover:text-blue-600">
+            <a href="/register" className="text-blue-500 hover:text-blue-600">
               Create an account
             </a>
             .

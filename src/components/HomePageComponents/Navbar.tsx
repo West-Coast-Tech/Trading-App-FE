@@ -1,16 +1,24 @@
 import { FunctionComponent, useState } from "react";
 import { Button, Menu } from "@mui/material";
 import logo from "../../assets/logo.svg";
-
+import { useDispatch } from "react-redux";
+import { logoutSuccess } from "../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 export type NavbarType = {
   className?: string;
 };
 
 const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
-  
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logoutSuccess());
+    navigate("/login");
+  };
   return (
     <div
-      className={`w-full !m-[0] relative top-[0px] left-[0px] overflow-hidden shrink-0 flex flex-row items-start justify-between  box-border gap-[20px] text-center text-xl text-white font-inter mq1450:flex-wrap ${className}`}
+      className={`w-full !m-[0] relative top-[0px] left-[0px] overflow-hidden shrink-0 flex flex-row items-start justify-between  box-border gap-[20px] text-center text-xl text-white mq1450:flex-wrap ${className}`}
     >
     <div className="flex flex-row items-start justify-between">
         <div className="w-[215px] flex flex-row items-start justify-start gap-[20px]">
@@ -74,6 +82,8 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             
           />
         </div> */}
+        <button className="p-5 rounded-lg bg-blue-600 hover:bg-gray-100 cursor-pointer text-white" onClick={handleLogout}>Logout</button>
+
         <div className="w-[263px] flex flex-col items-start justify-start pt-px px-0 pb-0 box-border">
           <div className="self-stretch flex flex-row items-start justify-start gap-[9px]">
             <div className="flex-[0.931] rounded-xl bg-limegreen overflow-hidden flex flex-row items-start justify-start py-[12.5px] px-[9px] whitespace-nowrap">

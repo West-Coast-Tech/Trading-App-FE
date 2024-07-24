@@ -28,9 +28,7 @@ module.exports = {
       spacing: {
         "space-200": "8px",
       },
-      fontFamily: {
-        inter: "Inter",
-      },
+      
       borderRadius: {
         "81xl": "100px",
       },
@@ -42,6 +40,10 @@ module.exports = {
       base: "16px",
       "2xs": "11px",
       inherit: "inherit",
+    },
+    fontFamily: {
+      roboto: ['Roboto', 'sans-serif'],
+      proxima: ['Proxima Nova', 'sans-serif'],
     },
     
    

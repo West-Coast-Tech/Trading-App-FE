@@ -1,26 +1,11 @@
-import React, { useState } from "react";
-import starIcon from "../../assets/star.svg";
-import menuIcon from "../../assets/menu.svg";
-import { LayoutDashboard, LineChart, StickyNote, Layers, Flag, Calendar, LifeBuoy, Settings } from "lucide-react";
+import React from "react";
+import { LayoutDashboard, LineChart, StickyNote, Layers, Calendar, Settings } from "lucide-react";
 import Drawer, { DrawerItems } from "./Drawer"
 export type SidebarType = {
   className?: string;
 };
 
-const Sidebar: React.FC<SidebarType> = ({ className = "" }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const navItems = [
-    { icon: starIcon, label: "Label" },
-    { icon: starIcon, label: "Label" },
-    { icon: starIcon, label: "Label" },
-    { icon: starIcon, label: "Label" },
-    { icon: starIcon, label: "Label" },
-  ];
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+const Sidebar: React.FC<SidebarType> = ({ }) => {
 
   return (
     // <div

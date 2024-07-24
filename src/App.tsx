@@ -1,14 +1,23 @@
 import React from "react";
 import Register from "./components/LoginComponent/Register";
 import HomePage from "./components/HomePageComponents/HomePage";
-import Sidebar from "./components/HomePageComponents/Sidebar";
-const App = () => {
+import Login from "./components/LoginComponent/Login";
+import { Route, createRoutesFromElements, RouterProvider, createBrowserRouter } from "react-router-dom";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/">
+      <Route index element={<Login />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="home" element={<HomePage />} />
+    </Route>
+  )
+);
+
+const App: React.FC = () => {
   return (
-    <div>
-      <div>
-        <Register />
-      </div>
-    </div>
+    <RouterProvider router={router} />
   );
 };
 
