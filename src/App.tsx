@@ -1,8 +1,9 @@
-import React from "react";
-import Register from "./components/LoginComponent/Register";
-import HomePage from "./components/HomePageComponents/HomePage";
-import Login from "./components/LoginComponent/Login";
-import { Route, createRoutesFromElements, RouterProvider, createBrowserRouter } from "react-router-dom";
+import React from 'react';
+import Register from './components/LoginComponent/Register';
+import HomePage from './components/HomePageComponents/HomePage';
+import Login from './components/LoginComponent/Login';
+import { Route, createRoutesFromElements, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -10,12 +11,15 @@ const router = createBrowserRouter(
       <Route index element={<Login />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
-      <Route path="home" element={<HomePage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="home" element={<HomePage />} />
+      </Route>
     </Route>
   )
 );
 
 const App: React.FC = () => {
+
   return (
     <RouterProvider router={router} />
   );

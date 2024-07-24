@@ -3,17 +3,16 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/authSlice';
 import errorReducer from '../features/errorSlice';
 import usersReducer from '../features/users/usersSlice';
-import authMiddleware from '../middleware/authMiddleware'; // Import the authMiddleware
-
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     errors: errorReducer,
     users: usersReducer,
   },
-  // Include the authMiddleware in the middleware array
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authMiddleware),
+  // No need to manually add redux-thunk here since it's included by default
+  // If you had a custom middleware, you could modify getDefaultMiddleware like this:
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware().concat(myCustomMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

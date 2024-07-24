@@ -16,8 +16,8 @@ export default {
     },
 
     // API request to fetch users
-    getUsers(_token: string): Promise<AxiosResponse<UserData[]>> {
-        return apiClient.get("/users", { headers: { Authorization: `Bearer ${_token}` } });
+    getUsers(token: string): Promise<AxiosResponse<UserData[]>> {
+        return apiClient.get("/users", { headers: { Authorization: `Bearer ${token}` } });
     },
 
     // API request to load user data
