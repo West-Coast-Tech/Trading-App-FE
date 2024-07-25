@@ -11,9 +11,13 @@ const UsersList = () => {
   const users = useSelector(selectUsers);
   
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    const interval = setInterval(() => {
+      dispatch(getUsers());
+    }, 1000);
 
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [dispatch]);
   const displayUsers = (users: any[]) => {
     if (!users.length) {
       return <div>No users found.</div>;

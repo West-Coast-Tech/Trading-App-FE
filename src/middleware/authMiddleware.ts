@@ -6,7 +6,8 @@ import  isTokenExpired  from '../utils/tokenUtils';
 
 const authMiddleware: Middleware = (storeApi: MiddlewareAPI) => {
   return (next) => (action: any) => {
-    if (action.type.startsWith('api/call')) { // Assuming your API calls start with 'api/call'
+    if (action.type.startsWith('/users')) { /// Assuming your API calls start with 'api/call'
+      console.log("middlware action")
       const token = storeApi.getState().auth.token;
       if (isTokenExpired(token)) {
         // Token is expired, dispatch logoutSuccess

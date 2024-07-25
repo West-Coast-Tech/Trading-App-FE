@@ -17,7 +17,13 @@ export default {
 
     // API request to fetch users
     getUsers(token: string): Promise<AxiosResponse<UserData[]>> {
+        console.log("token in getusers",token)
         return apiClient.get("/users", { headers: { Authorization: `Bearer ${token}` } });
+    },
+
+    //API request to refresh token
+    refreshToken(id:string): Promise<AxiosResponse<UserData>> {        
+        return apiClient.get("/auth/refresh",{headers:{Authorization: `Bearer ${id}`}});
     },
 
     // API request to load user data

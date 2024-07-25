@@ -10,7 +10,6 @@ const Login = (_props: any) => {
   const { isAuthenticated } = useSelector((state: AppState) => state.auth);
   const dispatch = useDispatch<any>();
   useEffect(() => {
-    console.log("isAuthenticated in login",isAuthenticated)
     if (isAuthenticated) {
       navigate('/home')
     }

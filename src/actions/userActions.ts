@@ -7,9 +7,10 @@ import { getUsersSuccess } from "../features/users/usersSlice";
 
 export const getUsers = () => async (dispatch: Dispatch) => {
     try {
+
         const token = localStorage.getItem("token") || "";
+        console.log("token in getUsers userActions",token)
         const response = await API.getUsers(token); // Assuming the token is automatically handled by the interceptor
-        console.log("response from get users", response);
         dispatch(getUsersSuccess(response.data));
     } catch (err: any) {
         console.error("Error fetching users:", err);

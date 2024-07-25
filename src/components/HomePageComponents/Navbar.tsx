@@ -4,6 +4,7 @@ import logo from "../../assets/logo.svg";
 import { useDispatch } from "react-redux";
 import { logoutSuccess } from "../../features/authSlice";
 import { useNavigate } from "react-router-dom";
+import bell from "../../assets/star.svg";
 export type NavbarType = {
   className?: string;
 };
@@ -37,13 +38,13 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
       </div>
       <Button
         className="h-[60px] w-[269px]"
-        startIcon={<img width="58px" height="59px" src="/rocket-1.svg" />}
+        startIcon={<img width="32px" height="59px" src={bell} />}
         disableElevation
         variant="contained"
         sx={{
           textTransform: "none",
           color: "#fff",
-          fontSize: "16",
+          fontSize: "20px",
           background: "#18ac00",
           borderRadius: "95px",
           "&:hover": { background: "#18ac00" },
@@ -60,7 +61,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
               className="h-[30px] w-8 relative overflow-hidden shrink-0"
               loading="lazy"
               alt=""
-              src="/bell.svg"
+              src={bell}
             />
           </div>
         </div>
@@ -86,7 +87,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
         <div className="w-[263px] flex flex-col items-start justify-start pt-px px-0 pb-0 box-border">
           <div className="self-stretch flex flex-row items-start justify-start gap-[9px]">
-            <div className="flex-[0.931] rounded-xl bg-limegreen overflow-hidden flex flex-row items-start justify-start py-[12.5px] px-[9px] whitespace-nowrap">
+            <div className="flex-[0.931] rounded-xl bg-green overflow-hidden flex flex-row items-start justify-start py-[12.5px] px-[9px] whitespace-nowrap">
               <b className="flex-1 relative leading-[100%]">+ Deposit</b>
             </div>
             <div className="flex-1 rounded-xl bg-border-brand-default overflow-hidden flex flex-row items-start justify-start py-[13px] px-[5px]">

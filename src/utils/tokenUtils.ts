@@ -7,9 +7,7 @@ interface DecodedToken {
 }
 
   const isTokenExpired = (token: string | null): boolean => {
-    console.log("this is isTOkenExpied")
   if (!token) {
-    console.log("token has expired")
     localStorage.removeItem('token')
     return true;
     }
@@ -17,7 +15,7 @@ interface DecodedToken {
   try {
     const decodedToken: DecodedToken = jwtDecode(token);
     const currentTime = Date.now() / 1000; // Current time in seconds
-    const expired= decodedToken.exp < currentTime
+    const expired= decodedToken.exp < currentTime + 10
     if(expired) {
         localStorage.removeItem('token')
     }

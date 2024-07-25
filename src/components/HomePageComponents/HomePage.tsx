@@ -12,8 +12,7 @@ const HomePage = () => {
 
   const { isAuthenticated } = useSelector((state: AppState) => state.auth);
   const {token} = useSelector((state: AppState) => state.auth);
-  console.log("isAuthenticatedin homepage", isAuthenticated);
-  console.log("token home", token);
+
 
   
 

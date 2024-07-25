@@ -45,7 +45,6 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
-    console.log("isAuthenticated in login",isAuthenticated)
     if (isAuthenticated) {
       navigate('/home')
     }

@@ -17,7 +17,6 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     getUsersSuccess: (state, action: PayloadAction<{ id: string; email: string }[]>) => {
-        console.log("action payload users", action.payload);
       state.users = action.payload;
       state.loading = false;
     },
