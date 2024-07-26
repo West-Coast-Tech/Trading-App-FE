@@ -3,7 +3,6 @@ import axios from 'axios';
 import isTokenExpired from '../utils/tokenUtils'; // Import the token utility function
 import history from '../customHistory'; // For redirection if needed
 import { store } from '../store';
-import { logoutSuccess } from '../features/authSlice';
 import { refreshToken } from '../actions/authActions';
 const API = axios.create({
   baseURL: 'http://localhost:8080', // Your API base URL

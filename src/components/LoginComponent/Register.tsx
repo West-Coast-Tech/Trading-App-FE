@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
-
+import StringArrayDropdown from "../StringArrayDropdown";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -36,10 +36,11 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [currency, setCurrency] = useState("");
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState<string>("");
   const [serviceAgreement, setServiceAgreement] = useState(false);
   const [declarationAgreement, setDeclarationAgreement] = useState(false);
   
+
 
 
   const [passwordError, setPasswordError] = useState("");
@@ -88,6 +89,8 @@ const Register = () => {
         country,
     };
     try {
+      console.log("payload",payload)
+
       await dispatch(registerUser(payload)); // Dispatch the login action
       // If successful, navigate to the home page
       
@@ -98,26 +101,38 @@ const Register = () => {
 
   };
 
+
+  const handleCountrySelect = (country: string) => {
+    setCountry(country);
+  };
+  const handleCurrencySelect = (currency: string) => {
+    setCurrency(currency);
+  };
+
+  
+  const countries:string[] = [
+    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)", "Congo (Democratic Republic of the)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+  ]
+  const currencies:string[] = [
+    "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLP","CNY","COP","CRC","CUC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GGP","GHS","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD","JOD","JPY","KES","KGS","KHR","KID","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","SSP","STN","SVC","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TVD","TWD","TZS","UAH","UGX","USD","UYU","UZS","VES","VND","VUV","WST","XAF","XCD","XDR","XOF","XPF","YER","ZAR","ZMW","ZWL"
+  ]
   //Custom Css Classes for styling
   const inputClassCSS =
-    "w-full  bg-gray-100 p-3 border border-[#30363d] rounded-lg ";
-
+    "w-full sm:w-3/4 md:w-5/6 bg-gray-100 p-3 border border-[#30363d] rounded-lg ";
   const labelCssClass="block mb-2 text-white font-bold";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 flex justify-center font-roboto">
-      <div className="flex flex-col">
-        <div className="flex justify-center pb-2 pt-10">
-          <img className="h-12" src="src\assets\buildings.svg"></img>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 font-roboto">
+      <div className="w-full max-w-md mx-auto">
+        <div className="text-center p-10">
+        <img className="h-12 mx-auto mb-4" src="src\assets\buildings.svg"></img>
         </div>
-        <h1 className="text-2xl mb-8 font-sheriff text-white text-center">
-          Sign Up to Trading App
-        </h1>
+        <h1 className="text-2xl mb-8 text-center font-sheriff text-white">Sign Up to Trading App</h1>
 
-        <div className="bg-gray-100 p-12 pr-20 rounded-lg shadow-2xl shadow-black w-full sm:w-96">
+        <div className="bg-gray-100 p-8 pr-2  rounded-lg shadow-2xl shadow-black w-full">
           <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
-          <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <form onSubmit={handleSubmit} className=" space-y-4">
+          <div className="">
               <label className={labelCssClass}>Full Name</label>
               <input
                 type="text"
@@ -132,20 +147,11 @@ const Register = () => {
                 }}
               />
             </div>
-            <div className="mb-4">
-              <label className={labelCssClass}>Country</label>
-              <input
-                type="text"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Set text color to white
-                  caretColor: "#ffffff", // Set cursor color to white
-                }}
-              />
-            </div>
-            <div className="mb-4">
+            
+        <label className={labelCssClass} htmlFor="country">Country</label>
+        <StringArrayDropdown options={countries} onOptionSelect={handleCountrySelect} />
+      
+            <div className="">
               <label className={labelCssClass}>Email address</label>
               <input
                 type="text"
@@ -154,7 +160,7 @@ const Register = () => {
                 required
                 onChange={(e) => setEmail(e.target.value)}
                 aria-invalid={validEmail ? "false" : "true"}
-                aria-describedby="emailnote"
+                aria-describedby="emailnote" 
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
                 className={inputClassCSS}
@@ -165,21 +171,10 @@ const Register = () => {
               />
               <p id="emailnote" className={`${emailFocus && email && !validEmail ? "text-red flex items-center" : "hidden"}`}>
                 <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />Please enter a valid email</p>
-            </div> 
-            <div className="mb-4">
+            </div>  
               <label className={labelCssClass}>Currency</label>
-              <input
-                type="text"
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Set text color to white
-                  caretColor: "#ffffff", // Set cursor color to white
-                }}
-              />
-            </div>
-            <div className="mb-4">
+              <StringArrayDropdown options={currencies} onOptionSelect={handleCurrencySelect} />
+            <div className="">
               <label className={labelCssClass}>
                 Password
               </label>
@@ -194,7 +189,7 @@ const Register = () => {
                 }}
               />
             </div>
-            <div className="mb-4">
+            <div className="">
               <label className={labelCssClass}>
                 Confirm Password              
               </label>
@@ -220,10 +215,10 @@ const Register = () => {
               )}
             </div>
             
-            <div className="mb-4">
+            <div className="">
             <button
               type="submit"
-              className="w-full p-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900"
+              className="w-[89%] py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
             >
               Sign in
             </button>
@@ -231,7 +226,7 @@ const Register = () => {
           </form>
           
         </div>
-        <div className="mt-4 p-4 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
+        <div className="mt-4 w-[100%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
           <p className="text-[#f0f6fc]">
             Already have an account?{" "}
             <a href="/login" className="text-blue-500 hover:text-blue-600">

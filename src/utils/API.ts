@@ -1,5 +1,5 @@
 // src/utils/API.ts
-import { AxiosRequestConfig, AxiosResponse } from "axios";
+import {  AxiosResponse } from "axios";
 import { RegisterData, LoginData, UserData } from "../actions/types";
 import apiClient from "../utils/apiClient";
 
