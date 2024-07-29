@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
-
+import VerifyOtp from "./VerifyOtp";
 const Login = (_props: any) => {
   const navigate = useNavigate();
   
-  const { isAuthenticated } = useSelector((state: AppState) => state.auth);
+  const { isAuthenticated,otpToken,error } = useSelector((state: AppState) => state.auth);
   const dispatch = useDispatch<any>();
   useEffect(() => {
     if (isAuthenticated) {
@@ -20,7 +20,10 @@ const Login = (_props: any) => {
   const [password, setPassword] = useState("");
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
+    if(otpToken){
+      return 
+    }
+    console.log("handling form submit")
     e.preventDefault();
 
     // Create a payload object
@@ -41,6 +44,7 @@ const Login = (_props: any) => {
   };
 
   return (
+    
     <div className="min-h-screen bg-[#0d1117] flex justify-center font-roboto">
       <div className="flex flex-col">
         <div className="flex justify-center pb-7 pt-10">
@@ -49,8 +53,13 @@ const Login = (_props: any) => {
         <h1 className="text-2xl mb-8 text-white text-center">
           Sign in to Trading App
         </h1>
+        <div>
 
-        <div className="bg-[#161b22] p-8 rounded-lg border-[#30363d] shadow-md w-full sm:w-96">
+          {!otpToken ? ( <div>
+            <p className="text-red text-xs text-center italic  ">{error}</p>
+
+          <div className="bg-[#161b22] p-8 rounded-lg border-[#30363d] shadow-md w-full sm:w-96">
+            
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-[#f0f6fc] mb-2">
@@ -92,8 +101,8 @@ const Login = (_props: any) => {
               Sign in
             </button>
           </form>
-        </div>
-        <div className="mt-4 p-4 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
+          </div>
+          <div className="mt-4 p-4 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
           <p className="text-[#f0f6fc]">
             New here?{" "}
             <a href="/register" className="text-blue-500 hover:text-blue-600">
@@ -101,6 +110,13 @@ const Login = (_props: any) => {
             </a>
             .
           </p>
+          </div>
+          </div>):(
+            <div>
+              <p className="text-red text-xs text-center italic  ">{error}</p>
+              <VerifyOtp></VerifyOtp>
+            </div>
+        )}
         </div>
         <div className="flex justify-around pt-16">
           <a href="/" className="text-blue-500 hover:text-blue-600">
@@ -121,6 +137,7 @@ const Login = (_props: any) => {
         </div>
       </div>
     </div>
+    
   );
 };
 

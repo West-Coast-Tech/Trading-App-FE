@@ -53,7 +53,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
       <input
         type="text"
         placeholder="Search and select an option..."
-        className="w-full sm:w-3/4 md:w-[91%] bg-gray-100 p-3 border border-[#30363d] rounded-lg text-white "
+        className="w-full sm:w-3/4 md:w-[91%] bg-gray-100 p-3 border border-[#30363d] rounded-lg text-white"
         value={selectedOption || searchTerm}
         onFocus={toggleDropdown} // Open dropdown on focus
         onChange={(e) => {
@@ -62,7 +62,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
         }}
       />
       {isOpen && (
-        <div className="w-[89%] absolute z-10 mt-2 bg-[#5C616F] rounded-md shadow-lg">
+        <div className="w-[89%] absolute z-10 mt-2 bg-[#5C616F] rounded-md shadow-lg max-h-60 overflow-y-auto">
           <ul className="w-full py-1 pl-0">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (

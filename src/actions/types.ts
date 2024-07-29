@@ -37,7 +37,10 @@ export interface LoginData {
   email: string;
   password: string;
 }
-
+export interface OtpData{
+  otp: string;
+  otpToken: string;
+}
 // Register data interface
 export interface RegisterData {
   email: string;

@@ -8,7 +8,7 @@ interface DecodedToken {
 
   const isTokenExpired = (token: string | null): boolean => {
   if (!token) {
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
     return true;
     }
   
@@ -17,12 +17,12 @@ interface DecodedToken {
     const currentTime = Date.now() / 1000; // Current time in seconds
     const expired= decodedToken.exp < currentTime + 10
     if(expired) {
-        localStorage.removeItem('token')
+        sessionStorage.removeItem('token')
     }
     return expired;
   } catch (e) {
     console.log("token has expired")
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
     return true;
   }
 };

@@ -1,7 +1,7 @@
 // src/actions/authActions.ts
 import { Dispatch } from "redux";
-import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess } from "../features/authSlice";
-import { LoginData, RegisterData, UserData } from "./types";
+import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed } from "../features/authSlice";
+import { LoginData, OtpData, RegisterData } from "./types";
 import API from "../utils/API"; // Import the updated API client
 
 // Action to register new users
@@ -11,7 +11,7 @@ export const registerUser = (data: RegisterData) => async (dispatch: Dispatch) =
     dispatch(registerSuccess(response.data));
   } catch (err: any) {
     dispatch(authError(err.message));
-    dispatch(registerFail());
+    dispatch(registerFail(err.response.data));
   }
 };
 
@@ -19,10 +19,20 @@ export const registerUser = (data: RegisterData) => async (dispatch: Dispatch) =
 export const loginUser = (data: LoginData) => async (dispatch: Dispatch) => {
   try {
     const response = await API.login(data);
+    console.log(response)
+    dispatch(otpLoaded(response.data));
+  } catch (err: any) {
+    console.log("login error", err.response.data);
+    dispatch(loginFail(err.response.data));
+  }
+};
+
+export const verifyOtp = (data: OtpData) => async (dispatch: Dispatch) => {
+  try {
+    const response = await API.verifyOtp(data);
     dispatch(loginSuccess(response.data));
   } catch (err: any) {
-    dispatch(authError(err.message));
-    dispatch(loginFail());
+    dispatch(otpFailed(err.response.data));
   }
 };
 
@@ -44,12 +54,12 @@ export const logoutUser = () => (dispatch: Dispatch) => {
 // Action to refresh token
 export const refreshToken = () => async (dispatch: Dispatch) => {
   console.log("refreshing token...")
-  // Retrieve the user's ID from localStorage
-  const id = localStorage.getItem('id');
+  // Retrieve the user's ID from sessionStorage
+  const id = sessionStorage.getItem('id');
   console.log("id",id);
   if (!id) {  
-    console.log("ID not found in localStorage");
-    // Handle the case where the ID is not found in localStorage
+    console.log("ID not found in sessionStorage");
+    // Handle the case where the ID is not found in sessionStorage
     // This could mean the user is not logged in, or the ID was not properly saved
     dispatch(authError());
     return;

@@ -12,7 +12,7 @@ const API = axios.create({
 API.interceptors.request.use(
   async (config) => {
     console.log("interceptor")
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token && isTokenExpired(token)) {
       console.log("refreshing token")
       await store.dispatch(refreshToken());
@@ -28,7 +28,7 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       history.push('/login'); // Redirect to login if unauthorized
     }
     return Promise.reject(error);
