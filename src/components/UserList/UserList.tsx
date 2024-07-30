@@ -5,9 +5,11 @@ import { getUsers } from '../../actions/userActions';
 
 // Define a specific selector for users
 const selectUsers = (state: AppState) => state.users.users;
+const selectLoading = (state: AppState) => state.users.loading;
 
 const UsersList = () => {
   const dispatch = useDispatch<any>();
+  const isLoading = useSelector(selectLoading);
   const users = useSelector(selectUsers);
   
   useEffect(() => {
@@ -19,6 +21,9 @@ const UsersList = () => {
     return () => clearInterval(interval);
   }, [dispatch]);
   const displayUsers = (users: any[]) => {
+    if(isLoading) {
+      return <div>Loading...</div>;
+    }
     if (!users.length) {
       return <div>No users found.</div>;
     }

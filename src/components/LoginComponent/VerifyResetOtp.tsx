@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+
 import { useSelector,useDispatch } from 'react-redux';
-import { verifyOtp } from '../../actions/authActions';  
+import { verifyOtp, verifyPasswordResetOtp } from '../../actions/authActions';  
 import { AppState } from '../../actions/types';
 
-const VerifyOtp = () => {
+const VerifyResetOtp = () => {
     const dispatch = useDispatch<any>();
-    const { otpToken,loading,error } = useSelector((state: AppState) => state.auth);
+    const { otpToken,loading } = useSelector((state: AppState) => state.auth);
 
     const [otp, setOtp] = useState('');
 
@@ -22,7 +21,7 @@ const VerifyOtp = () => {
     }
     // Send OTP to server
     try {
-        await dispatch(verifyOtp(payload));
+        await dispatch(verifyPasswordResetOtp(payload));
     } catch (error) {
       console.error('Error verifying OTP', error);
     }
@@ -32,7 +31,7 @@ const VerifyOtp = () => {
     <div className="min-h-screen bg-[#0d1117] flex justify-center font-roboto">
     <div className="flex flex-col">
       <h1 className="text-xl mb-8 text-white text-center">
-        Verify OTP to sign in
+        Verify OTP to reset your password
       </h1>
       <div className="bg-[#161b22] p-8 rounded-lg border-[#30363d] shadow-md w-full sm:w-96">
         <form onSubmit={handleVerifyOtp}>
@@ -52,8 +51,6 @@ const VerifyOtp = () => {
               placeholder="Enter your OTP"
               
             />
-            <p className="text-red text-xs text-center italic  ">{error}</p>
-
           </div>
           <button
                     type="submit"
@@ -77,4 +74,4 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyResetOtp;

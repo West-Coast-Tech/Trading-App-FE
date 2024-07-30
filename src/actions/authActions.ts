@@ -1,12 +1,13 @@
 // src/actions/authActions.ts
 import { Dispatch } from "redux";
-import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed } from "../features/authSlice";
-import { LoginData, OtpData, RegisterData } from "./types";
+import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed, loadingStart, resetVerificationSuccess, resetState } from "../features/authSlice";
+import { LoginData, OtpData, RegisterData, ResetData } from "./types";
 import API from "../utils/API"; // Import the updated API client
 
 // Action to register new users
 export const registerUser = (data: RegisterData) => async (dispatch: Dispatch) => {
   try {
+    dispatch(loadingStart())
     const response = await API.register(data);
     dispatch(registerSuccess(response.data));
   } catch (err: any) {
@@ -18,6 +19,7 @@ export const registerUser = (data: RegisterData) => async (dispatch: Dispatch) =
 // Action to login users
 export const loginUser = (data: LoginData) => async (dispatch: Dispatch) => {
   try {
+    dispatch(loadingStart())
     const response = await API.login(data);
     console.log(response)
     dispatch(otpLoaded(response.data));
@@ -29,12 +31,42 @@ export const loginUser = (data: LoginData) => async (dispatch: Dispatch) => {
 
 export const verifyOtp = (data: OtpData) => async (dispatch: Dispatch) => {
   try {
+    dispatch(loadingStart())
     const response = await API.verifyOtp(data);
     dispatch(loginSuccess(response.data));
   } catch (err: any) {
     dispatch(otpFailed(err.response.data));
   }
 };
+
+export const sendOtpForPasswordReset = (email: string) => async (dispatch: Dispatch) => {
+  try {
+    const response = await API.sendOtpForPasswordReset(email);
+    dispatch(otpLoaded(response.data));
+  } catch (err: any) {
+    dispatch(otpFailed(err.response.data));
+  }
+}
+export const verifyPasswordResetOtp = (data: OtpData) => async (dispatch: Dispatch) => {
+  try {
+    const response = await API.verifyPasswordResetOtp(data);
+    dispatch(resetVerificationSuccess(response.data));
+    console.log(response)
+    // dispatch(loginSuccess(response.data));
+  } catch (err: any) {
+    dispatch(otpFailed(err.response.data));
+  }
+}
+export const resetPassword = (data: ResetData) => async (dispatch: Dispatch) => {
+  try {
+    const response = await API.resetPassword(data);
+    dispatch(resetState());
+    console.log(response)
+    // dispatch(loginSuccess(response.data));
+  } catch (err: any) {
+    dispatch(otpFailed(err.response.data));
+  }
+}
 
 // Action to load current user
 export const loadUser = () => async (dispatch: Dispatch) => {

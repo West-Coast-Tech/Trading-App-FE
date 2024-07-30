@@ -8,6 +8,8 @@ export interface AuthState {
   id: string | null;
   otpToken: string | null;
   error:string|null;
+  loading: boolean;
+  resetToken: string | null
 }
 
 const initialState: AuthState = {
@@ -16,13 +18,19 @@ const initialState: AuthState = {
   id: sessionStorage.getItem('id'), // Initialize with value from sessionStorage
   currentUser: null,
   otpToken: null,
-  error: null
+  error: null,
+  loading: false,
+  resetToken: null
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    loadingStart: state => {
+      state.loading = true;
+      console.log("loading start",state.loading)
+    },
     registerSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
       sessionStorage.setItem('token', action.payload.token);
       sessionStorage.setItem('id', action.payload.id); // Save user ID to sessionStorage
@@ -31,14 +39,29 @@ export const authSlice = createSlice({
       state.currentUser = { email: action.payload.email };
       state.isAuthenticated = true;
       state.error = null;
+      state.loading = false;
+    },
+    resetState: state => {
+      return initialState;
+    },
+    resetVerificationSuccess: (state, action: PayloadAction<{ id: string, passwordResetToken: string }>) => {
+      state.resetToken = action.payload.passwordResetToken;
+      console.log("resetVerification success",action.payload.passwordResetToken)
+      state.id=action.payload.id
+      state.error = null;
+      state.loading = false;
     },
     otpLoaded: (state, action: PayloadAction<{ otpToken: string}>) => {
+      console.log("otptoken",action.payload.otpToken)
       state.otpToken = action.payload.otpToken;
       state.error = null;
+      state.loading = false;
     },
     otpFailed: (state, action: PayloadAction<string>) => {
-      state.error = action.payload
+      state.error = action.payload;
+      state.loading = false;
     },
+    
 
     loginSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
       sessionStorage.setItem('token', action.payload.token);
@@ -49,7 +72,7 @@ export const authSlice = createSlice({
       state.isAuthenticated = true;
       state.otpToken = null;
       state.error = null;
-
+      state.loading = false;
     },
     registerFail: (state, action: PayloadAction<string>) => {
       sessionStorage.removeItem('token');
@@ -58,7 +81,8 @@ export const authSlice = createSlice({
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
-      state.error = action.payload
+      state.error = action.payload;
+      state.loading = false;
     },
     loginFail: (state, action: PayloadAction<string>) => {
       sessionStorage.removeItem('token');
@@ -68,7 +92,8 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.currentUser = null;
       console.log("login fail authlice.ts",action.payload)
-      state.error = action.payload
+      state.error = action.payload;
+      state.loading = false;
     },
     authError: state => {
       sessionStorage.removeItem('token');
@@ -77,6 +102,7 @@ export const authSlice = createSlice({
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
+      state.loading = false;
     },
     logoutSuccess: state => {
       sessionStorage.removeItem('token');
@@ -86,12 +112,15 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.currentUser = null;
       state.error= null;
+      state.loading = false;
     },
     refreshSuccess: (state, action: PayloadAction<{ token: string }>) => {
       console.log("saving token to local storage",action.payload.token)
       sessionStorage.setItem('token', action.payload.token);
       state.token = action.payload.token;
       state.isAuthenticated = true;
+      state.error = null;
+      state.loading = false;
     },
     userLoaded: (state, action: PayloadAction<{ email: string; id: string }>) => {
       state.currentUser = action.payload;
@@ -102,6 +131,7 @@ export const authSlice = createSlice({
 });
 
 export const {
+  loadingStart,
   registerSuccess,
   loginSuccess,
   registerFail,
@@ -111,7 +141,9 @@ export const {
   userLoaded,
   refreshSuccess,
   otpLoaded,
-  otpFailed
+  otpFailed,
+  resetVerificationSuccess,
+  resetState
 } = authSlice.actions;
 
 export default authSlice.reducer;

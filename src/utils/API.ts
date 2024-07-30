@@ -1,6 +1,6 @@
 // src/utils/API.ts
 import {  AxiosResponse } from "axios";
-import { RegisterData, LoginData, UserData,OtpData } from "../actions/types";
+import { RegisterData, LoginData, UserData,OtpData,ResetData } from "../actions/types";
 import apiClient from "../utils/apiClient";
 
 // Define the API service with TypeScript
@@ -29,6 +29,24 @@ export default {
     verifyOtp(data:OtpData): Promise<AxiosResponse<UserData>> {
         return apiClient.post("/auth/verifyOtp", data); 
 
+    },
+     // API request to send OTP for password reset
+     sendOtpForPasswordReset(email: string): Promise<AxiosResponse<{ otpToken: string }>> {
+        return apiClient.post("/auth/sendotpforpasswordreset", { email });
+    },
+
+    // API request to verify OTP for password reset
+    verifyPasswordResetOtp(data: OtpData): Promise<AxiosResponse<{id:string, passwordResetToken: string }>> {
+        return apiClient.post("/auth/verifypasswordresetotp", data);
+    },
+
+    // API request to reset password
+    resetPassword(data: ResetData): Promise<AxiosResponse<void>> {
+        return apiClient.post("/auth/resetpassword", data, {
+            headers: {
+                Authorization: `Bearer ${data.resetToken}`
+            }
+        });
     },
     // API request to load user data
     loadUser(): Promise<AxiosResponse<UserData>> {

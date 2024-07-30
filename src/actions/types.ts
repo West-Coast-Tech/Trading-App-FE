@@ -41,6 +41,12 @@ export interface OtpData{
   otp: string;
   otpToken: string;
 }
+
+export interface ResetData{
+  resetToken: string
+  id: string
+  newPassword: string
+}
 // Register data interface
 export interface RegisterData {
   email: string;

@@ -114,7 +114,7 @@ const Register = () => {
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo (Congo-Brazzaville)", "Congo (Democratic Republic of the)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russian Federation", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
   ]
   const currencies:string[] = [
-    "AED","AFN","ALL","AMD","ANG","AOA","ARS","AUD","AWG","AZN","BAM","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTN","BWP","BYN","BZD","CAD","CDF","CHF","CLP","CNY","COP","CRC","CUC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GEL","GGP","GHS","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","IMP","INR","IQD","IRR","ISK","JEP","JMD","JOD","JPY","KES","KGS","KHR","KID","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD","MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","SSP","STN","SVC","SYP","SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TVD","TWD","TZS","UAH","UGX","USD","UYU","UZS","VES","VND","VUV","WST","XAF","XCD","XDR","XOF","XPF","YER","ZAR","ZMW","ZWL"
+    "USD","EUR","GBP"
   ]
   //Custom Css Classes for styling
   const inputClassCSS =
@@ -124,18 +124,19 @@ const Register = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 font-roboto">
       <div className="w-full max-w-md mx-auto">
-        <div className="text-center p-10">
-        <img className="h-12 mx-auto mb-4" src="src\assets\buildings.svg"></img>
+        <div className="text-center pt-10">
+        <img className="h-20 mx-auto" src="src\assets\buildings.svg"></img>
         </div>
         <h1 className="text-2xl mb-8 text-center font-sheriff text-white">Sign Up to Trading App</h1>
 
-        <div className="bg-gray-100 p-8 pr-2  rounded-lg shadow-2xl shadow-black w-full">
+        <div className="bg-gray-100 p-8 pr-2  rounded-lg shadow-2xl shadow-black w-[93%]">
           <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
           <form onSubmit={handleSubmit} className=" space-y-4">
           <div className="">
               <label className={labelCssClass}>Full Name</label>
               <input
                 type="text"
+                placeholder="Enter your full name"
                 ref={userRef}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -143,7 +144,7 @@ const Register = () => {
                 style={{
                   color: "#ffffff", // Set text color to white
                   caretColor: "#ffffff", // Set cursor color to white
-                  fontSize: "18px",
+                  fontSize: "15px",
                 }}
               />
             </div>
@@ -226,7 +227,7 @@ const Register = () => {
           </form>
           
         </div>
-        <div className="mt-4 w-[100%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
+        <div className="mt-4 w-[93%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
           <p className="text-[#f0f6fc]">
             Already have an account?{" "}
             <a href="/login" className="text-blue-500 hover:text-blue-600">

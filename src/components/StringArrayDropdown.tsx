@@ -53,7 +53,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
       <input
         type="text"
         placeholder="Search and select an option..."
-        className="w-full sm:w-3/4 md:w-[91%] bg-gray-100 p-3 border border-[#30363d] rounded-lg text-white"
+        className="w-full sm:w-3/4 md:w-[92%] bg-gray-100 p-3 border border-[#30363d] rounded-lg text-white"
         value={selectedOption || searchTerm}
         onFocus={toggleDropdown} // Open dropdown on focus
         onChange={(e) => {
@@ -62,12 +62,12 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
         }}
       />
       {isOpen && (
-        <div className="w-[89%] absolute z-10 mt-2 bg-[#5C616F] rounded-md shadow-lg max-h-60 overflow-y-auto">
+        <div className="w-[90%] absolute z-10 mt-2 bg-[#5C616F] rounded-md shadow-lg max-h-60 overflow-y-auto">
           <ul className="w-full py-1 pl-0">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
-                <div key={index} className="block py-2 text-white text-sm hover:bg-gray-100 cursor-pointer">
-                  <li onClick={() => handleOptionSelect(option)} className='pl-4 list-none'>
+                <div key={index} className="text-white text-sm ">
+                  <li onClick={() => handleOptionSelect(option)} className='block py-2  pl-4 list-none hover:bg-gray-100 cursor-pointer'>
                     {option}
                   </li>
                 </div>
