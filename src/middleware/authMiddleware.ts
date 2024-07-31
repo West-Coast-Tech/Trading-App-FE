@@ -1,6 +1,6 @@
 // src/middleware/authMiddleware.ts
 import { Middleware } from 'redux';
-import { logoutSuccess } from '../features/authSlice';
+import { logoutSuccess } from '../features/auth/authSlice';
 import { MiddlewareAPI } from 'redux';
 import  isTokenExpired  from '../utils/tokenUtils';
 

@@ -1,18 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, HtmlHTMLAttributes } from "react";
 import {faCheck, faTimes, faInfoCircle, faExclamation} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import { registerUser } from "../../actions/authActions";
+import { registerUser, registerWithOtp, verifyRegisterOtp } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
 import StringArrayDropdown from "../StringArrayDropdown";
+import VeirfyOtp from "./VerifyOtp";
+import { Verified } from "lucide-react";
+import VerifyOtp from "./VerifyOtp";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 
 const Register = () => {
   const navigate = useNavigate();
-  const {isAuthenticated} = useSelector((state: AppState) => state.auth);
+  const {isAuthenticated,otpToken} = useSelector((state: AppState) => state.auth);
   const dispatch = useDispatch<any>();
 
   const userRef = useRef<HTMLInputElement>(null);
@@ -40,6 +43,7 @@ const Register = () => {
   const [serviceAgreement, setServiceAgreement] = useState(false);
   const [declarationAgreement, setDeclarationAgreement] = useState(false);
   
+  const [resendPayload,setResendPayload] = useState<{ email: string, password: string, fullName: string, currency: string, country: string }>({ email: "", password: "",fullName: "",currency: "",country: "" });
 
 
 
@@ -73,13 +77,14 @@ const Register = () => {
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+    e.preventDefault(); 
+    console.log("handlig submit")
+  
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
       return;
     }
-
+    console.log("handling form submit")
     // Create a payload object
     const payload = {
         email,
@@ -93,7 +98,7 @@ const Register = () => {
 
       await dispatch(registerUser(payload)); // Dispatch the login action
       // If successful, navigate to the home page
-      
+      setResendPayload(payload)
   } catch (error) {
       console.error('Login failed:', error);
       // Handle any additional error handling if needed
@@ -121,6 +126,15 @@ const Register = () => {
     "w-full sm:w-3/4 md:w-5/6 bg-gray-100 p-3 border border-[#30363d] rounded-lg ";
   const labelCssClass="block mb-2 text-white font-bold";
 
+  const handleInputChange = (e: { target: { value: any; }; }) => {
+    const value = e.target.value;
+    // Allow only alphanumeric characters and limit to 30 characters
+    const regex = /^[a-zA-Z0-9 ]*$/;
+    if (value.length <= 50 && regex.test(value)) {
+      setFullName(value);
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 font-roboto">
       <div className="w-full max-w-md mx-auto">
@@ -128,115 +142,129 @@ const Register = () => {
         <img className="h-20 mx-auto" src="src\assets\buildings.svg"></img>
         </div>
         <h1 className="text-2xl mb-8 text-center font-sheriff text-white">Sign Up to Trading App</h1>
-
-        <div className="bg-gray-100 p-8 pr-2  rounded-lg shadow-2xl shadow-black w-[93%]">
-          <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
-          <form onSubmit={handleSubmit} className=" space-y-4">
-          <div className="">
-              <label className={labelCssClass}>Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                ref={userRef}
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Set text color to white
-                  caretColor: "#ffffff", // Set cursor color to white
-                  fontSize: "15px",
-                }}
-              />
-            </div>
-            
-        <label className={labelCssClass} htmlFor="country">Country</label>
-        <StringArrayDropdown options={countries} onOptionSelect={handleCountrySelect} />
-      
-            <div className="">
-              <label className={labelCssClass}>Email address</label>
-              <input
-                type="text"
-                value={email}
-                autoComplete="off"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={validEmail ? "false" : "true"}
-                aria-describedby="emailnote" 
-                onFocus={() => setEmailFocus(true)}
-                onBlur={() => setEmailFocus(false)}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Set text color to white
-                  caretColor: "#ffffff", // Set cursor color to white
-                }}
-              />
-              <p id="emailnote" className={`${emailFocus && email && !validEmail ? "text-red flex items-center" : "hidden"}`}>
-                <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />Please enter a valid email</p>
-            </div>  
-              <label className={labelCssClass}>Currency</label>
-              <StringArrayDropdown options={currencies} onOptionSelect={handleCurrencySelect} />
-            <div className="">
-              <label className={labelCssClass}>
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Assuming white (#ffffff) for light-colored text
-                  caretColor: "#ffffff", // White cursor color
-                }}
-              />
-            </div>
-            <div className="">
-              <label className={labelCssClass}>
-                Confirm Password              
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  if (e.target.value !== password) {
-                    setPasswordError("Passwords do not match");
-                  } else {
-                    setPasswordError("");
-                  }
-                }}
-                className={inputClassCSS}
-                style={{
-                  color: "#ffffff", // Assuming white (#ffffff) for light-colored text
-                  caretColor: "#ffffff", // White cursor color
-                }}
-              />
-              {passwordError && (
-                <p className="text-red mt-2 text-sm">{passwordError}</p>
-              )}
-            </div>
-            
-            <div className="">
-            <button
-              type="submit"
-              className="w-[89%] py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
-            >
-              Sign in
-            </button>
-            </div>
-          </form>
+        <div>
+          {!otpToken ? (
+            <div>
+              <div className="bg-gray-100 rounded-lg shadow-2xl shadow-black w-[93%]  p-8 pr-2  ">
+              <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
+              <form onSubmit={handleSubmit} className=" space-y-4">
+              <div className="">
+                  <label className={labelCssClass}>Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your full name"
+                    ref={userRef}
+                    value={fullName}
+                    onChange={handleInputChange}
+                    className={inputClassCSS}
+                    style={{
+                      color: "#ffffff", // Set text color to white
+                      caretColor: "#ffffff", // Set cursor color to white
+                      fontSize: "15px",
+                    }}
+                  />
+                </div>
+                
+            <label className={labelCssClass} htmlFor="country">Country</label>
+            <StringArrayDropdown options={countries} onOptionSelect={handleCountrySelect} />
           
+                <div className="">
+                  <label className={labelCssClass}>Email address</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your Email Address"
+                    value={email}
+                    autoComplete="off"
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                    aria-invalid={validEmail ? "false" : "true"}
+                    aria-describedby="emailnote" 
+                    onFocus={() => setEmailFocus(true)}
+                    onBlur={() => setEmailFocus(false)}
+                    className={inputClassCSS}
+                    style={{
+                      color: "#ffffff", // Set text color to white
+                      caretColor: "#ffffff", // Set cursor color to white
+                    }}
+                  />
+                  <p id="emailnote" className={`${emailFocus && email && !validEmail ? "text-red flex items-center" : "hidden"}`}>
+                    <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />Please enter a valid email</p>
+                </div>  
+                  <label className={labelCssClass}>Currency</label>
+                  <StringArrayDropdown options={currencies} onOptionSelect={handleCurrencySelect} />
+                <div className="">
+                  <label className={labelCssClass}>
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={inputClassCSS}
+                    style={{
+                      color: "#ffffff", // Assuming white (#ffffff) for light-colored text
+                      caretColor: "#ffffff", // White cursor color
+                    }}
+                  />
+                </div>
+                <div className="">
+                  <label className={labelCssClass}>
+                    Confirm Password              
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      if (e.target.value !== password) {
+                        setPasswordError("Passwords do not match");
+                      } else {
+                        setPasswordError("");
+                      }
+                    }}
+                    className={inputClassCSS}
+                    style={{
+                      color: "#ffffff", // Assuming white (#ffffff) for light-colored text
+                      caretColor: "#ffffff", // White cursor color
+                    }}
+                  />
+                  {passwordError && (
+                    <p className="text-red mt-2 text-sm">{passwordError}</p>
+                  )}
+                </div>
+                
+                <div className="">
+                <button
+                  type="submit"
+                  className="w-[89%] py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
+                >
+                  Sign in
+                </button>
+                </div>
+              </form>
+              
+              </div>
+              <div className="mt-4 w-[93%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
+              <p className="text-[#f0f6fc]">
+                Already have an account?{" "}
+                <a href="/login" className="text-blue-500 hover:text-blue-600">
+                  Sign in
+                </a>
+                .
+              </p>
+              </div>
+            </div>
+          ) : (
+            <VerifyOtp
+              verifyAction={verifyRegisterOtp}
+              resendAction={registerUser}
+              resendPayload={resendPayload}
+              message = "Check your email for the otp"
+            ></VerifyOtp>
+          )}
         </div>
-        <div className="mt-4 w-[93%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
-          <p className="text-[#f0f6fc]">
-            Already have an account?{" "}
-            <a href="/login" className="text-blue-500 hover:text-blue-600">
-              Sign in
-            </a>
-            .
-          </p>
-        </div>
-       
         <div className="flex justify-around pt-16">
           <a href="/" className="text-blue-500 hover:text-blue-600">
             Terms

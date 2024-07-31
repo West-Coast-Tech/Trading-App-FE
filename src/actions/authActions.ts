@@ -1,20 +1,46 @@
 // src/actions/authActions.ts
 import { Dispatch } from "redux";
-import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed, loadingStart, resetVerificationSuccess, resetState } from "../features/authSlice";
+import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed, loadingStart, resetVerificationSuccess, resetState } from "../features/auth/authSlice";
 import { LoginData, OtpData, RegisterData, ResetData } from "./types";
 import API from "../utils/API"; // Import the updated API client
 
 // Action to register new users
-export const registerUser = (data: RegisterData) => async (dispatch: Dispatch) => {
+export const registerUser = (data:RegisterData) => async (dispatch: Dispatch) => {
   try {
     dispatch(loadingStart())
-    const response = await API.register(data);
-    dispatch(registerSuccess(response.data));
+    sessionStorage.setItem('registerData', JSON.stringify(data));
+    console.log("register data",data.email)
+    const response = await API.register(data.email);
+    console.log("register use response",response)
+    dispatch(otpLoaded(response.data));
   } catch (err: any) {
     dispatch(authError(err.message));
     dispatch(registerFail(err.response.data));
   }
 };
+
+export const verifyRegisterOtp = (otp: OtpData) => async (dispatch: Dispatch<any>) => {
+  try {
+    dispatch(loadingStart())
+    const data = JSON.parse(sessionStorage.getItem('registerData')!);
+    if (data === null) {
+      throw new Error('Data not found in sessionStorage');
+    }
+    dispatch(registerWithOtp(data,otp));
+  } catch (err: any) {
+    dispatch(otpFailed(err.response.data));
+  }
+}
+export const registerWithOtp = (data: RegisterData, otp:OtpData) => async (dispatch: Dispatch) => {
+  try {
+    dispatch(loadingStart())
+    const response = await API.registerWithOtp(data,otp);
+    console.log(response)
+    dispatch(loginSuccess(response.data));
+  } catch (err: any) {
+    dispatch(otpFailed(err.response.data));
+  }
+}
 
 // Action to login users
 export const loginUser = (data: LoginData) => async (dispatch: Dispatch) => {

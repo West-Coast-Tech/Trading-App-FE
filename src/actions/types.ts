@@ -14,7 +14,7 @@ export const CLEAR_ERRORS = "CLEAR_ERRORS";
 export const GET_USERS_SUCCESS = "GET_USERS_SUCCESS";
 export const GET_USERS_FAIL = "GET_USERS_FAIL";
 
-import { AuthState } from "../features/authSlice";
+import { AuthState } from "../features/auth/authSlice";
 import { ErrorState } from "../features/errorSlice";
 import { UserState } from "../features/users/usersSlice";
 

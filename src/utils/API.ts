@@ -6,8 +6,12 @@ import apiClient from "../utils/apiClient";
 // Define the API service with TypeScript
 export default {
     // API request to register a new user
-    register(data: RegisterData): Promise<AxiosResponse<UserData>> {
-        return apiClient.post("/auth/register", data);
+    register(email: string): Promise<AxiosResponse<OtpData>> {
+        console.log("email in api",email)
+        return apiClient.post("/auth/register", {email});
+    },
+    registerWithOtp(data: RegisterData, otp:OtpData): Promise<AxiosResponse<UserData>> {
+        return apiClient.post("/auth/verifyRegisterOtp", { ...data, ...otp });
     },
 
     // API request to login a user

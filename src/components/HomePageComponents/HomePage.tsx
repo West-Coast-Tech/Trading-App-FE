@@ -3,7 +3,7 @@ import Navbar from "./Navbar"
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../actions/types";
 import { useEffect } from "react";
-import { logoutSuccess } from "../../features/authSlice";
+import { logoutSuccess } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import UserList from "../UserList/UserList";
 const HomePage = () => {

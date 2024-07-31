@@ -2,7 +2,7 @@ import { FunctionComponent, useState } from "react";
 import { Button, Menu } from "@mui/material";
 import logo from "../../assets/logo.svg";
 import { useDispatch } from "react-redux";
-import { logoutSuccess } from "../../features/authSlice";
+import { logoutSuccess } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import bell from "../../assets/star.svg";
 export type NavbarType = {

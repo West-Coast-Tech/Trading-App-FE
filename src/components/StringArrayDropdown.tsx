@@ -48,18 +48,26 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
     };
   }, []);
 
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && filteredOptions.length > 0) {
+      handleOptionSelect(filteredOptions[0]);
+    }
+  };
+
   return (
-    <div className='relative pr-10'>
+    <div className="relative pr-10">
       <input
         type="text"
         placeholder="Search and select an option..."
         className="w-full sm:w-3/4 md:w-[92%] bg-gray-100 p-3 border border-[#30363d] rounded-lg text-white"
-        value={selectedOption || searchTerm}
+        value={searchTerm || selectedOption}
         onFocus={toggleDropdown} // Open dropdown on focus
         onChange={(e) => {
           setSearchTerm(e.target.value);
+          setSelectedOption(''); // Clear the selected option when typing
           setIsOpen(true); // Open dropdown when typing
         }}
+        onKeyDown={handleInputKeyDown}
       />
       {isOpen && (
         <div className="w-[90%] absolute z-10 mt-2 bg-[#5C616F] rounded-md shadow-lg max-h-60 overflow-y-auto">
@@ -67,7 +75,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
                 <div key={index} className="text-white text-sm ">
-                  <li onClick={() => handleOptionSelect(option)} className='block py-2  pl-4 list-none hover:bg-gray-100 cursor-pointer'>
+                  <li onClick={() => handleOptionSelect(option)} className='block py-2 pl-4 list-none hover:bg-gray-100 cursor-pointer'>
                     {option}
                   </li>
                 </div>

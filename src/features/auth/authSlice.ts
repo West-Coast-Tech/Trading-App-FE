@@ -1,6 +1,6 @@
 // src/features/auth/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import { RegisterData } from '../../actions/types';
 export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
@@ -9,7 +9,8 @@ export interface AuthState {
   otpToken: string | null;
   error:string|null;
   loading: boolean;
-  resetToken: string | null
+  resetToken: string | null;
+  registerData: RegisterData | null;
 }
 
 const initialState: AuthState = {
@@ -20,7 +21,8 @@ const initialState: AuthState = {
   otpToken: null,
   error: null,
   loading: false,
-  resetToken: null
+  resetToken: null,
+  registerData: null,
 };
 
 export const authSlice = createSlice({
@@ -33,14 +35,15 @@ export const authSlice = createSlice({
     },
     registerSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
       sessionStorage.setItem('token', action.payload.token);
-      sessionStorage.setItem('id', action.payload.id); // Save user ID to sessionStorage
+      sessionStorage.setItem('id', action.payload.id);
       state.token = action.payload.token;
-      state.id = action.payload.id; // Update state with user ID
+      state.id = action.payload.id;
       state.currentUser = { email: action.payload.email };
       state.isAuthenticated = true;
       state.error = null;
       state.loading = false;
     },
+    
     resetState: state => {
       return initialState;
     },
