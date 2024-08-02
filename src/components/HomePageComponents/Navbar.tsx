@@ -1,5 +1,5 @@
-import { FunctionComponent, useState } from "react";
-import { Button, Menu } from "@mui/material";
+import { FunctionComponent } from "react";
+import { Button } from "@mui/material";
 import logo from "../../assets/logo.svg";
 import { useDispatch } from "react-redux";
 import { logoutSuccess } from "../../features/auth/authSlice";

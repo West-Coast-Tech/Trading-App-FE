@@ -56,7 +56,7 @@ const Login = (_props: any) => {
         <div>
           {!otpToken ? (
             <div>
-              <div className="bg-gray-100 rounded-lg shadow-2xl shadow-black p-8 w-full sm:w-96">
+              <div className="bg-gray-100 rounded-lg shadow-2xl shadow-black p-8  sm:w-96">
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <label className="block text-[#f0f6fc] mb-2">

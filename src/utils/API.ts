@@ -11,7 +11,7 @@ export default {
         return apiClient.post("/auth/register", {email});
     },
     registerWithOtp(data: RegisterData, otp:OtpData): Promise<AxiosResponse<UserData>> {
-        return apiClient.post("/auth/verifyRegisterOtp", { ...data, ...otp });
+        return apiClient.post("/auth/verify-register-otp", { ...data, ...otp });
     },
 
     // API request to login a user
@@ -31,22 +31,22 @@ export default {
     },
 
     verifyOtp(data:OtpData): Promise<AxiosResponse<UserData>> {
-        return apiClient.post("/auth/verifyOtp", data); 
+        return apiClient.post("/auth/verify-login-otp", data); 
 
     },
      // API request to send OTP for password reset
      sendOtpForPasswordReset(email: string): Promise<AxiosResponse<{ otpToken: string }>> {
-        return apiClient.post("/auth/sendotpforpasswordreset", { email });
+        return apiClient.post("/auth/send-password-reset-otp", { email });
     },
 
     // API request to verify OTP for password reset
     verifyPasswordResetOtp(data: OtpData): Promise<AxiosResponse<{id:string, passwordResetToken: string }>> {
-        return apiClient.post("/auth/verifypasswordresetotp", data);
+        return apiClient.post("/auth/verify-password-reset-otp", data);
     },
 
     // API request to reset password
     resetPassword(data: ResetData): Promise<AxiosResponse<void>> {
-        return apiClient.post("/auth/resetpassword", data, {
+        return apiClient.post("/auth/reset-password", data, {
             headers: {
                 Authorization: `Bearer ${data.resetToken}`
             }

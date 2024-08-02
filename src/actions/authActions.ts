@@ -1,6 +1,6 @@
 // src/actions/authActions.ts
 import { Dispatch } from "redux";
-import { registerSuccess, loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed, loadingStart, resetVerificationSuccess, resetState } from "../features/auth/authSlice";
+import { loginSuccess, registerFail, loginFail, authError, userLoaded, logoutSuccess, refreshSuccess, otpLoaded, otpFailed, loadingStart, resetVerificationSuccess, resetState } from "../features/auth/authSlice";
 import { LoginData, OtpData, RegisterData, ResetData } from "./types";
 import API from "../utils/API"; // Import the updated API client
 

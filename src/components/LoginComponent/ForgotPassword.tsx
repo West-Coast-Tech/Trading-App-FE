@@ -38,7 +38,7 @@ const ForgotPassword: React.FC = () => {
           {!otpToken ? (
             <div>
               <p className="text-red text-xs text-center italic">{error}</p>
-              <div className="bg-gray-100 p-8 rounded-lg border-[#30363d] shadow-xl shadow-black shadow-md w-full sm:w-96">
+              <div className="bg-gray-100 p-8 rounded-lg border-[#30363d] shadow-xl shadow-black shadow-md  sm:w-96">
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <label className="block text-[#f0f6fc] mb-2">
@@ -70,7 +70,7 @@ const ForgotPassword: React.FC = () => {
                         </svg>
                         Sending OTP...
                       </div>
-                    ) : 'Send OTP'}
+                    ) : 'Change Password'}
                   </button>
                 </form>
               </div>

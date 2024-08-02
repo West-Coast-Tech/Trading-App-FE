@@ -1,9 +1,8 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar"
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { AppState } from "../../actions/types";
 import { useEffect } from "react";
-import { logoutSuccess } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import UserList from "../UserList/UserList";
 const HomePage = () => {
@@ -11,7 +10,6 @@ const HomePage = () => {
 
 
   const { isAuthenticated } = useSelector((state: AppState) => state.auth);
-  const {token} = useSelector((state: AppState) => state.auth);
 
 
   
@@ -27,7 +25,7 @@ const HomePage = () => {
         <Sidebar />
       </div>
 
-      <div className=" dark:bg-gray-800 col-span-2 row-span-1 p-4 py-8">
+      <div className=" dark:bg-gray-100 col-span-2 row-span-1 p-4 py-8">
       <Navbar />
       </div>
       <div className="bg-neutral-200 dark:bg-gray-800 col-span-1 row-span-2 p-4">

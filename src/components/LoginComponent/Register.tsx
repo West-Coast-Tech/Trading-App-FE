@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect, HtmlHTMLAttributes } from "react";
-import {faCheck, faTimes, faInfoCircle, faExclamation} from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useRef, useEffect } from "react";
+import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import { registerUser, registerWithOtp, verifyRegisterOtp } from "../../actions/authActions";
+import { registerUser, verifyRegisterOtp } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
-import StringArrayDropdown from "../StringArrayDropdown";
-import VeirfyOtp from "./VerifyOtp";
-import { Verified } from "lucide-react";
+import StringArrayDropdown from "./StringArrayDropdown";
 import VerifyOtp from "./VerifyOtp";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -27,7 +25,7 @@ const Register = () => {
 
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
-  const [passwordFocus, setPasswordFocus] = useState(false);
+  // const [passwordFocus, setPasswordFocus] = useState(false);
   
   const [matchPassword, setMatchPassword] = useState("");
   const [validMatch, setValidMatch] = useState(false);
@@ -44,8 +42,6 @@ const Register = () => {
   const [declarationAgreement, setDeclarationAgreement] = useState(false);
   
   const [resendPayload,setResendPayload] = useState<{ email: string, password: string, fullName: string, currency: string, country: string }>({ email: "", password: "",fullName: "",currency: "",country: "" });
-
-
 
   const [passwordError, setPasswordError] = useState("");
 
@@ -123,7 +119,7 @@ const Register = () => {
   ]
   //Custom Css Classes for styling
   const inputClassCSS =
-    "w-full sm:w-3/4 md:w-5/6 bg-gray-100 p-3 border border-[#30363d] rounded-lg ";
+    "w-[93%] sm:w-3/4 md:w-5/6 bg-gray-100 p-3 border border-[#30363d] rounded-lg ";
   const labelCssClass="block mb-2 text-white font-bold";
 
   const handleInputChange = (e: { target: { value: any; }; }) => {
@@ -136,155 +132,146 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 font-roboto">
-      <div className="w-full max-w-md mx-auto">
-        <div className="text-center pt-10">
-        <img className="h-20 mx-auto" src="src\assets\buildings.svg"></img>
-        </div>
-        <h1 className="text-2xl mb-8 text-center font-sheriff text-white">Sign Up to Trading App</h1>
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-blue-950 font-roboto p-4">
+  <div className="w-full max-w-md mx-auto">
+    <div className="text-center pt-10">
+      <img className="h-20 mx-auto" src="src/assets/buildings.svg" alt="Building Icon" />
+    </div>
+    <h1 className="text-2xl mb-8 text-center font-sheriff text-white">Sign Up to Trading App</h1>
+    <div>
+      {!otpToken ? (
         <div>
-          {!otpToken ? (
-            <div>
-              <div className="bg-gray-100 rounded-lg shadow-2xl shadow-black w-[93%]  p-8 pr-2  ">
-              <p ref={errRef} className={errMsg?"errmsg":"offscreen"} aria-live="assertive">{errMsg}</p>
-              <form onSubmit={handleSubmit} className=" space-y-4">
-              <div className="">
-                  <label className={labelCssClass}>Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your full name"
-                    ref={userRef}
-                    value={fullName}
-                    onChange={handleInputChange}
-                    className={inputClassCSS}
-                    style={{
-                      color: "#ffffff", // Set text color to white
-                      caretColor: "#ffffff", // Set cursor color to white
-                      fontSize: "15px",
-                    }}
-                  />
-                </div>
-                
-            <label className={labelCssClass} htmlFor="country">Country</label>
-            <StringArrayDropdown options={countries} onOptionSelect={handleCountrySelect} />
-          
-                <div className="">
-                  <label className={labelCssClass}>Email address</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your Email Address"
-                    value={email}
-                    autoComplete="off"
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
-                    aria-invalid={validEmail ? "false" : "true"}
-                    aria-describedby="emailnote" 
-                    onFocus={() => setEmailFocus(true)}
-                    onBlur={() => setEmailFocus(false)}
-                    className={inputClassCSS}
-                    style={{
-                      color: "#ffffff", // Set text color to white
-                      caretColor: "#ffffff", // Set cursor color to white
-                    }}
-                  />
-                  <p id="emailnote" className={`${emailFocus && email && !validEmail ? "text-red flex items-center" : "hidden"}`}>
-                    <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />Please enter a valid email</p>
-                </div>  
-                  <label className={labelCssClass}>Currency</label>
-                  <StringArrayDropdown options={currencies} onOptionSelect={handleCurrencySelect} />
-                <div className="">
-                  <label className={labelCssClass}>
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={inputClassCSS}
-                    style={{
-                      color: "#ffffff", // Assuming white (#ffffff) for light-colored text
-                      caretColor: "#ffffff", // White cursor color
-                    }}
-                  />
-                </div>
-                <div className="">
-                  <label className={labelCssClass}>
-                    Confirm Password              
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setConfirmPassword(e.target.value);
-                      if (e.target.value !== password) {
-                        setPasswordError("Passwords do not match");
-                      } else {
-                        setPasswordError("");
-                      }
-                    }}
-                    className={inputClassCSS}
-                    style={{
-                      color: "#ffffff", // Assuming white (#ffffff) for light-colored text
-                      caretColor: "#ffffff", // White cursor color
-                    }}
-                  />
-                  {passwordError && (
-                    <p className="text-red mt-2 text-sm">{passwordError}</p>
-                  )}
-                </div>
-                
-                <div className="">
+          <div className="bg-gray-100 rounded-lg shadow-2xl shadow-black p-8">
+            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className={labelCssClass}>Full Name</label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  ref={userRef}
+                  value={fullName}
+                  onChange={handleInputChange}
+                  className={inputClassCSS}
+                  style={{ color: "#ffffff", caretColor: "#ffffff" }}
+                />
+              </div>
+              
+              <div>
+                <label className={labelCssClass}>Country</label>
+                <StringArrayDropdown options={countries} onOptionSelect={handleCountrySelect} />
+              </div>
+              
+              <div>
+                <label className={labelCssClass}>Email address</label>
+                <input
+                  type="text"
+                  placeholder="Enter your Email Address"
+                  value={email}
+                  autoComplete="off"
+                  required
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={validEmail ? "false" : "true"}
+                  aria-describedby="emailnote" 
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                  className={inputClassCSS}
+                  style={{ color: "#ffffff", caretColor: "#ffffff" }}
+                />
+                <p id="emailnote" className={`${emailFocus && email && !validEmail ? "text-red flex items-center" : "hidden"}`}>
+                  <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />Please enter a valid email
+                </p>
+              </div>  
+              
+              <div>
+                <label className={labelCssClass}>Currency</label>
+                <StringArrayDropdown options={currencies} onOptionSelect={handleCurrencySelect} />
+              </div>
+              
+              <div>
+                <label className={labelCssClass}>Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={inputClassCSS}
+                  style={{ color: "#ffffff", caretColor: "#ffffff" }}
+                />
+              </div>
+              
+              <div>
+                <label className={labelCssClass}>Confirm Password</label>
+                <input
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (e.target.value !== password) {
+                      setPasswordError("Passwords do not match");
+                    } else {
+                      setPasswordError("");
+                    }
+                  }}
+                  className={inputClassCSS}
+                  style={{ color: "#ffffff", caretColor: "#ffffff" }}
+                />
+                {passwordError && (
+                  <p className="text-red mt-2 text-sm">{passwordError}</p>
+                )}
+              </div>
+              
+              <div>
                 <button
                   type="submit"
-                  className="w-[89%] py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
+                  className="w-full py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
                 >
                   Sign in
                 </button>
-                </div>
-              </form>
-              
               </div>
-              <div className="mt-4 w-[93%] p-4 pr-6 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
-              <p className="text-[#f0f6fc]">
-                Already have an account?{" "}
-                <a href="/login" className="text-blue-500 hover:text-blue-600">
-                  Sign in
-                </a>
-                .
-              </p>
-              </div>
-            </div>
-          ) : (
-            <VerifyOtp
-              verifyAction={verifyRegisterOtp}
-              resendAction={registerUser}
-              resendPayload={resendPayload}
-              message = "Check your email for the otp"
-            ></VerifyOtp>
-          )}
+            </form>
+          </div>
+          
+          <div className="mt-4 p-4 rounded-lg border-2 border-[#30363d] text-center bg-[#0d1117]">
+            <p className="text-[#f0f6fc]">
+              Already have an account?{" "}
+              <a href="/login" className="text-blue-500 hover:text-blue-600">
+                Sign in
+              </a>
+              .
+            </p>
+          </div>
         </div>
-        <div className="flex justify-around pt-16">
-          <a href="/" className="text-blue-500 hover:text-blue-600">
-            Terms
-          </a>{" "}
-          <a href="/" className="text-blue-500 hover:text-blue-600">
-            Privacy
-          </a>{" "}
-          <a href="/" className="text-blue-500 hover:text-blue-600">
-            Security
-          </a>{" "}
-          <a
-            href="/"
-            className="text-gray-500 hover:text-blue-600 hover:underline"
-          >
-            Contact Us
-          </a>{" "}
-        </div>
-      </div>
+      ) : (
+        <VerifyOtp
+          verifyAction={verifyRegisterOtp}
+          resendAction={registerUser}
+          resendPayload={resendPayload}
+          message="Check your email for the otp"
+        />
+      )}
     </div>
-    
+    <div className="flex flex-col md:flex-row justify-around pt-16 text-center">
+      <a href="/" className="text-blue-500 hover:text-blue-600 mb-2 md:mb-0">
+        Terms
+      </a>
+      <a href="/" className="text-blue-500 hover:text-blue-600 mb-2 md:mb-0">
+        Privacy
+      </a>
+      <a href="/" className="text-blue-500 hover:text-blue-600 mb-2 md:mb-0">
+        Security
+      </a>
+      <a
+        href="/"
+        className="text-gray-500 hover:text-blue-600 hover:underline"
+      >
+        Contact Us
+      </a>
+    </div>
+  </div>
+</div>
+
   );
 };
 

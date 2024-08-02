@@ -49,7 +49,7 @@ const ResetPassword = (_props: any) => {
 
   return (
     
-    <div className="min-h-screen bg-[#0d1117] flex justify-center font-roboto">
+    <div className="min-h-screen bg-[#0d1117] flex justify-center font-roboto  ">
       <div className="flex flex-col">
         <div className="flex justify-center pb-7 pt-10">
           <img className="h-48" src="src\assets\buildings.svg"></img>
@@ -106,7 +106,7 @@ const ResetPassword = (_props: any) => {
                         </svg>
                         Logging In...
                       </div>
-                    ) : 'Sign in'}
+                    ) : 'Change Password'}
                   </button>
           </form>
           </div>

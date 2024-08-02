@@ -34,7 +34,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape'|| event.key === 'Tab' ) {
         setIsOpen(false);
       }
     };
@@ -55,7 +55,7 @@ const StringArrayDropdown: React.FC<StringArrayDropdownProps> = ({ options, onOp
   };
 
   return (
-    <div className="relative pr-10">
+    <div className="relative pr-5 md:pr-9">
       <input
         type="text"
         placeholder="Search and select an option..."
