@@ -64,6 +64,9 @@ export const authSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    setError: (state,action: PayloadAction<string>) =>{
+      state.error = action.payload;
+    },
     
 
     loginSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
@@ -146,7 +149,8 @@ export const {
   otpLoaded,
   otpFailed,
   resetVerificationSuccess,
-  resetState
+  resetState,
+  setError
 } = authSlice.actions;
 
 export default authSlice.reducer;

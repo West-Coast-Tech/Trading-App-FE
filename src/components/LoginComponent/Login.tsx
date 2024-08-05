@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { loginUser, verifyOtp } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
 import VerifyOtp from "./VerifyOtp";
-
+import {hashPassword} from "../../services/auth"
 const Login = (_props: any) => {
   const navigate = useNavigate();
   const { isAuthenticated, otpToken, error, loading } = useSelector((state: AppState) => state.auth);
@@ -26,11 +26,11 @@ const Login = (_props: any) => {
     }
     console.log("handling form submit");
     e.preventDefault();
-
+    const hashedPassword = await hashPassword(password)
     // Create a payload object
     const payload = {
       email,
-      password,
+      password:hashedPassword,
     };
 
     try {

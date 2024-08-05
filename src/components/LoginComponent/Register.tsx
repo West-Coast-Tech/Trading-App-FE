@@ -4,9 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import { registerUser, verifyRegisterOtp } from "../../actions/authActions";
+import { setError } from "../../features/auth/authSlice";
 import { AppState } from "../../actions/types";
 import StringArrayDropdown from "./StringArrayDropdown";
 import VerifyOtp from "./VerifyOtp";
+import { hashPassword } from "../../services/auth";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -25,6 +27,9 @@ const Register = () => {
 
   const [password, setPassword] = useState("");
   const [validPassword, setValidPassword] = useState(false);
+  const [passwordFocus, setPasswordFocus] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+
   // const [passwordFocus, setPasswordFocus] = useState(false);
   
   const [matchPassword, setMatchPassword] = useState("");
@@ -71,6 +76,12 @@ const Register = () => {
     setErrMsg('');
   }, [email, password, matchPassword, fullName, currency, country, serviceAgreement, declarationAgreement]);
 
+  // Function to toggle show/hide password
+  const handleShowPassword = () => {
+   setShowPassword(!showPassword);
+  };
+
+ 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
@@ -78,20 +89,28 @@ const Register = () => {
   
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
+      dispatch(setError("Passwords do not match"))
       return;
     }
     console.log("handling form submit")
+    const hashedPassword = await hashPassword(password);
+
+    //create hashpassword and salt and add to payload
+    // const saltRounds = 10; // You can adjust the number of rounds based on your security requirements
+    // const salt = await bcrypt.genSalt(saltRounds);
+    // const hashedPassword = await bcrypt.hash(password, salt);
+
     // Create a payload object
     const payload = {
         email,
-        password,
+       password:hashedPassword,
         fullName,
         currency,
         country,
     };
     try {
       console.log("payload",payload)
-
+      
       await dispatch(registerUser(payload)); // Dispatch the login action
       // If successful, navigate to the home page
       setResendPayload(payload)
@@ -148,6 +167,7 @@ const Register = () => {
                 <label className={labelCssClass}>Full Name</label>
                 <input
                   type="text"
+                  required
                   placeholder="Enter your full name"
                   ref={userRef}
                   value={fullName}
@@ -191,18 +211,51 @@ const Register = () => {
               <div>
                 <label className={labelCssClass}>Password</label>
                 <input
-                  type="password"
+                  required
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
+                  onFocus={()=>setPasswordFocus(true)}
+                  onBlur={()=>setPasswordFocus(false)}
+                  aria-invalid={validEmail ? "false" : "true"}
+                  aria-describedby="pwdNote"
                   onChange={(e) => setPassword(e.target.value)}
                   className={inputClassCSS}
                   style={{ color: "#ffffff", caretColor: "#ffffff" }}
                 />
+                <label className={`${password ? "flex items-center mt-2 text-green-500 text-sm ":"hidden"}`}>
+                  <input
+                    type="checkbox"
+                    checked={showPassword}
+                    onChange={handleShowPassword}
+                    className="mr-2"
+                  />
+                  Show Password
+                </label>
+                <div
+                  id="pwdNote"
+                  className={`${ 
+                     !validPassword  && password
+                      ? "border-2 border-solid border-blue-800 text-white bg-gray-100 p-2 rounded-lg  space-y-2 text-xs w-[70%]"
+                      : "hidden"
+                  }`}
+                >
+                  <FontAwesomeIcon className="pr-2" icon={faInfoCircle} />
+                  <span>Password should meet the following criteria:</span>
+                  <ul className="list-disc">
+                    <li>At least one lowercase letter</li>
+                    <li>At least one uppercase letter</li>
+                    <li>At least one digit</li>
+                    <li>At least one special character (@$!%*?&)</li>
+                    <li>Minimum length of 8 characters</li>
+                  </ul>
+                </div>
               </div>
               
               <div>
                 <label className={labelCssClass}>Confirm Password</label>
                 <input
+                  required
                   type="password"
                   placeholder="Confirm your password"
                   value={confirmPassword}
@@ -225,9 +278,9 @@ const Register = () => {
               <div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
+                  className="md:w-[91%] w-full py-3 bg-green-500 text-white font-semibold rounded hover:bg-green-900 transition duration-300 ease-in-out"
                 >
-                  Sign in
+                  Sign Up
                 </button>
               </div>
             </form>

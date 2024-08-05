@@ -86,7 +86,6 @@ export const verifyPasswordResetOtp = (data: OtpData) => async (dispatch: Dispat
 export const resetPassword = (data: ResetData) => async (dispatch: Dispatch) => {
   try {
     const response = await API.resetPassword(data);
-    dispatch(resetState());
     console.log(response)
     // dispatch(loginSuccess(response.data));
   } catch (err: any) {
