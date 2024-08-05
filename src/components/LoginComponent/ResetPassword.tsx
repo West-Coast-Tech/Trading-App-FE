@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { resetPassword } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
 import { resetState, setError } from "../../features/auth/authSlice";
+import { hashPassword } from "../../services/auth";
 
 const ResetPassword = (_props: any) => {
   const navigate = useNavigate();
@@ -35,10 +36,10 @@ const ResetPassword = (_props: any) => {
     if (resetToken === null || id === null) {
       return;
     }
-
+    const hashedPassword = await hashPassword(newPassword)
     const payload = {
       id,  
-      newPassword,   
+      newPassword:hashedPassword,   
       resetToken  
     };
 
