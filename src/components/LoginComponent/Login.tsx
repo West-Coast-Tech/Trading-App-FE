@@ -24,7 +24,7 @@ const Login = (_props: any) => {
     if (otpToken) {
       return;
     }
-    console.log("handling form submit");
+    
     e.preventDefault();
     const hashedPassword = await hashPassword(password)
     // Create a payload object

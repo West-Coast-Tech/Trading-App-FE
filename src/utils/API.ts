@@ -7,7 +7,7 @@ import apiClient from "../utils/apiClient";
 export default {
     // API request to register a new user
     register(email: string): Promise<AxiosResponse<OtpData>> {
-        console.log("email in api",email)
+        
         return apiClient.post("/auth/register", {email});
     },
     registerWithOtp(data: RegisterData, otp:OtpData): Promise<AxiosResponse<UserData>> {
@@ -21,7 +21,7 @@ export default {
 
     // API request to fetch users
     getUsers(token: string): Promise<AxiosResponse<UserData[]>> {
-        console.log("token in getusers",token)
+        
         return apiClient.get("/users", { headers: { Authorization: `Bearer ${token}` } });
     },
 

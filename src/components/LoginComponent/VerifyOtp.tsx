@@ -21,7 +21,7 @@ const VerifyOtp: React.FC<VerifyOtpProps> = ({ verifyAction, resendAction, messa
     let timer: NodeJS.Timeout;
     if (isCooldown) {
       timer = setInterval(() => {
-        console.log("timeleft ",timeLeft)
+        
         setTimeLeft(prev => {
           if (prev <= 1) {
             clearInterval(timer);

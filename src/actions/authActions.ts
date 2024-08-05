@@ -9,9 +9,7 @@ export const registerUser = (data:RegisterData) => async (dispatch: Dispatch) =>
   try {
     dispatch(loadingStart())
     sessionStorage.setItem('registerData', JSON.stringify(data));
-    console.log("register data",data.email)
     const response = await API.register(data.email);
-    console.log("register use response",response)
     dispatch(otpLoaded(response.data));
   } catch (err: any) {
     dispatch(authError(err.message));
@@ -35,7 +33,6 @@ export const registerWithOtp = (data: RegisterData, otp:OtpData) => async (dispa
   try {
     dispatch(loadingStart())
     const response = await API.registerWithOtp(data,otp);
-    console.log(response)
     dispatch(loginSuccess(response.data));
   } catch (err: any) {
     dispatch(otpFailed(err.response.data));
@@ -47,10 +44,10 @@ export const loginUser = (data: LoginData) => async (dispatch: Dispatch) => {
   try {
     dispatch(loadingStart())
     const response = await API.login(data);
-    console.log(response)
+    
     dispatch(otpLoaded(response.data));
   } catch (err: any) {
-    console.log("login error", err.response.data);
+    
     dispatch(loginFail(err.response.data));
   }
 };
@@ -77,7 +74,7 @@ export const verifyPasswordResetOtp = (data: OtpData) => async (dispatch: Dispat
   try {
     const response = await API.verifyPasswordResetOtp(data);
     dispatch(resetVerificationSuccess(response.data));
-    console.log(response)
+    
     // dispatch(loginSuccess(response.data));
   } catch (err: any) {
     dispatch(otpFailed(err.response.data));
@@ -86,7 +83,7 @@ export const verifyPasswordResetOtp = (data: OtpData) => async (dispatch: Dispat
 export const resetPassword = (data: ResetData) => async (dispatch: Dispatch) => {
   try {
     const response = await API.resetPassword(data);
-    console.log(response)
+    
     // dispatch(loginSuccess(response.data));
   } catch (err: any) {
     dispatch(otpFailed(err.response.data));
@@ -110,12 +107,12 @@ export const logoutUser = () => (dispatch: Dispatch) => {
 
 // Action to refresh token
 export const refreshToken = () => async (dispatch: Dispatch) => {
-  console.log("refreshing token...")
+  
   // Retrieve the user's ID from sessionStorage
   const id = sessionStorage.getItem('id');
-  console.log("id",id);
+  
   if (!id) {  
-    console.log("ID not found in sessionStorage");
+    
     // Handle the case where the ID is not found in sessionStorage
     // This could mean the user is not logged in, or the ID was not properly saved
     dispatch(authError());
@@ -128,7 +125,7 @@ export const refreshToken = () => async (dispatch: Dispatch) => {
     const response = await API.refreshToken(id);
     // Assuming the response includes the refreshed token and possibly other user details
    
-    console.log("refresh success",response);
+    
     // Dispatch the loginSuccess action with the refreshed token and user details
     dispatch(refreshSuccess(response.data));
   } catch (err) {

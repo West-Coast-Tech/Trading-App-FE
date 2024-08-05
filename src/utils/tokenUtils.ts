@@ -21,7 +21,7 @@ interface DecodedToken {
     }
     return expired;
   } catch (e) {
-    console.log("token has expired")
+    
     sessionStorage.removeItem('token')
     return true;
   }

@@ -11,10 +11,10 @@ const API = axios.create({
 // Request interceptor to check token expiry before sending requests
 API.interceptors.request.use(
   async (config) => {
-    console.log("interceptor")
+    
     const token = sessionStorage.getItem('token');
     if (token && isTokenExpired(token)) {
-      console.log("refreshing token")
+      
       await store.dispatch(refreshToken());
     }
     return config;

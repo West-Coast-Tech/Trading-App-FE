@@ -9,7 +9,7 @@ export const getUsers = () => async (dispatch: Dispatch) => {
     try {
 
         const token = sessionStorage.getItem("token") || "";
-        console.log("token in getUsers userActions",token)
+        
         const response = await API.getUsers(token); // Assuming the token is automatically handled by the interceptor
         dispatch(getUsersSuccess(response.data));
     } catch (err: any) {

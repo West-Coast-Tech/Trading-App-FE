@@ -31,7 +31,7 @@ export const authSlice = createSlice({
   reducers: {
     loadingStart: state => {
       state.loading = true;
-      console.log("loading start",state.loading)
+      
     },
     registerSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
       sessionStorage.setItem('token', action.payload.token);
@@ -49,13 +49,13 @@ export const authSlice = createSlice({
     },
     resetVerificationSuccess: (state, action: PayloadAction<{ id: string, passwordResetToken: string }>) => {
       state.resetToken = action.payload.passwordResetToken;
-      console.log("resetVerification success",action.payload.passwordResetToken)
+      
       state.id=action.payload.id
       state.error = null;
       state.loading = false;
     },
     otpLoaded: (state, action: PayloadAction<{ otpToken: string}>) => {
-      console.log("otptoken",action.payload.otpToken)
+      
       state.otpToken = action.payload.otpToken;
       state.error = null;
       state.loading = false;
@@ -97,7 +97,7 @@ export const authSlice = createSlice({
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
-      console.log("login fail authlice.ts",action.payload)
+      
       state.error = action.payload;
       state.loading = false;
     },
@@ -121,7 +121,7 @@ export const authSlice = createSlice({
       state.loading = false;
     },
     refreshSuccess: (state, action: PayloadAction<{ token: string }>) => {
-      console.log("saving token to local storage",action.payload.token)
+      
       sessionStorage.setItem('token', action.payload.token);
       state.token = action.payload.token;
       state.isAuthenticated = true;

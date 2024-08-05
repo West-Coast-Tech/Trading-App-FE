@@ -85,14 +85,14 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
-    console.log("handlig submit")
+    
   
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
       dispatch(setError("Passwords do not match"))
       return;
     }
-    console.log("handling form submit")
+    
     const hashedPassword = await hashPassword(password);
 
     //create hashpassword and salt and add to payload
@@ -109,7 +109,7 @@ const Register = () => {
         country,
     };
     try {
-      console.log("payload",payload)
+      
       
       await dispatch(registerUser(payload)); // Dispatch the login action
       // If successful, navigate to the home page

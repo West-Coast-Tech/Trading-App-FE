@@ -16,7 +16,7 @@ const ResetPassword = (_props: any) => {
   const [resetSuccess, setResetSuccess] = useState(false);
 
   useEffect(() => {
-    console.log(resetToken)
+    
     if (!resetToken) {
       navigate('/login');
     }
