@@ -1,0 +1,120 @@
+
+  
+  /* Container Styles */
+  #incremental-chart {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .chart-container {
+    display: flex;
+  }
+  .chart-area{
+    width: 100%;
+  }
+  #chartdiv {
+    width: 100%;
+    height: 48rem;
+    background-color: black;
+  }
+  
+  #drawing-tools {
+    position: absolute;
+    left:-10px;
+    background-color: #04030e;
+    border: 0.1rem solid white;
+    border-radius: 0.4rem;
+  }
+  
+  /* Button Styles */
+  #drawing-tools button {
+    background: transparent;
+    border-radius: 10px;
+    margin: 0;
+    height: 2rem;
+    width: 2rem;
+    transition: background-color 0.3s;
+  }
+  
+  #drawing-tools button:hover {
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #drawing-tools li{
+    border-radius: 8px;
+  }
+
+  #drawing-tools i {
+    color: #d1d4dc;
+    font-size: 1.3rem;
+  }
+  
+  #fullscreen-toggle {
+    position: relative;
+   
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 20px;
+      color: white;
+  }
+  
+  /* Chart Controls Styles */
+  #chartcontrols {
+    padding: 5px 5px 0 15px;
+    background-color: #010005;
+    
+  }
+  
+  #chartcontrols .am5stock-control-button {
+    border: 0;
+    color: #848e9c;
+  }
+  
+  #chartcontrols .am5stock-control-button:hover,
+  #chartcontrols .am5stock-link:hover {
+    cursor: pointer;
+    background-color: #010005;
+  }
+  
+  #chartcontrols .am5stock-active {
+    background-color: #010005;
+    color: #eaecef;
+  }
+  
+  #chartcontrols .am5stock-control-list {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #222;
+  }
+  
+  #chartcontrols .am5stock-list-search {
+    padding-left: 10px;
+    border-radius: 20px;
+  }
+  
+  #chartcontrols .am5stock-list-search input {
+    border-radius: 20px;
+  }
+/*   
+  #chartdiv .am5-modal-content {
+    box-shadow: 0 0 3px 0;
+  } */
+  
+  #chartdiv .am5stock-list-heading li div label,
+  #chartdiv .am5stock-list-info label {
+    color: #eaecef;
+  }
+  
+  /* Fullscreen Styles */
+  :fullscreen::backdrop {
+    background: white;
+  }
+  
+  /* Drawing Control Settings Panel */
+  #drawControlSettings {
+    display: none;
+    background-color: transparent;
+    /* margin-top: 10px; */
+  }
+  
