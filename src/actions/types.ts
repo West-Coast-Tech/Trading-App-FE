@@ -17,7 +17,8 @@ export const GET_USERS_FAIL = "GET_USERS_FAIL";
 import { AuthState } from "../features/auth/authSlice";
 import { ErrorState } from "../features/errorSlice";
 import { UserState } from "../features/users/usersSlice";
-
+import { SymbolState } from "../features/symbol/symbolSlice";
+import { TradingDataState } from "../features/tradingData/tradingDataSlice";
 // User data interface
 export interface UserData {
   id: string;
@@ -56,11 +57,31 @@ export interface RegisterData {
   country: string;
 }
 
+export interface SymbolData{
+  _id: string;
+  name: string;
+  type: string;
+  description: string;
+  createdAt:string
+}
+export interface TradingData{
+  timeStamps: string;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
+}
+
+
+
 // Define the overall shape of your Redux store state
 export interface AppState {
   auth: AuthState;
   errors: ErrorState;
   users: UserState;
+  symbols: SymbolState;
+  tradingData: TradingDataState
   // Add other slices of state as needed
 }
 

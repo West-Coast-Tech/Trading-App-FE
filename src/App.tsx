@@ -6,11 +6,13 @@ import ForgotPassword from './components/LoginComponent/ForgotPassword';
 import { Route, createRoutesFromElements, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import ResetPassword from './components/LoginComponent/ResetPassword';
+import HighCharts from './components/TradeviewChart/HighChart';
+import LightweightChart from "./components/TradeviewChart/LightweightChart copy";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route index element={<Login />} />
+      <Route index element={<HomePage />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="forgot-password" element={<ForgotPassword />} />

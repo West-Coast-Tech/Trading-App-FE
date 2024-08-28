@@ -1,6 +1,6 @@
 // src/utils/API.ts
 import {  AxiosResponse } from "axios";
-import { RegisterData, LoginData, UserData,OtpData,ResetData } from "../actions/types";
+import { RegisterData, LoginData, UserData,OtpData,ResetData, SymbolData, TradingData } from "../actions/types";
 import apiClient from "../utils/apiClient";
 
 // Define the API service with TypeScript
@@ -51,6 +51,13 @@ export default {
                 Authorization: `Bearer ${data.resetToken}`
             }
         });
+    },
+    getSymbols(token:string): Promise<AxiosResponse<SymbolData[]>>{
+        return apiClient.get("/symbols",{ headers: { Authorization: `Bearer ${token}` } })
+    },
+    getTradingDataforSymbol(symbol:string): Promise<AxiosResponse<TradingData[]>>{
+        return apiClient.post("/tradingData/", {symbol})
+        
     },
     // API request to load user data
     loadUser(): Promise<AxiosResponse<UserData>> {

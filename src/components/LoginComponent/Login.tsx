@@ -19,7 +19,7 @@ const Login = (_props: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resendPayload, setResendPayload] = useState<{ email: string, password: string }>({ email: "", password: "" });
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (otpToken) {
       return;
