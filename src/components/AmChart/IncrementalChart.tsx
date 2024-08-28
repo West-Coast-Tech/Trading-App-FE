@@ -1032,8 +1032,8 @@ const loadCSS = (href) => {
             >
                 <i className={`fas ${isDarkMode ? 'fa-expand-arrows-alt' : 'fa-expand-arrows'}`}></i>
             </button>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="relative mr-10 mt-4 border-none h-[1.2rem] text-white bg-transparent">
-              <i className={`fas ${isDarkMode ? 'fa-expand-moon' : 'fa-expand-sun'}`}></i>
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="relative mr-10 cursor-pointer mt-4 border-none h-[1.2rem] text-white bg-transparent">
+              <i className={`fas ${isDarkMode ? 'fa-moon' : 'fa-sun'}`}></i>
             </button>
         </div>
 
