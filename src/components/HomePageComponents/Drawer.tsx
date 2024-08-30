@@ -18,21 +18,21 @@ export default function Drawer({ children }: DrawerProps) {
     console.log(children)
     return (
         <>
-            <aside className="dark:bg-[#010005] min-h-screen z-30">
+            <aside className={`bg-primary min-h-screen z-30 `}>
                 <nav className="h-full flex flex-col border-r shadow-sm">
-                    <div className="p-4 pl-7 pb-2 flex justify-between items-center ">
+                    <div className="pr-4 pl-7 pt-3 flex justify-between items-center ">
                         {/* Improved accessibility */}
                         <button 
                             onClick={() => setExpanded((curr) => !curr)} 
                             aria-expanded={expanded} 
-                            className="p-1.5 rounded-lg bg-gray-100 hover:bg-blue-600 focus:outline-none"
+                            className="p-1.5 rounded-lg bg-gray-100 hover:focus:outline-none cursor-pointer"
                         >
                             {expanded ? <X stroke="#ffffff"/> : <Menu stroke="#ffffff" />}
                         </button>
                     </div>
                     
                     <DrawerContext.Provider value={{ expanded }}>
-                        <ul className="flex-1 items-center px-1 ">{children}</ul>
+                        <ul className="flex-1 items-center px-1 pr-5 mt-2">{children}</ul>
                     </DrawerContext.Provider>
                         {!expanded && (
                             <img src={profile} className="h-10 rounded-md duration-700" alt="Profile" />
@@ -78,9 +78,9 @@ export function DrawerItems({ icon, text, active, alert, onClick }: DrawerItemsP
 
     return (
         <li onClick={onClick} className="relative flex items-center py-1 my-1 font-medium w-full pl-2 justify-center">
-        <div className={`flex flex-col items-center justify-center w-8 h-[3.2rem] px-4 py-1 rounded-md cursor-pointer ${active ? "bg-gradient-to-tr from-blue-400 to-blue-800" : "hover:bg-blue-700 text-gray-600"}`}>
+        <div className={`flex flex-col items-center justify-center w-8 h-[3.2rem] px-4 py-1 rounded-md cursor-pointer ${active ? "bg-gradient-to-tr from-blue-400 to-blue-800" : "hover:bg-blue-700"}`}>
             {icon}
-            <div className="text-white text-[0.6rem] font-bold mt-1 text-center">
+            <div className=" text-[0.6rem] font-bold mt-1 text-center">
                 {text}
             </div>
         </div>

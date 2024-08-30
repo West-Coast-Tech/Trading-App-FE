@@ -1,9 +1,4 @@
-/* Container Styles */
-#incremental-chart {
-    height: 100%;
-    width: 100%;
-  }
-  
+
   .chart-container {
     display: flex;
   }
@@ -12,7 +7,7 @@
   }
   #chartdiv {
     width: 100%;
-    height: 48rem;
+    height: 82vh;
     background-color: white; /* Changed background to white */
   }
   
@@ -58,10 +53,7 @@
   }
   
   /* Chart Controls Styles */
-  #chartcontrols {
-    padding: 5px 5px 0 15px;
-    background-color: #f0f0f0; /* Lighter background for light theme */
-  }
+
   
   #chartcontrols .am5stock-control-button {
     border: 0;
@@ -71,7 +63,7 @@
   #chartcontrols .am5stock-control-button:hover,
   #chartcontrols .am5stock-link:hover {
     cursor: pointer;
-    background-color: #e0e0e0; /* Lighter hover background color */
+    background-color: transparent; /* Lighter hover background color */
   }
   
   #chartcontrols .am5stock-active {
@@ -114,3 +106,26 @@
     /* margin-top: 10px; */
   }
   
+
+  /*Change styling of input line color*/
+  #style1{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 2.25rem;
+    height: 1.55rem;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    
+}
+
+#style1::-webkit-color-swatch {
+    border-radius: 0.38rem;
+    border: none;
+}
+
+#style1::-moz-color-swatch {
+    border-radius: 0.938rem;
+    border: none;
+}

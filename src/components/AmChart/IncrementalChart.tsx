@@ -7,7 +7,22 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import ContextMenu from './ContextMenu';  // Import your ContextMenu component
 import am5themes_Dark from '@amcharts/amcharts5/themes/Dark'
 import { TimeUnit } from '@amcharts/amcharts5/.internal/core/util/Time';
-const IncrementalChart: React.FC = () => {
+import { createIndicatorIcon, createTimeIcon } from './Icons';
+
+
+interface IncrementalChartProps {
+  changeTheme: (theme: string) => void;
+}
+
+//Setting config for Dark Theme
+const LabelColor = am5.color("rgb(0,255,255)") //white
+const GridColor  = am5.color("rgb(0,255,255)") //white
+const PositiveColor = am5.color("rgb(0,0,255)")  //Positive Candle
+const NegativeColor = am5.color("rgb(255,0,255)") //Negative Candle
+const BackGroundColor = am5.color("rgb(80,80,80)")
+
+
+const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   const chartRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<am5.Root | null>(null); // Use ref to persist root
   const [activeTool, setActiveTool] = useState<am5stock.DrawingControl | null>(null);
@@ -23,9 +38,37 @@ const IncrementalChart: React.FC = () => {
 
 
   let currentUnit = 'day';
+  const drawingTools = [
+    { type: "Average", icon: "fa fa-chart-line" },
+    { type: "Callout", icon: "fa fa-comment" },
+    { type: "Doodle", icon: "fa fa-pen" },
+    { type: "Ellipse", icon: "fa-regular fa-circle" },
+    { type: "Fibonacci", icon: "fa fa-chart-bar" },
+    { type: "Fibonacci Timezone", icon: "fa fa-clock" },
+    { type: "Horizontal Line", icon: "fa fa-minus" },
+    { type: "Horizontal Ray", icon: "fa fa-arrow-right" },
+    { type: "Label", icon: "fa fa-tag" },
+    { type: "Line", icon: "fa fa-line" },
+    { type: "Measure", icon: "fa fa-ruler" },
+    { type: "Parallel Channel", icon: "fa fa-arrows-alt-h" },
+    { type: "Polyline", icon: "fa fa-draw-polygon" },
+    { type: "Quadrant Line", icon: "fa fa-chart-pie" },
+    { type: "Rectangle", icon: "fa fa-square" },
+    { type: "Regression", icon: "fa fa-chart-line" },
+    { type: "Trend Line", icon: "fa fa-chart-line" },
+    { type: "Vertical Line", icon: "fa-solid fa-grip-lines-vertical" },
+    { type: "Eraser", icon: "fa-solid fa-eraser" },
+    { type: "Select", icon: "fa-solid fa-mouse-pointer" },
 
+  ];
+  
 
   useEffect(() => {
+    if (isDarkMode) {
+      changeTheme('black'); // Notify parent component about the theme change
+    } else {
+      changeTheme('white');
+    }
     const theme = isDarkMode ? 'dark' : 'chart';
     
     // Remove the previous CSS if it exists
@@ -63,10 +106,33 @@ const IncrementalChart: React.FC = () => {
    },[drawingSelection])
   useLayoutEffect(() => {
     const root = am5.Root.new(chartRef.current!);
-  
+    
     rootRef.current = root
     const dark = am5themes_Dark.new(root)
     console.log("dark",dark)
+    // dark.rule("Label").setAll({
+    //   fill: LabelColor,
+    //   // fontSize:"1.5em"
+    // })
+    // dark.rule("InterfaceColors").setAll({
+    //   grid: GridColor,
+    //   positive: PositiveColor,
+    //   negative: NegativeColor,
+    //   alternativeBackground: BackGroundColor,
+    //   primaryButton: PositiveColor,
+    //   disabled: PositiveColor
+    // })
+    const myTheme = am5.Theme.new(root)
+    myTheme.rule("Label").setAll({
+      fill: LabelColor,
+      // fontSize:"1.5em"
+    })
+    myTheme.rule("InterfaceColors").setAll({
+      grid: GridColor,
+      positive: PositiveColor,
+      negative:NegativeColor,
+      background: PositiveColor
+    })
     if (isDarkMode) {
       
       root.setThemes([dark,am5themes_Animated.new(root)]); // Set dark theme
@@ -86,11 +152,10 @@ const IncrementalChart: React.FC = () => {
     const chart = stockChart.panels.push(
         am5stock.StockPanel.new(root, {
             wheelY: 'zoomX',
-            height: am5.percent(70),
             panX: true,
             panY: true,
     }));
-
+    
     // chart.get('colors')?.set('step', 2);
 
     const valueAxis = chart.yAxes.push(
@@ -200,10 +265,14 @@ const IncrementalChart: React.FC = () => {
 
     const volumePanel = stockChart.panels.push(
         am5stock.StockPanel.new(root, {
-      
           forceHidden:true
         })
       );
+      // volumePanel.hide()
+      // volumePanel.setAll({
+      //   visible:false
+      // })
+      // console.log("vol.hide", volumePanel.isVisible())
     const volumeSeries = volumePanel.series.push(am5xy.ColumnSeries.new(root, {
       name: 'Volume',
       clustered: false,
@@ -231,7 +300,7 @@ const IncrementalChart: React.FC = () => {
     
     volumeLegend.data.setAll([volumeSeries]);
 
-    chart.leftAxesContainer.set('layout', root.verticalLayout);
+    chart.rightAxesContainer.set('layout', root.verticalLayout);
 
     chart.set('cursor', am5xy.XYCursor.new(root, 
         {
@@ -280,8 +349,8 @@ const IncrementalChart: React.FC = () => {
         switch (seriesType) {
           case 'line':
             series = chart.series.push(am5xy.LineSeries.new(root, newSettings));
-            series.set('stroke',am5.color(0x095256))
-            series.set('fill',am5.color(0x095256))
+            series.set('stroke',LabelColor)
+            series.set('fill',PositiveColor)
             series.strokes.template.setAll({
                 strokeWidth: 3
               });
@@ -312,9 +381,9 @@ const IncrementalChart: React.FC = () => {
 
           // Reattach cursor to the new series
           const cursor = chart.get('cursor') as am5xy.XYCursor;
-          if (cursor) {
-            cursor.set('snapToSeries', [series]);
-          }
+          // if (cursor) {
+          //   cursor.set('snapToSeries', [series]);
+          // }
       
           // Update the legend with the new series
           valueLegend.data.removeValue(currentSeries);
@@ -547,6 +616,7 @@ const IncrementalChart: React.FC = () => {
     
     const intervalSwitcher = am5stock.IntervalControl.new(root, {
         stockChart: stockChart,
+        // icon: createTimeIcon(),
         items: [
           { id: '1 day', label: '1 day', interval: { timeUnit: 'day', count: 1 } },
           { id: '2 days', label: '2 days', interval: { timeUnit: 'day', count: 2 } },
@@ -598,7 +668,7 @@ const IncrementalChart: React.FC = () => {
     //     drawingControl.set('active',true)
     //   });
     //    Function to activate drawing mode
-       
+    
 // Add the toolbar
 const toolbar = am5stock.StockToolbar.new(root, {
     container: document.getElementById('chartcontrols')!,
@@ -607,7 +677,8 @@ const toolbar = am5stock.StockToolbar.new(root, {
       am5stock.IndicatorControl.new(root, {
         stockChart: stockChart,
         legend: valueLegend,
-        name:''
+        name:'',
+        // icon: createIndicatorIcon()
       }),
      intervalSwitcher,
       periodSelector,
@@ -655,13 +726,7 @@ const toolbar = am5stock.StockToolbar.new(root, {
         console.log('pointer out')
         
     })
-    ev.series.events.on("pointerdown",(ev)=>{
-        console.log('click on:',ev.target)
-        setMenuVisible(true);
-        setMenuPosition({ x: 400, y: 100});
-        setSelectedDrawing(ev.target);
-        
-    })
+   
     ev.series.events.on('rightclick', (ev) => {
         // ev.event.preventDefault();  // Prevent the default browser context menu
         console.log('rightclickon:', ev);
@@ -690,16 +755,7 @@ const toolbar = am5stock.StockToolbar.new(root, {
 
   });
   
-  stockChart.events.on('drawingselected',(ev)=>{
-    
-   
-    console.log("drawing selected",ev)
-    setMenuVisible(true);
-    setMenuPosition({ x: 400, y: 100});
-    setSelectedDrawing(ev.target);
-
-  })
- 
+  
   
   
   // Add drawingselected event listener
@@ -716,7 +772,14 @@ const toolbar = am5stock.StockToolbar.new(root, {
 //     // Activate controls for the selected drawing
 //     activateDrawingTool(drawingType);
 //   });
+const handleClickOutside = (event: MouseEvent) => {
+  const drawingToolsElement = document.getElementById('drawing-tools');
+  if (drawingToolsElement && !drawingToolsElement.contains(event.target as Node)) {
+    setDropdownOpen(false);
+  }
+};
 
+document.addEventListener('mousedown', handleClickOutside);
 
 
 
@@ -754,141 +817,74 @@ root.addDisposer(
  
     
   console.log(drawingSelection)
-    const activateDrawingTool = (toolType: string) => {
-        const root = rootRef.current;
-        const stockChart = root?.container.children.getIndex(0);
-        // Show the draw control settings panel when a tool is activated
-
-    
-        const drawControlSettings = document.getElementById('drawControlSettings');
-        if (!root || root.isDisposed() || !stockChart) {
-        console.error('Root or stockChart is not available or disposed.');
-        return;
-        }
-        let drawingTool = am5stock.DrawingControl.new(root,{
-            stockChart:stockChart
-        })
-        
-        // Deactivate the previously active tool if it exists
-        if (activeTool) {
-        activeTool.set('active', false);
-        setActiveTool(null);
-        }   
-        
-        // Reset and activate the selected drawing tool
-        switch (toolType) {
-            case 'line':
-                drawingTool.setAll({
-                    tool:'Line',
-                    active:true
-                })
-                stockChart.set('drawingSelectionEnabled', true);
-        setDrawingSelection(true);
-                
-                break;
-            case 'fibonacci':
-                drawingTool.setAll( {
-                tool: 'Fibonacci',
-                active: true,
-                
-                });
-                break;
-            case 'ellipse':
-                drawingTool.setAll( {
-                tool: 'Ellipse',
-                active: true,
-                });
-                stockChart.set('drawingSelectionEnabled', true);
-        setDrawingSelection(true);
-
-                break;
-            case 'arrow':
-                drawingTool.setAll({
-                tool: 'Arrows &amp; Icons',
-                active: true,
-                });
-                break;
-            case 'trend':
-                drawingTool.setAll({
-                tool: 'Trend Line',
-                active: true,
-                });
-                break;
-            case 'horizontal':
-                drawingTool.setAll({
-                tool: 'Horizontal Line',
-                active: true,
-                });
-                break;
-            case 'vertical':
-                drawingTool.setAll({
-                tool: 'Vertical Line',
-                active: true,
-                
-                });
-                break;
-            case 'eraser':
-                drawingTool = am5stock.DrawingControl.new(root, {
-                stockChart: stockChart,
-                });
-                drawingTool.setEraser(false);
-                drawingTool.setEraser(true);
-                drawControlSettings.style.display = 'none';
-                setIsDarkMode(false)
-
-                break;
-            case 'select':
-                drawingTool.set('active',false)
-                // drawingTool.set('active',true)
-                stockChart.set('drawingSelectionEnabled',false);
-
-                stockChart.set('drawingSelectionEnabled',true);
-                stockChart.set('active',true)
-                console.log(stockChart)
-               
-                drawControlSettings.style.display = 'none';
-                setIsDarkMode(true)
-                break;
-            case 'enable':
-                
-                break;
-            default:
-                return;
-        }
-        
-
-        // Set the newly activated tool as the active tool
-        // console.log(drawingTool)
-        if (toolType!= 'eraser') setActiveTool(drawingTool);
-        //display settings for drawings
-        if (drawControlSettings && toolType!='eraser' && toolType!='select' ) {
-        drawControlSettings.style.display = 'block';
-            
-        // Attach event listeners to update drawing tool properties
-        const lineWidthInput = document.getElementById('lineWidth') as HTMLInputElement;
-        const lineColorInput = document.getElementById('lineColor') as HTMLInputElement;
-    
-        if (lineWidthInput) {
-            lineWidthInput.value = '2'; // Default line width
-            lineWidthInput.addEventListener('input', () => {
-            if (drawingTool) {
-                drawingTool.setAll({ strokeWidth: parseInt(lineWidthInput.value, 10) });
-            }
-            });
-        }
-    
-        if (lineColorInput) {
-            lineColorInput.value = '#000000'; // Default line color
-            lineColorInput.addEventListener('input', () => {
-            if (drawingTool) {
-                drawingTool.setAll({ strokeColor: am5.color(lineColorInput.value) });
-            }
-            });
-        }
+  const activateDrawingTool = (toolType: string) => {
+    const root = rootRef.current;
+    const stockChart = root?.container.children.getIndex(0);
+  
+    const drawControlSettings = document.getElementById('drawControlSettings');
+    if (!drawControlSettings) return;
+    if (!root || root.isDisposed() || !stockChart) {
+      console.error('Root or stockChart is not available or disposed.');
+      return;
     }
-   
-    
+  
+    let drawingTool = am5stock.DrawingControl.new(root, {
+      stockChart: stockChart,
+    });
+  
+    // Deactivate the previously active tool if it exists
+    if (activeTool) {
+      activeTool.set('active', false);
+      setActiveTool(null);
+    }
+  
+    stockChart.set('drawingSelectionEnabled', true);
+    setDrawingSelection(true);
+  
+    // Reset and activate the selected drawing tool
+    drawingTool.setAll({
+      tool: toolType,
+      active: true,
+    });
+  
+    // Handle eraser and selection cases separately
+    if (toolType === "Eraser") {
+      drawingTool.set('active',false)
+      drawingTool.setEraser(true);
+      stockChart.set('drawingSelectionEnabled', false);
+      setDrawingSelection(false);
+      drawControlSettings.style.display = 'none';
+    } else if (toolType === "Select") {
+      stockChart.set('drawingSelectionEnabled', false);
+      stockChart.set('drawingSelectionEnabled', true);
+      drawControlSettings.style.display = 'none';
+    } else {
+      setActiveTool(drawingTool);
+      drawControlSettings.style.display = 'block';
+  
+      const lineWidthInput = document.getElementById('lineWidth') as HTMLInputElement;
+      const lineColorInput = document.getElementById('lineColor') as HTMLInputElement;
+  
+      if (lineWidthInput) {
+        lineWidthInput.value = '2';
+        lineWidthInput.addEventListener('input', () => {
+          if (drawingTool) {
+            drawingTool.setAll({ strokeWidth: parseInt(lineWidthInput.value, 10) });
+          }
+        });
+      }
+  
+      if (lineColorInput) {
+        lineColorInput.value = '#000000';
+        lineColorInput.addEventListener('input', () => {
+          if (drawingTool) {
+            drawingTool.setAll({ strokeColor: am5.color(lineColorInput.value) });
+          }
+        });
+      }
+    }
   };
+  
   
   const handleSelect = () => {
     console.log('Select clicked');
@@ -920,30 +916,6 @@ root.addDisposer(
     setDropdownOpen(!isDropdownOpen);
 };
 
-const loadCSS = (href) => {
-  // Check if the CSS is already loaded
-  const existingLink = document.querySelector(`link[href="${href}"]`);
-  if (existingLink) return;
-
-  // Remove any existing theme stylesheet
-  const existingThemeLink = document.querySelector('link[rel="stylesheet"].theme');
-  if (existingThemeLink) {
-    document.head.removeChild(existingThemeLink);
-  }
-
-  // Create a new link element
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.className = "theme"; // Add a class to identify theme stylesheets
-  link.href = href;
-
-  // Error handling
-  link.onload = () => console.log(`${href} has been loaded successfully.`);
-  link.onerror = () => console.error(`Error loading ${href}`);
-
-  // Append the link to the head
-  document.head.appendChild(link);
-};
 
   return (
     <div id="incremental-chart">
@@ -958,7 +930,7 @@ const loadCSS = (href) => {
   
     <div className="flex relative">
       <div className="flex-grow">
-      <div className="flex w-full items-center justify-start"> 
+      <div className="flex w-full items-center justify-start pl-5"> 
             {/* Chart Controls */}
             <div id="chartcontrols"></div>
             
@@ -966,92 +938,56 @@ const loadCSS = (href) => {
             <div id="drawing-tools-toggle" className="relative">
                 <button
                     onClick={toggleDrawingTools}
-                    className="p-2 pt-3 bg-inherit text-[#848e9c] rounded hover:bg-gray-800 cursor-pointer transition duration-300"
+                    className="p-2 pt-3 bg-inherit text-[#848e9c] rounded cursor-pointer transition duration-300"
                 >
                     <i className="fa fa-pencil text-[1rem]"></i>
                 </button>
 
                 {/* Drawing Tools Dropdown */}
                 {isDropdownOpen && (
-                    <div id="drawing-tools" className="absolute left-0  bg-gray-900  shadow-lg z-10">
-                        <ul className="flex flex-col  list-none pl-0 my-0 ">
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('line')}>
-                                    <i className="fa fa-line"></i> 
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('fibonacci')}>
-                                    <i className="fa fa-line"></i>
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('ellipse')}>
-                                    <i className="fa-regular fa-circle"></i>
-                                </button>
-                            </li>
-                            {/* <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('arrow')}>
-                                    <i className="fa fa-arrow-right"></i> <p className='text-white'>Line</p>
-                                </button>
-                            </li> */}
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('trend')}>
-                                    <i className="fa fa-chart-line"></i>
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('horizontal')}>
-                                    <i className="fa fa-minus"></i>
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('vertical')}>
-                                    <i className="fa-solid fa-grip-lines-vertical"></i>
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('eraser')}>
-                                    <i className="fa fa-eraser"></i>
-                                </button>
-                            </li>
-                            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-                                <button onClick={() => activateDrawingTool('select')}>
-                                    <i className="fa fa-mouse-pointer"></i> 
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    <div id="drawing-tools" className="absolute left-0 bg-gray-900 shadow-lg z-10">
+                    <ul className="flex flex-col list-none pl-0 my-0">
+                      {drawingTools.map((tool) => (
+                        <li key={tool.type} className="p-2 hover:bg-gray-700 cursor-pointer">
+                          <button onClick={() => activateDrawingTool(tool.type)}>
+                            <i className={tool.icon}></i>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
                 )}
             </div>
-            
+                <div id="drawControlSettings" className="hidden">
+                  <label>
+                    Line Width:
+                    <input type="range" id="lineWidth" min="1" max="10"
+                      
+                    />
+                  </label>
+                  <label>
+                    Line Color:
+                    <input type="color" value="#43da86" id="lineColor"/>                  
+                  </label>
+                </div>
             {/* Fullscreen Button */}
             <button
                 id="fullscreen-toggle"
-                className="ml-auto relative right-0 top-0 mr-3 mt-4 border-none bg-transparent cursor-pointer"
+                className="ml-auto relative right-0 top-0 mr-3 mt-4 border-none bg-transparent cursor-pointer text-tBase"
             >
-                <i className={`fas ${isDarkMode ? 'fa-expand-arrows-alt' : 'fa-expand-arrows'}`}></i>
+                <i className="fas fa-expand-arrows-alt"></i>
             </button>
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="relative mr-10 cursor-pointer mt-4 border-none h-[1.2rem] text-white bg-transparent">
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="relative mr-10 cursor-pointer mt-4 border-none h-[1.2rem] text-tBase bg-transparent">
               <i className={`fas ${isDarkMode ? 'fa-moon' : 'fa-sun'}`}></i>
             </button>
         </div>
 
 
         
-        <div id="drawControlSettings" className="hidden mt-2">
-          <label>
-            Line Width:
-            <input type="range" id="lineWidth" min="1" max="10" />
-          </label>
-          <br />
-          <label>
-            Line Color:
-            <input type="color" id="lineColor" />
-          </label>
-        </div>
+       
   
-        <div id="chartdiv" ref={chartRef} className="mt-4"></div>
+        <div id="chartdiv" ref={chartRef} className="bg-primary"></div>
       </div>
   
       {/* Fullscreen button outside of chart controls */}

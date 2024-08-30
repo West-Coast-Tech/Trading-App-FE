@@ -4,6 +4,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary:"var(--color-primary)",
+        secondary:"var(--color-secondary)",
+        bgPrimary:"var(--color-bg-primary)",
+        tBase:"var(--color-text-base)",
         gray: {
           "100": "#1c1f2d",
           "200": "#030000",
@@ -33,21 +37,11 @@ module.exports = {
         "81xl": "100px",
       },
     },
-    fontSize: {
-      sm: "14px",
-      xs: "12px",
-      xl: "20px",
-      base: "16px",
-      "2xs": "11px",
-      inherit: "inherit",
-    },
+    
     fontFamily: {
       roboto: ['Roboto', 'sans-serif'],
       proxima: ['Proxima Nova', 'sans-serif'],
     },
-    
-   
-  
   },
   corePlugins: {
     preflight: false,

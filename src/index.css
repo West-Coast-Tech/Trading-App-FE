@@ -10,6 +10,30 @@ body {
   border-width: 0;
 }
 @layer base {
+  :root {
+    --color-primary: rgb(20, 30, 40);
+    --color-secondary: rgb(53, 58, 77);
+    --color-text-base: rgb(255, 255, 255);
+    --color-bg-primary: rgb(1, 0, 5);
+  }
+
+  .theme-black{
+    --color-primary: rgb(28, 10, 45);
+    --color-secondary: rgb(128, 128, 128);
+    --color-text-base: rgb(255, 255, 255);
+    --color-bg-primary: rgb(0, 0, 0);
+  }
+  .theme-white{
+    --color-primary: hsl(0, 0%, 100%);
+    --color-secondary: hsl(247, 75%, 61%);
+    --color-text-base: rgb(1, 0, 5);
+    --color-bg-primary: rgb(255, 255, 255);
+  }
+  .theme-twilight{
+    --color-primary: rgb(128, 128, 128);
+    --color-secondary: hsl(0, 3%, 79%);
+
+  }
   @font-face {
     font-family: Roboto;
     font-weight: 400;

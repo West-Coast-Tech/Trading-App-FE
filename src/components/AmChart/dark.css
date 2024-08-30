@@ -1,10 +1,6 @@
 
   
-  /* Container Styles */
-  #incremental-chart {
-    height: 100%;
-    width: 100%;
-  }
+ 
   
   .chart-container {
     display: flex;
@@ -14,8 +10,8 @@
   }
   #chartdiv {
     width: 100%;
-    height: 48rem;
-    background-color: black;
+    height: 82vh;
+    /* background-color: black; */
   }
   
   #drawing-tools {
@@ -24,8 +20,26 @@
     background-color: #04030e;
     border: 0.1rem solid white;
     border-radius: 0.4rem;
+    overflow-y: auto;
+    max-height: 20rem;
   }
-  
+  #drawing-tools::-webkit-scrollbar {
+    width: 6px; /* Make the scrollbar thinner */
+  }
+
+  #drawing-tools::-webkit-scrollbar-thumb {
+    background-color: #888; /* Scrollbar color */
+    border-radius: 10px; /* Rounded corners */
+  }
+
+  #drawing-tools::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker on hover */
+  }
+
+  #drawing-tools::-webkit-scrollbar-track {
+    background-color: #2d2d2d; /* Match background */
+    border-radius: 10px;
+  }
   /* Button Styles */
   #drawing-tools button {
     background: transparent;
@@ -61,25 +75,23 @@
   }
   
   /* Chart Controls Styles */
-  #chartcontrols {
-    padding: 5px 5px 0 15px;
-    background-color: #010005;
-    
-  }
+  
   
   #chartcontrols .am5stock-control-button {
     border: 0;
     color: #848e9c;
   }
-  
+  #chartcontrols .am5stock-control-list .am5stock-list-heading label {
+    color: white
+  }
   #chartcontrols .am5stock-control-button:hover,
   #chartcontrols .am5stock-link:hover {
     cursor: pointer;
-    background-color: #010005;
+    background-color: transparent;
   }
   
   #chartcontrols .am5stock-active {
-    background-color: #010005;
+    background-color: transparent;
     color: #eaecef;
   }
   
@@ -118,3 +130,25 @@
     /* margin-top: 10px; */
   }
   
+
+  #lineColor{
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 2.25rem;
+      height: 1.55rem;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      
+  }
+
+  #lineColor::-webkit-color-swatch {
+      border-radius: 0.38rem;
+      border: none;
+  }
+
+  #lineColor::-moz-color-swatch {
+      border-radius: 0.938rem;
+      border: none;
+  }
