@@ -8,7 +8,7 @@ import ContextMenu from './ContextMenu';  // Import your ContextMenu component
 import am5themes_Dark from '@amcharts/amcharts5/themes/Dark'
 import { TimeUnit } from '@amcharts/amcharts5/.internal/core/util/Time';
 import { createIndicatorIcon, createTimeIcon } from './Icons';
-
+import SymbolBar from '../SymbolBar/SymbolBar';
 
 interface IncrementalChartProps {
   changeTheme: (theme: string) => void;
@@ -164,8 +164,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
             pan: 'zoom',
           }),
           tooltip: am5.Tooltip.new(root, {}),
-          numberFormat: '#,###.#####',
-          extraTooltipPrecision: 4,
+          numberFormat: '#,###.####',
+          extraTooltipPrecision: 1,
         })
       );
 
@@ -184,15 +184,17 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     const volumeAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
       renderer: am5xy.AxisRendererY.new(root, {
       }),
-      height: am5.percent(30),
       numberFormat: '#a',
-      forceHidden:true
+      forceHidden:true,
+      visible:false
+
     }));
 
     volumeAxis.get('renderer')?.labels.template.setAll({
-      centerY: am5.percent(100),
       maxPosition: 0.98,
-      forceHidden:true
+      forceHidden:true,
+      visible:false
+
     });
     
     const dateAxis = chart.xAxes.push(
@@ -265,7 +267,9 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
 
     const volumePanel = stockChart.panels.push(
         am5stock.StockPanel.new(root, {
-          forceHidden:true
+          forceHidden:true,
+          visible:false
+
         })
       );
       // volumePanel.hide()
@@ -282,6 +286,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       yAxis: volumeAxis,
       legendValueText: '{valueY}',
       forceHidden:true,
+      visible:false
       
     }));
     stockChart.set('volumeSeries', volumeSeries);
@@ -295,7 +300,9 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
 
     const volumeLegend = volumePanel.plotContainer.children.push(am5stock.StockLegend.new(root, {
         stockChart: stockChart,
-        forceHidden:true
+        forceHidden:true,
+        visible:false
+
     }))
     
     volumeLegend.data.setAll([volumeSeries]);
@@ -755,7 +762,16 @@ const toolbar = am5stock.StockToolbar.new(root, {
 
   });
   
-  
+  stockChart.events.on('drawingselected',(ev)=>{
+    
+   
+    console.log("drawing selected",ev)
+    setMenuVisible(true);
+    setMenuPosition({ x: 400, y: 100});
+    setSelectedDrawing(ev.target);
+
+  })
+ 
   
   
   // Add drawingselected event listener
@@ -930,8 +946,9 @@ root.addDisposer(
   
     <div className="flex relative">
       <div className="flex-grow">
-      <div className="flex w-full items-center justify-start pl-5"> 
+      <div className="flex w-full items-center justify-start pl-5 h-[3vh]"> 
             {/* Chart Controls */}
+            <SymbolBar/>
             <div id="chartcontrols"></div>
             
             {/* Drawing Tools Toggle Button */}
@@ -987,7 +1004,7 @@ root.addDisposer(
         
        
   
-        <div id="chartdiv" ref={chartRef} className="bg-primary"></div>
+        <div id="chartdiv" ref={chartRef} className="bg-background"></div>
       </div>
   
       {/* Fullscreen button outside of chart controls */}

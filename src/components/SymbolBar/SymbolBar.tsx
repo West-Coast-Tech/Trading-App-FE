@@ -26,20 +26,20 @@ const SymbolBar = () => {
   const filteredSymbols = symbols.filter(symbol => symbol.type.toLowerCase() === category);
 
   return (
-    <div className={`pl-5  overflow-hidden`}>
+    <div className={`overflow-hidden`}>
       <div className="flex items-center">
         <button
-          className="text-white hover:bg-blue-500 p-4 py-2 rounded-lg font-bold text-xl bg-blue-600"
+          className="text-white hover:cursor-pointer p-2 py-[0.02rem] rounded-lg font-bold text-lg bg-blue-600"
           onClick={toggleOpen}
           aria-expanded={isOpen}
           aria-controls="symbol-table"
         >
           {isOpen ? '×' : '+'}
         </button>
-        <span className="ml-4">{selectedOption}</span>
+        <span className="ml-2  text-sm bg-black p-1.5 rounded-md text-white">{selectedOption}</span>
       </div>
       <div
-        className={`absolute z-50 w-1/3 bg-primary rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
+        className={`absolute z-50 w-1/3 bg-background rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
           isOpen ? 'opacity-100 translate-y-2' : 'opacity-0 -translate-y-5 pointer-events-none'
         }`}
       >

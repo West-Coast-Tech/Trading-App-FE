@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         primary:"var(--color-primary)",
         secondary:"var(--color-secondary)",
-        bgPrimary:"var(--color-bg-primary)",
+        background:"var(--color-background)",
         tBase:"var(--color-text-base)",
         gray: {
           "100": "#1c1f2d",

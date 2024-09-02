@@ -18,7 +18,7 @@ export default function Drawer({ children }: DrawerProps) {
     console.log(children)
     return (
         <>
-            <aside className={`bg-primary min-h-screen z-30 `}>
+            <aside className={`bg-background min-h-screen z-30`}>
                 <nav className="h-full flex flex-col border-r shadow-sm">
                     <div className="pr-4 pl-7 pt-3 flex justify-between items-center ">
                         {/* Improved accessibility */}
@@ -52,7 +52,7 @@ export default function Drawer({ children }: DrawerProps) {
             </aside>
              {/* Page Overlay and Blur Effect */}
              <div 
-                className={`fixed top-0 left-0 w-full h-full transition-all duration-300 ${expanded ? 'backdrop-blur-sm bg-black bg-opacity-50' : 'pointer-events-none opacity-0'}`} 
+                className={`fixed top-0 left-0 w-full h-full transition-all duration-700 ${expanded ? 'backdrop-blur-sm bg-black bg-opacity-50' : 'pointer-events-none opacity-0'}`} 
                 onClick={() => setExpanded(false)}
             ></div>
         </>

@@ -1,5 +1,4 @@
 import { FunctionComponent } from "react";
-import { Button } from "@mui/material";
 import logo from "../../assets/logo.svg";
 import { useDispatch } from "react-redux";
 import { logoutSuccess } from "../../features/auth/authSlice";
@@ -20,7 +19,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
   return (
     <div
-      className={`w-full m-0 relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
+      className={`w-full h-[6vh] m-0 relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
     >
       <div className="flex flex-row items-center justify-start">
         <div className="w-[215px] flex flex-row">
@@ -31,7 +30,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             src={logo}
           />
           <div className="flex-1 flex flex-col items-start justify-start pt-[12.5px] px-0 pb-0">
-            <b className="relative leading-[23px]">WEST COAST</b>
+            <b className="relative leading-[23px]">BINARRY</b>
           </div>
         </div>
       </div>
