@@ -1,4 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef,useState } from 'react';
+import { useSelector } from 'react-redux';
+import { AppState } from '../../actions/types';
+import axios from 'axios'
 import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import * as am5stock from '@amcharts/amcharts5/stock'
@@ -9,6 +12,8 @@ import am5themes_Dark from '@amcharts/amcharts5/themes/Dark'
 import { TimeUnit } from '@amcharts/amcharts5/.internal/core/util/Time';
 import { createIndicatorIcon, createTimeIcon } from './Icons';
 import SymbolBar from '../SymbolBar/SymbolBar';
+
+const selectSymbols = (state: AppState) => state.symbols.selectedSymbol;
 
 interface IncrementalChartProps {
   changeTheme: (theme: string) => void;
@@ -35,9 +40,10 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     const [isDarkMode, setIsDarkMode] = useState(true);
     const currentLinkRef = useRef<HTMLLinkElement | null>(null);
 
+    const currentSymbol = useSelector(selectSymbols);
+    console.log("symbols",currentSymbol)
 
-
-  let currentUnit = 'day';
+  let currentUnit = 'second';
   const drawingTools = [
     { type: "Average", icon: "fa fa-chart-line" },
     { type: "Callout", icon: "fa fa-comment" },
@@ -147,7 +153,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     )
     // Set global number format
     root.numberFormatter.set('numberFormat', '#,###.######')
-    root._logo.dispose();
+    root._logo?.dispose();
      // Create a main stock panel (chart)
     const chart = stockChart.panels.push(
         am5stock.StockPanel.new(root, {
@@ -201,14 +207,15 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
         am5xy.GaplessDateAxis.new(root, {
         groupData:true,
         groupCount:1000,
-        baseInterval: { timeUnit: 'day', count: 1 },
+        baseInterval: { timeUnit: 'second', count: 5 },
         groupIntervals:[
-            { timeUnit:'day', count: 1},
-            { timeUnit:'day', count: 2},
-            { timeUnit: 'day', count: 3 },
-            { timeUnit: 'day', count: 7 },
-            { timeUnit: 'day', count: 14 },
-            { timeUnit: 'day', count: 30 },
+            { timeUnit: 'second', count: 5},
+            { timeUnit:'second', count: 10},
+            { timeUnit:'second', count: 15},
+            { timeUnit: 'second', count: 30 },
+            { timeUnit: 'second', count: 60 },
+            // { timeUnit: 'day', count: 14 },
+            // { timeUnit: 'day', count: 30 },
             // { timeUnit: 'week', count: 1},
             // { timeUnit: 'week', count: 2},
             // { timeUnit: 'week', count: 3},
@@ -426,117 +433,138 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       
    
 
-    const loadData = (unit: string, min: number, max: number, side: string) => {
-      min = am5.time.round(new Date(min), unit, 1).getTime();
-      console.log("min before minus",min)
-        min = min - am5.time.getDuration('day', 25);
-        console.log("min after minus",min)
+   
 
-      const url = `https://www.amcharts.com/tools/data/?unit=${unit}&start=${min}&end=${max}`;
+    const loadData = async (unit: string, min: number, max: number, side: string) => {
+      try {
+        console.log('load data')
 
-      am5.net.load(url).then((result: any) => {
-        const data = am5.CSVParser.parse(result.response, {
-          delimiter: ',',
-          reverse: false,
-          skipEmpty: true,
-          useColumnNames: true
-        });
-        console.log(data)
-        const processor = am5.DataProcessor.new(root, {
-          numericFields: ['date', 'open', 'high', 'low', 'close', 'volume']
-        });
-        console.log("data before processing",data)
-        processor.processMany(data);
-        console.log("data after processing",data)
+          // Round the `min` to the nearest interval and adjust it
+          min = am5.time.round(new Date(min), unit, 1).getTime();
+          console.log("min before minus", min);
+          min = min - am5.time.getDuration('day', 25);
+          console.log("min after minus", min);
 
-        const start = dateAxis.get('start') as number;
-        const end = dateAxis.get('end') as number;
+          unit = 'second';  // Changing unit to seconds as per requirement
+          max = (new Date()).getTime()
+          const url = `http://localhost:8080/tradingData`;
+          const params = {
+              symbol: currentSymbol?.name || "EUR/USD", 
+              unit: unit,
+              min: min,
+              max: max,
+          };
+          // Axios request with params
+          const response = await axios.get(url, { params });
+          console.log("response",response)
+          const data = response.data; // Axios automatically parses JSON
+          console.log("data", data);
 
-        if (side === 'none') {
-          if (data.length > 0) {
-            if (dateAxis.get('baseInterval')?.timeUnit !== unit) {
-              dateAxis.set('baseInterval', { timeUnit: unit, count: 1 });
-            }
-            dateAxis.set('min', min);
-            dateAxis.set('max', max);
-            dateAxis.setPrivate('min', min);
-            dateAxis.setPrivate('max', max);
-            console.log("valueSeries data before loading",valueSeries.data)
-            valueSeries.data.setAll(data);
-            console.log("valueSeries data after loading",valueSeries.data)
+          const processor = am5.DataProcessor.new(root, {
+              numericFields: ['date', 'open', 'high', 'low', 'close', 'volume']
+          });
 
-            volumeSeries.data.setAll(data);
+          console.log("data before processing", data);
+          processor.processMany(data); // Process the data
+          console.log("data after processing", data);
 
-            // dateAxis.zoom(0, 1, 0);
+          const start = dateAxis.get('start') as number;
+          const end = dateAxis.get('end') as number;
+
+          if (side === 'none') {
+              if (data.length > 0) {
+                  if (dateAxis.get('baseInterval')?.timeUnit !== unit) {
+                      dateAxis.set('baseInterval', { timeUnit: unit, count: 1 });
+                  }
+                  dateAxis.set('min', min);
+                  dateAxis.set('max', max);
+                  dateAxis.setPrivate('min', min);
+                  dateAxis.setPrivate('max', max);
+
+                  console.log("valueSeries data before loading", valueSeries.data);
+                  valueSeries.data.setAll(data);
+                  console.log("valueSeries data after loading", valueSeries.data);
+
+                  volumeSeries.data.setAll(data);
+              }
+          } else if (side === 'left') {
+              console.log('group interval', dateAxis.get('groupInterval'));
+
+              // Set group intervals
+              dateAxis.setAll({
+                groupIntervals:[
+                  { timeUnit:'second', count: 5},
+                  { timeUnit:'second', count: 10},
+                  { timeUnit:'second', count: 15},
+                  { timeUnit: 'second', count: 30 },
+                  { timeUnit: 'second', count: 60 },
+                  // { timeUnit: 'day', count: 14 },
+                  // { timeUnit: 'day', count: 30 },
+                  // { timeUnit: 'week', count: 1},
+                  // { timeUnit: 'week', count: 2},
+                  // { timeUnit: 'week', count: 3},
+                  // { timeUnit: 'month', count: 1}
+              ],
+              });
+
+              const seriesFirst: Record<string, number> = {};
+              seriesFirst[valueSeries.uid] = valueSeries.data.getIndex(0)?.date as number;
+              seriesFirst[volumeSeries.uid] = volumeSeries.data.getIndex(0)?.date as number;
+
+              console.log("seriesFirst", seriesFirst);
+
+              for (let i = data.length - 1; i >= 0; i--) {
+                  const date = data[i].date;
+                  if (seriesFirst[valueSeries.uid] > date) {
+                      valueSeries.data.unshift(data[i]);
+                  }
+                  if (seriesFirst[volumeSeries.uid] > date) {
+                      volumeSeries.data.unshift(data[i]);
+                  }
+              }
+
+              const data2 = valueSeries;
+
+              valueSeries.data.setAll(data2.data.values);
+              volumeSeries.data.setAll(data2.data.values);
+
+              const currentSeries = stockChart.get('stockSeries') as am5xy.XYSeries;
+              currentSeries.data = valueSeries.data;
+
+              console.log("valueSeries data after loading", valueSeries.data);
+              console.log('current series data after loading', currentSeries.data);
+
+              min = Math.max(min, absoluteMin);
+              dateAxis.set('min', min);
+              dateAxis.setPrivate('min', min);
+              dateAxis.set('start', 0);
+              dateAxis.set('end', (end - start) / (1 - start));
+          } else if (side === 'right') {
+              const seriesLast: Record<string, number> = {};
+              seriesLast[valueSeries.uid] = valueSeries.data.getIndex(valueSeries.data.length - 1)?.date as number;
+              seriesLast[volumeSeries.uid] = volumeSeries.data.getIndex(volumeSeries.data.length - 1)?.date as number;
+
+              for (let i = 0; i < data.length; i++) {
+                  const date = data[i].date;
+                  if (seriesLast[valueSeries.uid] < date) {
+                      valueSeries.data.push(data[i]);
+                  }
+                  if (seriesLast[volumeSeries.uid] < date) {
+                      volumeSeries.data.push(data[i]);
+                  }
+              }
+
+              max = Math.min(max, absoluteMax);
+              dateAxis.set('max', max);
+              dateAxis.setPrivate('max', max);
+              dateAxis.set('start', start / end);
+              dateAxis.set('end', 1);
           }
-        } else if (side === 'left') {
-          
-          console.log('group interval',dateAxis.get('groupInterval'))
-          dateAxis.setAll({
-            groupIntervals:[
-              { timeUnit:'day', count: 1},
-              { timeUnit:'day', count: 2},
-              { timeUnit: 'day', count: 3 },
-              { timeUnit: 'day', count: 7 },
-              { timeUnit: 'day', count: 14 },
-              { timeUnit: 'day', count: 30 },
-            ]
-          })
-          const seriesFirst: Record<string, number> = {};
-          seriesFirst[valueSeries.uid] = valueSeries.data.getIndex(0)?.date as number;
-          seriesFirst[volumeSeries.uid] = volumeSeries.data.getIndex(0)?.date as number;
-            console.log("seriesFirst",seriesFirst)
-            console.log("valueSeries data before loading",valueSeries.data)
-          for (let i = data.length - 1; i >= 0; i--) {
-            const date = data[i].date;
-            if (seriesFirst[valueSeries.uid] > date) {
-              valueSeries.data.unshift(data[i]);
-            }
-            if (seriesFirst[volumeSeries.uid] > date) {
-              volumeSeries.data.unshift(data[i]);
-            }
-            
-          }
-
-          const data2 = valueSeries
-          // // valueSeries.resetExtremes()
-          // // valueSeries.resetGrouping()
-          valueSeries.data.setAll(data2.data.values)
-          volumeSeries.data.setAll(data2.data.values)
-          const currentSeries = stockChart.get('stockSeries') as am5xy.XYSeries;
-          currentSeries.data= valueSeries.data
-          // console.log('data2',data2)
-          console.log("valueSeries data after loading",valueSeries.data)
-          console.log('current series data after loading',currentSeries.data)
-          min = Math.max(min, absoluteMin);
-          dateAxis.set('min', min);
-          dateAxis.setPrivate('min', min);
-          dateAxis.set('start', 0);
-          dateAxis.set('end', (end - start) / (1 - start));
-        } else if (side === 'right') {
-          const seriesLast: Record<string, number> = {};
-          seriesLast[valueSeries.uid] = valueSeries.data.getIndex(valueSeries.data.length - 1)?.date as number;
-          seriesLast[volumeSeries.uid] = volumeSeries.data.getIndex(volumeSeries.data.length - 1)?.date as number;
-
-          for (let i = 0; i < data.length; i++) {
-            const date = data[i].date;
-            if (seriesLast[valueSeries.uid] < date) {
-              valueSeries.data.push(data[i]);
-            }
-            if (seriesLast[volumeSeries.uid] < date) {
-              volumeSeries.data.push(data[i]);
-            }
-            
-          }
-
-          max = Math.min(max, absoluteMax);
-          dateAxis.set('max', max);
-          dateAxis.setPrivate('max', max);
-          dateAxis.set('start', start / end);
-          dateAxis.set('end', 1);
-        }
-      });
+      } catch (error) {
+          console.error("Error fetching or processing data:", error);
+      }
     };
+
     
     
     const loadSomeData = () => {
@@ -610,13 +638,14 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     let periodSelector = am5stock.PeriodSelector.new(root, {
         stockChart: stockChart,
         periods: [
-          { timeUnit: 'month', count: 1, name: '1 Month' },
-          { timeUnit: 'month', count: 2, name: '2 Months' },
+          { timeUnit: 'minute', count: 10, name: '10 Minutes' },
+          { timeUnit: 'minute', count: 20, name: '20 Minutes' },
+          { timeUnit: 'minute', count: 40, name: '40 Minutes' },
         ],
       });
     // Set default period after data is validated
     valueSeries.events.once("datavalidated", function() {
-        periodSelector.selectPeriod({ timeUnit: "month", count: 1 });
+        periodSelector.selectPeriod({ timeUnit: "minute", count: 10 });
     });
     
     //Interval Switcher control
@@ -625,12 +654,12 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
         stockChart: stockChart,
         // icon: createTimeIcon(),
         items: [
-          { id: '1 day', label: '1 day', interval: { timeUnit: 'day', count: 1 } },
-          { id: '2 days', label: '2 days', interval: { timeUnit: 'day', count: 2 } },
-          { id: '3 days', label: '3 days', interval: { timeUnit: 'day', count: 3 } },
-          { id: '7 days', label: '7 days', interval: { timeUnit: 'day', count: 7 } },
-          { id: '2 Weeks', label: '2 Weeks', interval: { timeUnit: 'day', count: 14 } },
-          { id: '1 Month', label: '1 Month', interval: { timeUnit: 'day', count: 30 } },
+          { id: '5 sec', label: '5 sec', interval: { timeUnit: 'second', count: 5 } },
+          { id: '10 sec', label: '10 sec', interval: { timeUnit: 'second', count: 10 } },
+          { id: '15 sec', label: '15 sec', interval: { timeUnit: 'second', count: 15 } },
+          { id: '30 sec', label: '30 sec', interval: { timeUnit: 'second', count: 30 } },
+          { id: '60 sec', label: '60 sec', interval: { timeUnit: 'second', count: 60 } },
+          // { id: '1 Month', label: '1 Month', interval: { timeUnit: 'day', count: 30 } },
         //   { id: '1 Week', label: '1 Week', interval: { timeUnit: 'week', count: 1}},
         //   { id: '2 Weeks', label: '2 Weeks', interval: { timeUnit: 'week', count: 2}},
         //   { id: '3 Weeks', label: '3 Weeks', interval: { timeUnit: 'week', count: 3}},
@@ -639,7 +668,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
 
         ],
       });
-  
       intervalSwitcher.events.on('selected', (ev) => {
         
         const newInterval = ev.item.interval
@@ -813,7 +841,7 @@ root.addDisposer(
             fullscreenButton.removeEventListener('click', toggleFullscreen);
         }
         };
-    }, [isDarkMode]);
+    }, [isDarkMode, currentSymbol]);
   
     const root = rootRef.current;
     const stockChart = root?.container.children.getIndex(0)

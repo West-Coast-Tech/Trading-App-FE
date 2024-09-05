@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react';
 import { fetchSymbols } from '../../actions/symbolActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState, SymbolData } from '../../actions/types';
+import { selectSymbol } from '../../features/symbol/symbolSlice';
 
 const selectSymbols = (state: AppState) => state.symbols.symbols;
+const selectCurrentSymbol = (state: AppState) => state.symbols.selectedSymbol; // Selector for current symbol
 
 const SymbolBar = () => {
   const symbols = useSelector(selectSymbols);
+  const currentSymbol = useSelector(selectCurrentSymbol); // Get the selected symbol from the Redux state
   const dispatch = useDispatch<any>();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>('EURUSD'); // Default selected option
-  const [category, setCategory] = useState<'forex' | 'crypto'>('forex'); // Default to showing Forex
+  const [selectedOption, setSelectedOption] = useState<string>(currentSymbol?.name || ''); // Initialize with selected symbol name
+  const [category, setCategory] = useState<'forex' | 'crypto' | 'stock'>('forex'); // Default to showing Forex
 
   useEffect(() => {
     dispatch(fetchSymbols());
@@ -18,8 +21,9 @@ const SymbolBar = () => {
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
-  const handleOptionClick = (name: string) => {
-    setSelectedOption(name);
+  const handleOptionClick = (symbol: SymbolData) => {
+    setSelectedOption(symbol.name);
+    dispatch(selectSymbol(symbol)); // Dispatch the selected symbol action
     setIsOpen(false); // Optionally close the table when an option is selected
   };
 
@@ -36,7 +40,7 @@ const SymbolBar = () => {
         >
           {isOpen ? '×' : '+'}
         </button>
-        <span className="ml-2  text-sm bg-black p-1.5 rounded-md text-white">{selectedOption}</span>
+        <span className="ml-2 text-sm bg-black p-1.5 rounded-md text-white">{selectedOption || currentSymbol?.name}</span>
       </div>
       <div
         className={`absolute z-50 w-1/3 bg-background rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
@@ -57,6 +61,16 @@ const SymbolBar = () => {
                 } rounded`}
               >
                 Forex
+              </button>
+              <button
+                onClick={() => setCategory('stock')}
+                className={`cursor-pointer mr-2 px-4 py-1 ${
+                  category === 'stock'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-300 hover:bg-gray-600 text-black'
+                } rounded`}
+              >
+                Stock
               </button>
               <button
                 onClick={() => setCategory('crypto')}
@@ -83,7 +97,7 @@ const SymbolBar = () => {
                 {filteredSymbols.map((item: SymbolData) => (
                   <tr
                     key={item._id}
-                    onClick={() => handleOptionClick(item.name)}
+                    onClick={() => handleOptionClick(item)} // Pass the selected symbol
                     className={`cursor-pointer`}
                   >
                     <td className="py-1 px-2 text-xs">{item.name}</td>
