@@ -37,13 +37,15 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     const [selectedDrawing, setSelectedDrawing] = useState(null);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
 
+    const [currentInterval,setCurrentInterval] = useState<any>({ timeUnit:'second', count: 5 });
+    const [selectedSeriesType, setSelectedSeriesType] = useState<string>('candlestick'); // default series type
+
     const [isDarkMode, setIsDarkMode] = useState(true);
     const currentLinkRef = useRef<HTMLLinkElement | null>(null);
 
     const currentSymbol = useSelector(selectSymbols);
     console.log("symbols",currentSymbol)
 
-  let currentUnit = 'second';
   const drawingTools = [
     { type: "Average", icon: "fa fa-chart-line" },
     { type: "Callout", icon: "fa fa-comment" },
@@ -110,7 +112,11 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     
         setDrawingSelection(stockChart?.get('drawingSelectionEnabled'))
    },[drawingSelection])
-  useLayoutEffect(() => {
+  
+  
+  
+  //Creating Chart in Layout Effect Hook
+   useLayoutEffect(() => {
     const root = am5.Root.new(chartRef.current!);
     
     rootRef.current = root
@@ -141,10 +147,10 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     })
     if (isDarkMode) {
       
-      root.setThemes([dark,am5themes_Animated.new(root)]); // Set dark theme
+      root.setThemes([dark]); // Set dark theme
       // loadCSS("./dark.css"); // Load dark CSS
     } else {
-      root.setThemes([am5themes_Animated.new(root)]); // Set light theme (example)
+      root.setThemes([]); // Set light theme (example)
       // loadCSS("./chart.css"); // Load light CSS (if needed)
     }    
     const stockChart = root.container.children.push(
@@ -206,18 +212,18 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     const dateAxis = chart.xAxes.push(
         am5xy.GaplessDateAxis.new(root, {
         groupData:true,
-        groupCount:1000,
-        baseInterval: { timeUnit: 'second', count: 5 },
+        groupCount:10000,
+        baseInterval: { timeUnit: currentInterval.timeUnit, count: 1 },
         groupIntervals:[
             { timeUnit: 'second', count: 5},
             { timeUnit:'second', count: 10},
             { timeUnit:'second', count: 15},
             { timeUnit: 'second', count: 30 },
-            { timeUnit: 'second', count: 60 },
-            // { timeUnit: 'day', count: 14 },
-            // { timeUnit: 'day', count: 30 },
-            // { timeUnit: 'week', count: 1},
-            // { timeUnit: 'week', count: 2},
+            { timeUnit: 'minute', count: 1 },
+            { timeUnit: 'minute', count: 5 },
+            { timeUnit: 'minute', count: 10 },
+            { timeUnit: 'minute', count: 30},
+            { timeUnit: 'hour', count: 1},
             // { timeUnit: 'week', count: 3},
             // { timeUnit: 'month', count: 1}
         ],
@@ -234,31 +240,53 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     //   minPosition: 0.01,
     //   maxPosition: 0.99
     // });
-
     const color = root.interfaceColors.get('background');
+
+
+    const candleStickSettings =  {
+      fill: color,
+      clustered: false,
+      calculateAggregates: true,
+      stroke: color,
+      name: currentSymbol.name,
+      xAxis: dateAxis,
+      yAxis: valueAxis,
+      valueYField: 'close',
+      openValueYField: 'open',
+      lowValueYField: 'low',
+      highValueYField: 'high',
+      valueXField: 'date',
+      lowValueYGrouped: 'low',
+      highValueYGrouped: 'high',
+      openValueYGrouped: 'open',
+      valueYGrouped: 'close',
+      legendValueText: 'open: {openValueY} low: {lowValueY} high: {highValueY} close: {valueY}',
+      legendRangeValueText: '{valueYClose}',
+    } as am5xy.ICandlestickSeriesSettings
+    let valueSeries: am5xy.XYSeries | undefined;
+    switch(selectedSeriesType){
+      case 'candlestick':
+      case 'procandlestick':
+        valueSeries = chart.series.push(
+          am5xy.CandlestickSeries.new(root, candleStickSettings )
+        );
+        if (selectedSeriesType === 'procandlestick') {
+          valueSeries.columns.template.get('themeTags').push('pro');
+        }
+        break;
+      case 'line':
+        valueSeries = chart.series.push(am5xy.LineSeries.new(root, {
+          valueYField: 'close',
+          valueXField: 'date',
+          xAxis: dateAxis,
+          yAxis: valueAxis,
+        }));
+        break;
+      case 'ohlc':
+        valueSeries = chart.series.push(am5xy.OHLCSeries.new(root, candleStickSettings));
+        break;
+    }
     
-    let valueSeries = chart.series.push(
-      am5xy.CandlestickSeries.new(root, {
-        fill: color,
-        clustered: false,
-        calculateAggregates: true,
-        stroke: color,
-        name: 'STCK',
-        xAxis: dateAxis,
-        yAxis: valueAxis,
-        valueYField: 'close',
-        openValueYField: 'open',
-        lowValueYField: 'low',
-        highValueYField: 'high',
-        valueXField: 'date',
-        lowValueYGrouped: 'low',
-        highValueYGrouped: 'high',
-        openValueYGrouped: 'open',
-        valueYGrouped: 'close',
-        legendValueText: 'open: {openValueY} low: {lowValueY} high: {highValueY} close: {valueY}',
-        legendRangeValueText: '{valueYClose}',
-      })
-    );
     stockChart.set('stockSeries', valueSeries);
 
 
@@ -362,11 +390,11 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
         let series: am5xy.XYSeries | undefined;
         switch (seriesType) {
           case 'line':
-            series = chart.series.push(am5xy.LineSeries.new(root, newSettings));
-            series.set('stroke',LabelColor)
-            series.set('fill',PositiveColor)
-            series.strokes.template.setAll({
-                strokeWidth: 3
+              series = chart.series.push(am5xy.LineSeries.new(root, newSettings));
+              series.set('stroke',LabelColor)
+              series.set('fill',PositiveColor)
+              series.strokes.template.setAll({
+                  strokeWidth: 3
               });
               series.fills.template.setAll({
                 fillOpacity: 0.1,
@@ -391,6 +419,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
           // Set the new series as the stock series
           series.data.setAll(data);
           stockChart.set('stockSeries', series);
+          setSelectedSeriesType(seriesType); // save the selected series type to state
+
           valueSeries = series; // Update the reference to valueSeries
 
           // Reattach cursor to the new series
@@ -442,10 +472,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
           // Round the `min` to the nearest interval and adjust it
           min = am5.time.round(new Date(min), unit, 1).getTime();
           console.log("min before minus", min);
-          min = min - am5.time.getDuration('day', 25);
           console.log("min after minus", min);
 
-          unit = 'second';  // Changing unit to seconds as per requirement
           max = (new Date()).getTime()
           const url = `http://localhost:8080/tradingData`;
           const params = {
@@ -473,8 +501,9 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
 
           if (side === 'none') {
               if (data.length > 0) {
-                  if (dateAxis.get('baseInterval')?.timeUnit !== unit) {
-                      dateAxis.set('baseInterval', { timeUnit: unit, count: 1 });
+                  if (dateAxis.get('baseInterval')?.timeUnit !== currentInterval.timeUnit) {
+                      dateAxis.set('baseInterval', { timeUnit: currentInterval.timeUnit, count: 1 });
+                      dateAxis.set('groupInterval', { timeUnit: currentInterval.timeUnit, count: currentInterval.count });
                   }
                   dateAxis.set('min', min);
                   dateAxis.set('max', max);
@@ -486,6 +515,23 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
                   console.log("valueSeries data after loading", valueSeries.data);
 
                   volumeSeries.data.setAll(data);
+                  dateAxis.set('groupInterval', { timeUnit: currentInterval.timeUnit, count: currentInterval.count });
+                  dateAxis.setAll({
+                    groupIntervals:[
+                      { timeUnit:'second', count: 5},
+                      { timeUnit:'second', count: 10},
+                      { timeUnit:'second', count: 15},
+                      { timeUnit: 'second', count: 30 },
+                      { timeUnit: 'minute', count: 1 },
+                      { timeUnit: 'minute', count: 5 },
+                      { timeUnit: 'minute', count: 10 },
+                      { timeUnit: 'minute', count: 30},
+                      { timeUnit: 'hour', count: 1},
+                      // { timeUnit: 'week', count: 3},
+                      // { timeUnit: 'month', count: 1}
+                  ],
+                  });
+
               }
           } else if (side === 'left') {
               console.log('group interval', dateAxis.get('groupInterval'));
@@ -497,11 +543,11 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
                   { timeUnit:'second', count: 10},
                   { timeUnit:'second', count: 15},
                   { timeUnit: 'second', count: 30 },
-                  { timeUnit: 'second', count: 60 },
-                  // { timeUnit: 'day', count: 14 },
-                  // { timeUnit: 'day', count: 30 },
-                  // { timeUnit: 'week', count: 1},
-                  // { timeUnit: 'week', count: 2},
+                  { timeUnit: 'minute', count: 1 },
+                  { timeUnit: 'minute', count: 5 },
+                  { timeUnit: 'minute', count: 10 },
+                  { timeUnit: 'minute', count: 30},
+                  { timeUnit: 'hour', count: 1},
                   // { timeUnit: 'week', count: 3},
                   // { timeUnit: 'month', count: 1}
               ],
@@ -578,38 +624,38 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
         console.log('min',min)
         console.log('selectionmin',selectionMin)
       if (start < 0) {
-        console.log('loading data',currentUnit,selectionMin,min)
-        loadData(currentUnit, selectionMin, min, 'left');
+        console.log('loading data',currentInterval.timeUnit,selectionMin,min)
+        loadData(currentInterval.timeUnit, selectionMin, min, 'left');
       }
       if (end > 1) {
-        loadData(currentUnit, max, selectionMax, 'right');
+        loadData(currentInterval.timeUnit, max, selectionMax, 'right');
       }
     };
 
-    document.getElementById('btn_h')?.addEventListener('click', () => {
-      if (currentUnit !== 'hour') {
-        currentUnit = 'hour';
-        loadData('hour', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      }
-    });
+    // document.getElementById('btn_h')?.addEventListener('click', () => {
+    //   if (currentUnit !== 'hour') {
+    //     currentUnit = 'hour';
+    //     loadData('hour', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+    //   }
+    // });
 
-    document.getElementById('btn_d')?.addEventListener('click', () => {
-      if (currentUnit !== 'day') {
-        currentUnit = 'day';
-        loadData('day', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      }
-    });
+    // document.getElementById('btn_d')?.addEventListener('click', () => {c
+    //   if (currentUnit !== 'day') {
+    //     currentUnit = 'day';
+    //     loadData('day', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+    //   }
+    // });
 
-    document.getElementById('btn_m')?.addEventListener('click', () => {
-        console.log("button month")
-      if (currentUnit !== 'month') {
-        currentUnit = 'month';
-        loadData('month', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      }
-    });
+    // document.getElementById('btn_m')?.addEventListener('click', () => {
+    //     console.log("button month")
+    //   if (currentUnit !== 'month') {
+    //     currentUnit = 'month';
+    //     loadData('month', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+    //   }
+    // });
 
     const currentDate = new Date();
-    const min = currentDate.getTime() - am5.time.getDuration('day', 50);
+    const min = currentDate.getTime() - am5.time.getDuration(currentInterval.timeUnit, (currentInterval.count*36));
     const max = currentDate.getTime();
 
     const absoluteMax = max;
@@ -629,8 +675,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
         loadSomeData();
       }, 50);
     });
-
-    loadData('day', min, max, 'none');
+    loadData(currentInterval.timeUnit, min, max, 'none');
 
     chart.appear(1000, 500);
 
@@ -645,7 +690,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       });
     // Set default period after data is validated
     valueSeries.events.once("datavalidated", function() {
-        periodSelector.selectPeriod({ timeUnit: "minute", count: 10 });
+        periodSelector.selectPeriod({ timeUnit: currentInterval.timeUnit, count: (currentInterval.count*120) });
     });
     
     //Interval Switcher control
@@ -653,36 +698,70 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
     const intervalSwitcher = am5stock.IntervalControl.new(root, {
         stockChart: stockChart,
         // icon: createTimeIcon(),
+        name:`${currentInterval.count} ${currentInterval.timeUnit}`,
         items: [
           { id: '5 sec', label: '5 sec', interval: { timeUnit: 'second', count: 5 } },
           { id: '10 sec', label: '10 sec', interval: { timeUnit: 'second', count: 10 } },
           { id: '15 sec', label: '15 sec', interval: { timeUnit: 'second', count: 15 } },
           { id: '30 sec', label: '30 sec', interval: { timeUnit: 'second', count: 30 } },
-          { id: '60 sec', label: '60 sec', interval: { timeUnit: 'second', count: 60 } },
-          // { id: '1 Month', label: '1 Month', interval: { timeUnit: 'day', count: 30 } },
-        //   { id: '1 Week', label: '1 Week', interval: { timeUnit: 'week', count: 1}},
-        //   { id: '2 Weeks', label: '2 Weeks', interval: { timeUnit: 'week', count: 2}},
-        //   { id: '3 Weeks', label: '3 Weeks', interval: { timeUnit: 'week', count: 3}},
+          { id: '1 Min', label: '1 Min', interval: { timeUnit: 'minute', count: 1 } },
+          { id: '5 Min', label: '5 Min', interval: { timeUnit: 'minute', count: 5 } },
+          { id: '10 Min', label: '10 Min', interval: { timeUnit: 'minute', count: 10 } },
+          { id: '30 Min', label: '30 Min', interval: { timeUnit: 'minute', count: 30 } },
+          { id: '1 Hour', label: '1 Hour', interval: { timeUnit: 'hour', count: 1}},
         //   { id: '1 Month', label: '1 Month', interval: { timeUnit: 'month', count: 1}}
 
 
         ],
       });
-      intervalSwitcher.events.on('selected', (ev) => {
-        
+      intervalSwitcher.events.on('selected', (ev) => { 
         const newInterval = ev.item.interval
-        
+        const newTimeUnit = newInterval.timeUnit
+        // if (newTimeUnit==currentInterval.timeUnit){
+        //   dateAxis.set('groupInterval', newInterval);
+        //   setCurrentInterval(newInterval)
+        // } else {
+        //   switch(newTimeUnit){
+        //     case 'minute':
+        //       loadData('minute', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+        //       break;
+        //     case 'hour':
+        //       loadData('hour', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+        //       break;
+        //     case 'day':
+        //       loadData('day', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
+        //       break;
+        //     default:
+        //       break;
+        //   }
+        //   setCurrentInterval(newInterval)
+        // }
+        setCurrentInterval(newInterval)
+        dateAxis.setAll({
+          groupIntervals:[
+            { timeUnit:'second', count: 5},
+            { timeUnit:'second', count: 10},
+            { timeUnit:'second', count: 15},
+            { timeUnit: 'second', count: 30 },
+            { timeUnit: 'minute', count: 1 },
+            { timeUnit: 'minute', count: 5 },
+            { timeUnit: 'minute', count: 10 },
+            { timeUnit: 'minute', count: 30},
+            { timeUnit: 'hour', count: 1},
+            // { timeUnit: 'week', count: 3},
+            // { timeUnit: 'month', count: 1}
+        ],
+        });
+        console.log('groupintervals',dateAxis.get('groupIntervals'))
+
+
+
         // const min = dateAxis.getPrivate('min') as number;
         // const selectionMin = Math.max(dateAxis.getPrivate('selectionMin') as number, absoluteMin);
-
         // loadData(currentUnit,selectionMin,min,"left")
         // // chart.invalidateRawData();
         // // chart.appear(500, 100);
         // loadSomeData()
-        dateAxis.set('groupInterval', ev.item.interval);
-        
-        console.log('groupintervals',dateAxis.get('groupIntervals'))
-
         // valueSeries.set('xAxis',dateAxis)
         // stockChart.set('stockSeries',valueSeries)
         
@@ -841,7 +920,7 @@ root.addDisposer(
             fullscreenButton.removeEventListener('click', toggleFullscreen);
         }
         };
-    }, [isDarkMode, currentSymbol]);
+    }, [isDarkMode, currentSymbol, currentInterval]);
   
     const root = rootRef.current;
     const stockChart = root?.container.children.getIndex(0)

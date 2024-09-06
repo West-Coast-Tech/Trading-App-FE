@@ -96,7 +96,9 @@
     scrollbar-width: thin;
     scrollbar-color: #555 #222;
   }
-  
+  #chartcontrols .am5stock-control-list :hover {
+    cursor: pointer;
+  }
   #chartcontrols .am5stock-list-search {
     padding-left: 10px;
     border-radius: 20px;
