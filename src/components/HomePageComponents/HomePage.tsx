@@ -11,16 +11,16 @@ const HomePage = () => {
   const [theme,setTheme] = useState("black")
 
   return (
-    <div className={` theme-${theme} bg-background min-h-screen grid font-roboto grid-cols-[5rem_auto_12.5rem] grid-rows-[auto_1fr] text-tBase pr-2`}>
+    <div className={`${theme === "white" ? "theme-white" : "theme-black"} bg-background min-h-screen grid font-roboto grid-cols-[5rem_auto_12.5rem] grid-rows-[auto_1fr] text-tBase pr-2`}>
       <div className="col-span-1 row-span-2 z-50 ">
         <Sidebar />
       </div>
 
-      <div className="col-span-2 row-span-1 p-2 pr-2 pl-4 md:col-span-1 lg:col-span-2">
+      <div className="col-span-2 row-span-1 p-1 pl-4">
         <Navbar /> 
       </div>
       
-      <div className="col-span-1 row-span-2 pl-1  shadow-md ">
+      <div className="col-span-1 row-span-2 pl-1">
         <IncrementalChart changeTheme={setTheme} />
       </div>
       

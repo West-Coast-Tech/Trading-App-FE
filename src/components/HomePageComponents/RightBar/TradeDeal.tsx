@@ -59,7 +59,7 @@ const TradeDeal = () => {
     return (
         <form 
             onSubmit={handleSubmit} 
-            className="flex flex-col items-center justify-center p-5 pt-4 gap-3 text-white"
+            className=" flex flex-col items-center justify-center p-5 pt-4 gap-3 text-tBase"
         >
             <div className='flex flex-row text-xs gap-4'>
                 <FontAwesomeIcon icon={faCircle} className="text-gray-400" />
@@ -133,7 +133,7 @@ const TradeDeal = () => {
                     type="text" 
                     value={investment} 
                     onChange={(e) => setInvestment(Number(e.target.value))} 
-                    className="bg-transparent text-center text-white w-full"
+                    className="bg-transparent text-center w-full text-tBase"
                 />
                 <FontAwesomeIcon 
                     icon={faPlus} 

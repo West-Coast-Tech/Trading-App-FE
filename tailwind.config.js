@@ -8,6 +8,7 @@ module.exports = {
         secondary:"var(--color-secondary)",
         background:"var(--color-background)",
         tBase:"var(--color-text-base)",
+        borderColor: "var(--color-border-color)",
         gray: {
           "100": "#1c1f2d",
           "200": "#030000",

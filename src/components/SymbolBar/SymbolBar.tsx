@@ -43,7 +43,7 @@ const SymbolBar = () => {
         <span className="ml-2 text-sm bg-black p-1.5 rounded-md text-white">{selectedOption || currentSymbol?.name}</span>
       </div>
       <div
-        className={`absolute z-50 w-1/3 bg-background rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
+        className={`absolute z-50 w-1/3 bg-secondary rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
           isOpen ? 'opacity-100 translate-y-2' : 'opacity-0 -translate-y-5 pointer-events-none'
         }`}
       >

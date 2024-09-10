@@ -18,7 +18,7 @@ export default function Drawer({ children }: DrawerProps) {
     console.log(children)
     return (
         <>
-            <aside className={`bg-background min-h-screen z-30`}>
+            <aside className={`bg-background border-solid border-r-[1px] border-borderColor min-h-screen z-30`}>
                 <nav className="h-full flex flex-col border-r shadow-sm">
                     <div className="pr-4 pl-7 pt-3 flex justify-between items-center ">
                         {/* Improved accessibility */}
@@ -77,7 +77,7 @@ export function DrawerItems({ icon, text, active, alert, onClick }: DrawerItemsP
     const { expanded } = context;
 
     return (
-        <li onClick={onClick} className="relative flex items-center py-1 my-1 font-medium w-full pl-2 justify-center">
+        <li onClick={onClick} className="relative flex items-center py-1 my-1 font-medium w-full pl-2 justify-center tracking-wider">
         <div className={`flex flex-col items-center justify-center w-8 h-[3.2rem] px-4 py-1 rounded-md cursor-pointer ${active ? "bg-gradient-to-tr from-blue-400 to-blue-800" : "hover:bg-blue-700"}`}>
             {icon}
             <div className=" text-[0.6rem] font-bold mt-1 text-center">

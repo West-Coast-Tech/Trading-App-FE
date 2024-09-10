@@ -19,12 +19,12 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
   return (
     <div
-      className={`w-full h-[6vh] m-0 relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
+      className={`w-full h-[5vh] m-0 border-solid border-borderColor border-b-[0.5px] relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
     >
       <div className="flex flex-row items-center justify-start">
         <div className="w-[215px] flex flex-row">
           <img
-            className="h-12 relative overflow-hidden shrink-0 text-primary"
+            className="h-12 relative overflow-hidden shrink-0 "
             loading="lazy"
             alt="Logo"
             src={logo}
@@ -37,7 +37,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
       <div className="flex flex-row items-center justify-start gap-16 max-w-full">
         <div className="flex flex-row items-center gap-4">
-          <div className="h-[2.5rem] w-[4rem] flex items-center justify-center rounded-[1.25rem] bg-border-brand-default border-[1px] border-solid border-border-brand-default">
+          <div className="h-[2.5rem] w-[4rem]  flex  hidden items-center justify-center rounded-[1.25rem] bg-border-brand-default border-[1px] border-solid border-border-brand-default">
             <img
               className="h-8 w-8 relative overflow-hidden"
               loading="lazy"
@@ -46,7 +46,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             />
           </div>
           <button 
-            className="h-[2.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-gray-100 text-white flex items-center justify-center"
+            className="h-[2.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-gray-100 text-white flex hidden items-center justify-center"
             onClick={handleLogout}
           >
             Logout
@@ -54,10 +54,10 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
         </div>
 
         <div className="flex flex-row items-center gap-3 w-[12rem]">
-          <div className="h-[2.5rem] rounded-md bg-green-600 flex items-center justify-center w-full">
+          <div className="h-[2rem] rounded-md bg-green-600 flex items-center justify-center w-full">
             <b className="text-tBase text-[0.875rem]">+ Deposit</b>
           </div>
-          <div className="h-[2.5rem] rounded-md bg-secondary flex items-center justify-center px-2 w-full">
+          <div className="h-[2rem] rounded-md bg-secondary flex items-center justify-center px-2 w-full">
             <b className="text-tBase text-[0.875rem]">Withdrawal</b>
           </div>
         </div>

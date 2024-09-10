@@ -11,23 +11,27 @@ body {
 }
 @layer base {
   :root {
-    --color-background: rgb(10, 20, 45);
-    --color-secondary: rgb(53, 58, 77);
+    --color-background: rgb(25, 25, 45);
+    --color-secondary: rgb(32 39 64);
     --color-text-base: rgb(255, 255, 255);
     --color-primary: rgb(1, 0, 5);
+    --color-border-color: rgb(46 46 46);
   }
 
   .theme-black{
     --color-background: rgb(25, 25, 45);
-    --color-secondary: rgb(128, 128, 128);
+    --color-secondary: rgb(32 39 64);
     --color-text-base: rgb(255, 255, 255);
     --color-primary: rgb(1, 0, 5);
+    --color-border-color: rgb(46 46 46);
+
   }
   .theme-white{
     --color-primary: hsl(0, 0%, 100%);
     --color-secondary: hsl(247, 75%, 61%);
     --color-text-base: rgb(1, 0, 5);
-    --color-background: rgb(255, 255, 255);
+    --color-background: rgb(237 237 237);
+    --color-border-color: rgb(211 211 211);
   }
   .theme-twilight{
     --color-primary: rgb(128, 128, 128);

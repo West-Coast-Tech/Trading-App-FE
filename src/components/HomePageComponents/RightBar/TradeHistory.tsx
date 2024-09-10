@@ -6,7 +6,7 @@ const TradeHistory = () => {
   const [activeTab, setActiveTab] = useState('trades');
 
   return (
-    <div className="bg-secondary flex flex-col h-full rounded-lg">
+    <div className="flex flex-col h-full rounded-lg">
       {/* Tabs */}
       <div className="flex">
         {/* Trades Tab */}
@@ -19,7 +19,7 @@ const TradeHistory = () => {
           onClick={() => setActiveTab('trades')}
         >
           {activeTab === 'trades' ? (
-            <span className="text-white">Trades</span>
+            <span className="text-tBase">Trades</span>
           ) : (
             <FontAwesomeIcon className="text-gray-400" icon={faExchangeAlt} />
           )}
@@ -35,7 +35,7 @@ const TradeHistory = () => {
           onClick={() => setActiveTab('orders')}
         >
           {activeTab === 'orders' ? (
-            <span className="text-white">Orders</span>
+            <span className="text-tBase">Orders</span>
           ) : (
             <FontAwesomeIcon className="text-gray-400" icon={faClock} />
           )}
