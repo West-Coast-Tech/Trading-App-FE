@@ -103,9 +103,7 @@ const SymbolBar = () => {
                     <td className="py-1 px-2 text-xs">{item.name}</td>
                     <td className="py-1 px-2 text-xs">{item.type}</td>
                     <td className="py-1 px-2 text-xs">{item.description}</td>
-                    <td className="py-1 px-2 text-xs">
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </td>
+                    
                   </tr>
                 ))}
               </tbody>

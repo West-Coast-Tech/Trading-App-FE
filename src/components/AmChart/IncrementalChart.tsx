@@ -48,7 +48,7 @@
 
       //variables for live data chart
       const [prices, setPrices] = useState();
-      const socketUrl = `ws://localhost:8000`
+      const socketUrl = `ws://localhost:8080`
       const [lastCandleTime,setLastCandleTime] = useState(0)
       const currentLabelRef = useRef<am5xy.AxisLabel | null>(null);
       const currentValueDataItemRef = useRef<am5.DataItem<am5xy.IValueAxisDataItem> | null>(null);

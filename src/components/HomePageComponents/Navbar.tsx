@@ -46,7 +46,7 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             />
           </div>
           <button 
-            className="h-[2.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-gray-100 text-white flex hidden items-center justify-center"
+            className="h-[2.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-gray-100 text-white flex items-center justify-center"
             onClick={handleLogout}
           >
             Logout

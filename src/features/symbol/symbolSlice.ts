@@ -13,11 +13,11 @@ export interface SymbolState {
 const initialState: SymbolState = {
   symbols: [],
   selectedSymbol: {
-    createdAt: "2024-09-05T10:49:13.476Z",
     description: "US Dollar/Japanese Yen",
     name: "USD/JPY",
     type: "forex",
     _id: "66d987da041104db73e70f71",
+    createdAt:null
   },
   loading: false,
   error: null,

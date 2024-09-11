@@ -62,7 +62,7 @@ export interface SymbolData{
   name: string;
   type: string;
   description: string;
-  createdAt:string
+  createdAt:string | null;
 }
 export interface TradingData{
   timeStamps: string;
@@ -73,7 +73,20 @@ export interface TradingData{
   volume: number;
 }
 
-
+export interface TradesData{
+  id: string;
+  symbol: string;
+  currency: string;
+  tradeDirection: string;
+  amountInvested: number;
+  openingPrice: number;
+  closingPrice: number | null;
+  openingTime: string;
+  closingTime: string;
+  isComplete: boolean;
+  pnlValue: number | null;
+  createdAt: string;
+}
 
 // Define the overall shape of your Redux store state
 export interface AppState {
@@ -81,7 +94,8 @@ export interface AppState {
   errors: ErrorState;
   users: UserState;
   symbols: SymbolState;
-  tradingData: TradingDataState
+  tradingData: TradingDataState;
+  trades: TradesData
   // Add other slices of state as needed
 }
 
