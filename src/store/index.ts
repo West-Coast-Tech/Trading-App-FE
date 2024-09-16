@@ -6,13 +6,15 @@ import errorReducer from '../features/errorSlice';
 import usersReducer from '../features/users/usersSlice';
 import symbolReducer from '../features/symbol/symbolSlice';
 import tradingDataReducer from '../features/tradingData/tradingDataSlice'
+import tradeDataReducer from '../features/trades/tradeSlice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     errors: errorReducer,
     users: usersReducer,
     symbols: symbolReducer,
-    tradingData: tradingDataReducer
+    tradingData: tradingDataReducer,
+    trades: tradeDataReducer,
   },
   // No need to manually add redux-thunk here since it's included by default
   // If you had a custom middleware, you could modify getDefaultMiddleware like this:

@@ -6,8 +6,7 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
 const LiveDataChart = () => {
   const [prices, setPrices] = useState();
-  const symbol = "USD/JPY"; // Array of symbols
-  const apiKey = 'a633158af4de44fe874e068930253dfd'; // Replace with your Twelve Data API key
+
   const socketUrl = `ws://localhost:8000`
   const [lastCandleTime,setLastCandleTime] = useState(0)
   const chartRef = useRef<HTMLDivElement | null>(null);

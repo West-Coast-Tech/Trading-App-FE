@@ -21,7 +21,11 @@ export const fetchTrades = () => async (dispatch: Dispatch) => {
   try {
     dispatch(getTradesStart());
     const token = sessionStorage.getItem('token') || '';
-    const response = await API.getTrades(token); // API call to get trades
+    const userId = sessionStorage.getItem('id') || '';
+    console.log("userId",userId)
+
+    const response = await API.getTrades(token,userId); // API call to get trades
+    console.log("responsetrades",response)
     dispatch(getTradesSuccess(response.data));
   } catch (err: any) {
     dispatch(getTradesFail(err.response?.data || 'Failed to fetch trades'));
@@ -33,7 +37,9 @@ export const addTrade = (tradeData: TradesData) => async (dispatch: Dispatch) =>
   try {
     dispatch(addTradeStart());
     const token = sessionStorage.getItem('token') || '';
-    const response = await API.addTrade(tradeData, token); // API call to create a trade
+    const userId = sessionStorage.getItem('id') || '';
+    console.log("userId",userId)
+    const response = await API.addTrade(tradeData, userId); // API call to create a trade
     dispatch(addTradeSuccess(response.data));
   } catch (err: any) {
     dispatch(addTradeFail(err.response?.data || 'Failed to add trade'));

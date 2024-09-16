@@ -1,5 +1,5 @@
   import React, { useEffect, useLayoutEffect, useRef,useState } from 'react';
-  import { useSelector } from 'react-redux';
+  import { useDispatch, useSelector } from 'react-redux';
   import { AppState } from '../../actions/types';
   import axios from 'axios'
   import * as am5 from '@amcharts/amcharts5';
@@ -12,6 +12,7 @@
   import { TimeUnit } from '@amcharts/amcharts5/.internal/core/util/Time';
   import { createIndicatorIcon, createTimeIcon } from './Icons';
   import SymbolBar from '../SymbolBar/SymbolBar';
+import { fetchTrades } from '../../actions/tradeActions';
 
 
 
@@ -53,6 +54,7 @@
       const currentLabelRef = useRef<am5xy.AxisLabel | null>(null);
       const currentValueDataItemRef = useRef<am5.DataItem<am5xy.IValueAxisDataItem> | null>(null);
 
+      const dispatch = useDispatch<any>()
 
 
       const currentSymbol = useSelector(selectSymbols);
@@ -146,6 +148,9 @@
         setPrices(data.price)
         }
         console.log('Received data:', data);
+        if (data.type=='TRADE_COMPLETED'){
+          dispatch(fetchTrades())
+        }
       };
 
       ws.onerror = (error) => {
@@ -272,7 +277,7 @@
               { timeUnit: 'hour', count: 1},
               { timeUnit: 'hour', count: 2},
               { timeUnit: 'hour', count: 3},
-              { timeUnit: 'day', count: 1},
+              { timeUnit: 'hour', count: 24},
           ],
           
         renderer: am5xy.AxisRendererX.new(root, {
@@ -577,9 +582,9 @@
                     dateAxis.setPrivate('min', min);
                     dateAxis.setPrivate('max', max);
 
-                    console.log("valueSeries data before loading", valueSeries.data);
-                    valueSeries.data.setAll(data);
-                    console.log("valueSeries data after loading", valueSeries.data);
+                    console.log("valueSeries data before loading", valueSeries?.data);
+                    valueSeries?.data.setAll(data);
+                    console.log("valueSeries data after loading", valueSeries?.data);
 
                     volumeSeries.data.setAll(data);
                     dateAxis.set('groupInterval', { timeUnit: currentInterval.timeUnit, count: currentInterval.count });
@@ -596,7 +601,7 @@
                         { timeUnit: 'hour', count: 1},
                         { timeUnit: 'hour', count: 2},
                         { timeUnit: 'hour', count: 3},
-                        { timeUnit: 'day', count: 1},
+                        { timeUnit: 'hour', count: 24},
                       ],
                       });
 
@@ -618,7 +623,7 @@
                     { timeUnit: 'hour', count: 1},
                     { timeUnit: 'hour', count: 2},
                     { timeUnit: 'hour', count: 3},
-                    { timeUnit: 'day', count: 1},
+                    { timeUnit: 'hour', count: 24},
                 ],
                 });
 
@@ -780,7 +785,7 @@
             { id: '1 Hour', label: '1 Hour', interval: { timeUnit: 'hour', count: 1}},
             { id: '2 Hour', label: '2 Hour', interval: { timeUnit: 'hour', count: 2}},
             { id: '3 Hour', label: '3 Hour', interval: { timeUnit: 'hour', count: 3}},
-            { id: '1 Day', label: '1 Day', interval: { timeUnit: 'day', count: 1}},
+            { id: '1 Day', label: '1 Day', interval: { timeUnit: 'hour', count: 24}},
 
 
           ],
@@ -821,7 +826,7 @@
               { timeUnit: 'hour', count: 1},
               { timeUnit: 'hour', count: 2},
               { timeUnit: 'hour', count: 3},
-              { timeUnit: 'day', count: 1},
+              { timeUnit: 'hour', count: 24},
               // { timeUnit: 'month', count: 1}
           ],
           });
@@ -1089,7 +1094,7 @@
             currentLabel.set("text", stockChart?.getNumberFormatter().format(livePrice));
             let bg = currentLabel.get("background");
             if (bg) {
-              if (value < open) {
+              if (livePrice < open) {
                 bg.set("fill", root.interfaceColors.get("negative"));
               } else {
                 bg.set("fill", root.interfaceColors.get("positive"));

@@ -14,7 +14,7 @@ const initialState: TradeState = {
 };
 
 export const tradeSlice = createSlice({
-    name: 'trade',
+    name: 'tradeData',
     initialState,
     reducers: {
         // Fetching trades (already implemented)
@@ -51,12 +51,14 @@ export const tradeSlice = createSlice({
             state.loading = true;
             state.error = null;
         },
-        updateTradeSuccess: (state, action: PayloadAction<TradesData>) => {
+        updateTradeSuccess: (state, action: PayloadAction<any>) => {
             const index = state.allTrades.findIndex(
-                (trade) => trade.id === action.payload.id
+                (trade) => trade.ticketNo === action.payload.ticketNo
             );
             if (index !== -1) {
-                state.allTrades[index] = action.payload;
+                state.allTrades[index].closingPrice = action.payload.closingPrice;
+                state.allTrades[index].pnlValue = action.payload.pnlValue;
+                state.allTrades[index].isComplete = action.payload.isComplete
             }
             state.loading = false;
         },
@@ -72,7 +74,7 @@ export const tradeSlice = createSlice({
         },
         deleteTradeSuccess: (state, action: PayloadAction<string>) => {
             state.allTrades = state.allTrades.filter(
-                (trade) => trade.id !== action.payload
+                (trade) => trade.ticketNo !== action.payload
             );
             state.loading = false;
         },

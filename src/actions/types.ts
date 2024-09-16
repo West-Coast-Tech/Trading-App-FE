@@ -19,6 +19,7 @@ import { ErrorState } from "../features/errorSlice";
 import { UserState } from "../features/users/usersSlice";
 import { SymbolState } from "../features/symbol/symbolSlice";
 import { TradingDataState } from "../features/tradingData/tradingDataSlice";
+import { TradeState } from "../features/trades/tradeSlice";
 // User data interface
 export interface UserData {
   id: string;
@@ -74,18 +75,17 @@ export interface TradingData{
 }
 
 export interface TradesData{
-  id: string;
+  ticketNo: string;
   symbol: string;
   currency: string;
   tradeDirection: string;
   amountInvested: number;
-  openingPrice: number;
+  openingPrice: number | null;
   closingPrice: number | null;
   openingTime: string;
   closingTime: string;
   isComplete: boolean;
   pnlValue: number | null;
-  createdAt: string;
 }
 
 // Define the overall shape of your Redux store state
@@ -95,7 +95,7 @@ export interface AppState {
   users: UserState;
   symbols: SymbolState;
   tradingData: TradingDataState;
-  trades: TradesData
+  trades: TradeState
   // Add other slices of state as needed
 }
 

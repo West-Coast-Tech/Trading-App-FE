@@ -1,6 +1,6 @@
 // src/utils/API.ts
-import {  AxiosResponse } from "axios";
-import { RegisterData, LoginData, UserData,OtpData,ResetData, SymbolData, TradingData } from "../actions/types";
+import {  Axios, AxiosResponse } from "axios";
+import { RegisterData, LoginData, UserData,OtpData,ResetData, SymbolData, TradingData, TradesData } from "../actions/types";
 import apiClient from "../utils/apiClient";
 
 // Define the API service with TypeScript
@@ -59,6 +59,17 @@ export default {
         return apiClient.post("/tradingData/", {symbol})
         
     },
+
+    //API for trade module
+    addTrade(data: TradesData, userId: String): Promise<AxiosResponse<TradesData>>{
+        return apiClient.post("/new-trade",{ ...data, userId })
+    },
+
+    getTrades(token:String, userId: String): Promise<AxiosResponse<TradesData[]>>{
+        console.log("Fetching trades ")
+        return apiClient.post("/trades",{userId})
+    },
+
     // API request to load user data
     loadUser(): Promise<AxiosResponse<UserData>> {
         return apiClient.get("/user");
