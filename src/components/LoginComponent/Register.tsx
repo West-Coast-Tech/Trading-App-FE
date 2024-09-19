@@ -94,7 +94,7 @@ const Register = () => {
     }
     
     const hashedPassword = await hashPassword(password);
-
+    console.log("hashedPassword",hashedPassword)
     //create hashpassword and salt and add to payload
     // const saltRounds = 10; // You can adjust the number of rounds based on your security requirements
     // const salt = await bcrypt.genSalt(saltRounds);

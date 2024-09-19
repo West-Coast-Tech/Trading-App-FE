@@ -7,7 +7,7 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 const LiveDataChart = () => {
   const [prices, setPrices] = useState();
 
-  const socketUrl = `ws://localhost:8000`
+  const socketUrl = `ws://localhost:8080`
   const [lastCandleTime,setLastCandleTime] = useState(0)
   const chartRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<am5.Root | null>(null); // Use ref to persist root

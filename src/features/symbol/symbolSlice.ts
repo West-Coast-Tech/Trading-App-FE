@@ -30,8 +30,7 @@ export const symbolSlice = createSlice({
   reducers: {
     getSymbolsSuccess: (state, action: PayloadAction<SymbolData[]>) => {
       state.symbols = action.payload;
-      console.log("symbols",state.symbols)
-      state.loading = false;
+       state.loading = false;
     },
     getSymbolsFail: (state, action: PayloadAction<string>) => {
       state.symbols = []

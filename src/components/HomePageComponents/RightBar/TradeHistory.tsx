@@ -43,7 +43,7 @@ const TradeHistory = () => {
     }, []);
 
     return (
-        <div className="flex flex-col h-[40vh]">
+        <div className="flex flex-col h-[40vh] ">
             {/* Tabs */}
             <div className="flex">
                 {/* Trades Tab */}
@@ -86,7 +86,7 @@ const TradeHistory = () => {
                         <ul className="list-none pl-2">
                             {trades.slice().reverse().map((trade) => (
                                 <li key={trade.ticketNo} className={` ${trade.isComplete ? "font-thin":"font-extrabold text-gray-500"} `}>
-                                    {trade.symbol} {trade.amountInvested}  {trade.openingPrice}  {trade.tradeDirection}  {trade.pnlValue}
+                                    {trade.symbol} {trade.amountInvested}  {trade.openingPrice} {trade.closingPrice}  {trade.tradeDirection}  {trade.pnlValue}
                                 </li>
                             ))}
                         </ul>

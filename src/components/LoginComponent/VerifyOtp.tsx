@@ -65,7 +65,7 @@ const VerifyOtp: React.FC<VerifyOtpProps> = ({ verifyAction, resendAction, messa
     
       <div className="flex flex-col">
         <h1 className="text-xl mb-8 text-white text-center">{message}</h1>
-        <div className="bg-gray-100 p-8 rounded-lg border-[#30363d] shadow-xl shadow-black shadow-md w-[full] sm:w-96">
+        <div className="bg-gray-100 p-8 rounded-lg border-[#30363d]  shadow-black shadow-md w-[full] sm:w-96">
           <form onSubmit={handleVerifyOtp}>
             <div className="mb-4">
               <label className="block text-[#f0f6fc] mb-2">Enter your OTP</label>
