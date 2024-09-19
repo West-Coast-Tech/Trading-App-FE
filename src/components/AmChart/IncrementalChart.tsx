@@ -34,14 +34,12 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   );
 
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const stockChartRef = useRef<am5stock.StockChart | null>(null);
+  const stockChartRef = useRef<am5stock.StockPanel | null>(null);
   const rootRef = useRef<am5.Root | null>(null); // Use ref to persist root
-  const dateAxisRef = useRef<am5xy.GaplessDateAxis<am5xy.AxisRendererX> | null>(
+  const dateAxisRef = useRef<am5xy.GaplessDateAxis<am5xy.AxisRenderer> | null>(
     null
   );
-  const valueAxisRef = useRef<am5xy.ValueAxis<am5xy.AxisRendererY> | null>(
-    null
-  );
+  const valueAxisRef = useRef<am5xy.ValueAxis<am5xy.AxisRenderer> | null>(null);
 
   const [activeTool, setActiveTool] = useState<am5stock.DrawingControl | null>(
     null
@@ -63,7 +61,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   const currentLinkRef = useRef<HTMLLinkElement | null>(null);
 
   //variables for live data chart
-  const [prices, setPrices] = useState();
+  const [prices, setPrices] = useState<number | null>();
   const socketUrl = `ws://localhost:8080`;
   const [lastCandleTime, setLastCandleTime] = useState(0);
   const currentLabelRef = useRef<am5xy.AxisLabel | null>(null);
@@ -132,7 +130,9 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   }, [isDarkMode]);
 
   useEffect(() => {
-    setDrawingSelection(stockChart?.get("drawingSelectionEnabled"));
+    setDrawingSelection(
+      stockChart?.get("drawingSelectionEnabled" as keyof am5.ISpriteSettings)
+    );
   }, [drawingSelection]);
 
   //creating web socket connection
@@ -312,7 +312,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       clustered: false,
       calculateAggregates: false,
       stroke: color,
-      name: currentSymbol.name,
+      name: currentSymbol?.name,
       xAxis: dateAxis,
       yAxis: valueAxis,
       valueYField: "close",
@@ -338,7 +338,9 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
           am5xy.CandlestickSeries.new(root, candleStickSettings)
         );
         if (selectedSeriesType === "procandlestick") {
-          valueSeries.columns.template.get("themeTags").push("pro");
+          (valueSeries as am5xy.CandlestickSeries).columns.template
+            .get("themeTags")
+            ?.push("pro");
         }
         break;
       case "line":
@@ -452,8 +454,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       name: "",
     });
 
-    seriesSwitcher.events.on("selected", (ev: am5.Event<AMEvent["type"]>) => {
-      setSeriesType(ev.item.id as string);
+    seriesSwitcher.events.on("selected", (ev) => {
+      setSeriesType((ev.item as am5stock.IDropdownListItem).id as string);
     });
 
     // Get settings for a new series
@@ -1248,12 +1250,16 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
 
             const circle = container.children.push(
               am5.Circle.new(root, {
-                radius: 5,
-                fill:
+                radius: 7,
+                stroke:
                   trade.tradeDirection === "up"
                     ? am5.color(0x00ff00)
                     : am5.color(0xff0000),
-                tooltipText: `Trade ${trade.ticketNo} at {valueY}`,
+                fill:
+                  trade.tradeDirection === "up"
+                    ? am5.color(0x005500)
+                    : am5.color(0x550000),
+                tooltipText: `${trade.openingPrice} $`,
                 tooltipY: 0,
               })
             );
@@ -1291,7 +1297,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   //UseEffect for live Data feed
   useEffect(() => {
     console.log("Live Price", prices);
-    let interval;
+    let interval: any;
     const currentValueDataItem = currentValueDataItemRef.current;
     const currentLabel = currentLabelRef.current;
     const updateChart = () => {
@@ -1300,7 +1306,10 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
       if (!root) return;
 
       const stockChart = root?.container.children.getIndex(0);
-      const valueSeries = stockChart.get("stockSeries");
+      const stockSeries = "stockSeries" as keyof am5.ISpriteSettings;
+      const valueSeries = stockChart?.get(
+        "stockSeries" as keyof am5.ISpriteSettings
+      );
       const livePrice = prices;
 
       // Update the current value label
