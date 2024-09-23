@@ -26,6 +26,10 @@ export interface UserData {
   name: string;
   email: string;
   token: string;
+  dateOfBirth: string | null;
+  emailStatus: string | null;
+  userStatus: string | null;
+  country: string | null;
 }
 
 // Error data interface
@@ -56,6 +60,7 @@ export interface RegisterData {
   fullName: string;
   currency: string;
   country: string;
+  dateOfBirth: string | null;
 }
 
 export interface SymbolData {
@@ -86,6 +91,7 @@ export interface TradesData {
   closingTime: string;
   isComplete: boolean;
   pnlValue: number | null;
+  accountType: string;
 }
 
 export interface AccountsData {

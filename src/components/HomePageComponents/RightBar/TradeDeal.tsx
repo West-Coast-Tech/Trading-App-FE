@@ -151,6 +151,7 @@ const TradeDeal = () => {
       openingPrice: null,
       closingPrice: null,
       pnlValue: null,
+      accountType: "demo",
     };
     try {
       dispatch(addTrade(payload));

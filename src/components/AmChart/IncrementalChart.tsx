@@ -476,7 +476,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         "stroke",
         "fill",
       ].forEach((setting) => {
-        newSettings[setting] = series.get(setting);
+        newSettings[setting] = series.get(setting as keyof am5.ISpriteSettings);
+        console.log("newSettings", newSettings[setting]);
       });
       return newSettings;
     }
@@ -581,7 +582,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         console.log("load data");
 
         // Round the `min` to the nearest interval and adjust it
-        min = am5.time.round(new Date(min), unit, 1).getTime();
+        min = am5.time.round(new Date(min), unit as TimeUnit, 1).getTime();
         console.log("min before minus", min);
         console.log("min after minus", min);
 
@@ -832,7 +833,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       ],
     });
     // Set default period after data is validated
-    valueSeries.events.once("datavalidated", function () {
+    valueSeries?.events.once("datavalidated", function () {
       periodSelector.selectPeriod({
         timeUnit: currentInterval.timeUnit,
         count: currentInterval.count * 120,

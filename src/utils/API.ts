@@ -12,6 +12,7 @@ import {
   AccountsData,
 } from "../actions/types";
 import apiClient from "../utils/apiClient";
+import { useId } from "react";
 
 // Define the API service with TypeScript
 export default {
@@ -112,7 +113,30 @@ export default {
   },
 
   // API request to load user data
-  loadUser(): Promise<AxiosResponse<UserData>> {
-    return apiClient.get("/user");
+  loadUser(token: string, userId: string): Promise<AxiosResponse<UserData>> {
+    console.log("UserId", userId);
+    return apiClient.post(
+      "/user",
+      { userId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  },
+  //API to update user data
+  updateUser(
+    token: string,
+    userId: string,
+    name: String,
+    dateOfBirth: string
+  ): Promise<AxiosResponse<UserData>> {
+    console.log("name", name);
+    return apiClient.post(
+      "/update-user",
+      { userId, name, dateOfBirth },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
   },
 };

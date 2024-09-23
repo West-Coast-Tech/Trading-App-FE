@@ -94,7 +94,7 @@ const TradesTable: React.FC = () => {
   }, [trades, filters]);
 
   return (
-    <div className="p-4 bg-gray-900 text-white min-h-screen">
+    <div className="p-4  text-tBase min-h-screen">
       {/* Filter Section */}
       <div className="flex flex-col sm:flex-row justify-between mb-4">
         <div className="flex flex-wrap gap-4">
@@ -222,7 +222,7 @@ const TradesTable: React.FC = () => {
                         {formatDate(tx.closingTime)}
                       </p>
                     </td>
-                    <td className="px-6 py-4">{tx.ipAddress || "-"}</td>
+                    <td className="px-6 py-4">{"-"}</td>
                     <td className="flex items-center text-center py-9 justify-center">
                       {tx.tradeDirection === "down" ? (
                         <FontAwesomeIcon
@@ -251,7 +251,9 @@ const TradesTable: React.FC = () => {
                     <td className="px-6 py-4">
                       <span
                         className={`text-sm ${
-                          tx.pnlValue >= 0 ? "text-green-500" : "text-red"
+                          tx.pnlValue && tx.pnlValue >= 0
+                            ? "text-green-500"
+                            : "text-red"
                         }`}
                       >
                         {tx.pnlValue !== null

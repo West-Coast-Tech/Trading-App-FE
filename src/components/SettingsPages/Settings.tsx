@@ -3,7 +3,7 @@ import AccountSettings from "./AccountSettings";
 import TradesTable from "./TradesTable";
 
 const Settings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("deposit");
+  const [activeTab, setActiveTab] = useState("account");
 
   // Render content based on active tab
   const renderContent = () => {
@@ -79,10 +79,14 @@ const Settings: React.FC = () => {
               Trade History
             </button>
           </div>
-          <div className="flex gap-5 text-tBase">
-            <div>My current Currency</div>
-            <div>Available for withdrawal</div>
-            <div>In the account</div>
+          <div className="flex gap-5 text-tBase items-center text-sm ">
+            <div className="border-r-[0.1rem] border-solid border-white py-1 px-4 ">
+              My current Currency
+            </div>
+            <div className="border-r-[0.1rem] border-solid border-white py-1 px-4 ">
+              Available for withdrawal
+            </div>
+            <div className="pr-10">In the account</div>
           </div>
         </div>
 
