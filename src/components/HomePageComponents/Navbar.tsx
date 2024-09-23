@@ -1,9 +1,13 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 import logo from "../../assets/logo.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutSuccess } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import star from "../../assets/star.svg";
+import { getAccounts } from "../../actions/accountActions";
+import { AccountsData, AppState } from "../../actions/types";
+import { selectAccount } from "../../features/accounts/accountSlice";
+
 export type NavbarType = {
   className?: string;
 };
@@ -11,20 +15,45 @@ export type NavbarType = {
 const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
+  const accounts = useSelector((state: AppState) => state.accounts.accounts);
+  const selectedAccount = useSelector(
+    (state: AppState) => state.accounts.selectedAccount
+  );
 
   const handleLogout = () => {
     dispatch(logoutSuccess());
     navigate("/login");
   };
 
+  // Fetch accounts and select a demo account if available
+  useEffect(() => {
+    dispatch(getAccounts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      // Automatically select the first demo account found
+      const demoAccount = accounts.find(
+        (account: AccountsData) => account.accType === "demo"
+      );
+      console.log("Demo Account", demoAccount);
+      if (demoAccount) {
+        dispatch(selectAccount(demoAccount));
+      }
+    }
+  }, [accounts, dispatch]);
+
+  console.log("Selected Account:", selectedAccount);
+  console.log("Accounts:", accounts);
+
   return (
     <div
-      className={`w-full h-[5vh] m-0 border-solid border-borderColor border-b-[0.5px] relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
+      className={`w-full h-[5vh] pl-5 text-tBase m-0 border-solid border-borderColor border-b-[0.5px] relative top-0 left-0 overflow-hidden shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
     >
       <div className="flex flex-row items-center justify-start">
         <div className="w-[215px] flex flex-row">
           <img
-            className="h-12 relative overflow-hidden shrink-0 "
+            className="h-12 relative overflow-hidden shrink-0"
             loading="lazy"
             alt="Logo"
             src={logo}
@@ -37,15 +66,15 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
       <div className="flex flex-row items-center justify-start gap-16 max-w-full">
         <div className="flex flex-row items-center gap-4">
-          <div className="h-[2.5rem] w-[4rem]  flex  hidden items-center justify-center rounded-[1.25rem] bg-border-brand-default border-[1px] border-solid border-border-brand-default">
+          <div className="flex items-center justify-center rounded-[1.25rem] bg-border-brand-default border-[1px] border-solid border-border-brand-default">
             <img
-              className="h-8 w-8 relative overflow-hidden"
+              className="relative w-[2rem] overflow-hidden"
               loading="lazy"
               alt="Star"
               src={star}
             />
           </div>
-          <button 
+          <button
             className="h-[2.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-gray-100 text-white flex items-center justify-center"
             onClick={handleLogout}
           >

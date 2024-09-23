@@ -1,29 +1,111 @@
-import React,{useState} from "react";
-import { LayoutDashboard, LineChart, StickyNote, Layers, Calendar, Settings } from "lucide-react";
-import Drawer, { DrawerItems } from "./Drawer"
+import React, { useEffect, useState } from "react";
+import {
+  LayoutDashboard,
+  LineChart,
+  StickyNote,
+  Layers,
+  Calendar,
+  Settings,
+} from "lucide-react";
+import Drawer, { DrawerItems } from "./Drawer";
+import { useNavigate, useLocation } from "react-router-dom";
+
 export type SidebarType = {
   className?: string;
 };
 
-const Sidebar: React.FC<SidebarType> = ({ }) => {
+// Define the sidebar items in a configuration array
+const sidebarItems = [
+  { key: "TRADE", text: "TRADE", icon: <LineChart size={18} />, path: "/home" },
+  {
+    key: "SUPPORT",
+    text: "SUPPORT",
+    icon: <LayoutDashboard size={18} />,
+    path: "/support",
+  },
+  {
+    key: "ACCOUNT",
+    text: "ACCOUNT",
+    icon: <StickyNote size={18} />,
+    path: "/settings",
+  },
+  {
+    key: "MATCHES",
+    text: "MATCHES",
+    icon: <Calendar size={18} />,
+    path: "/matches",
+  },
+  {
+    key: "MARKET",
+    text: "MARKET",
+    icon: <Layers size={18} />,
+    path: "/market",
+  },
+  {
+    key: "SETTINGS",
+    text: "Settings",
+    icon: <Settings size={18} />,
+    path: "/settings",
+  },
+];
+
+const Sidebar: React.FC<SidebarType> = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeItem, setActiveItem] = useState<string>("TRADE");
 
-  const handleItemClick = (item: string) => {
-    setActiveItem(item);
+  // Update activeItem based on the current route
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const currentItem = sidebarItems.find((item) =>
+      currentPath.startsWith(item.path)
+    );
+    if (currentItem) {
+      setActiveItem(currentItem.key);
+      sessionStorage.setItem("activeTab", currentItem.key);
+    } else {
+      setActiveItem("TRADE");
+      sessionStorage.setItem("activeTab", "TRADE");
+    }
+  }, [location.pathname]);
+
+  // On initial render, check sessionStorage for active tab
+  useEffect(() => {
+    const storedTab = sessionStorage.getItem("activeTab");
+    if (storedTab) {
+      setActiveItem(storedTab);
+      // Navigate to the stored path if needed
+      const storedItem = sidebarItems.find((item) => item.key === storedTab);
+      if (storedItem && location.pathname !== storedItem.path) {
+        navigate(storedItem.path, { replace: true });
+      }
+    }
+  }, []); // Run only once on mount
+
+  const handleItemClick = (item: { key: string; path: string }) => {
+    setActiveItem(item.key);
+    sessionStorage.setItem("activeTab", item.key);
+    navigate(item.path);
   };
+
   return (
-    
-    <div className="flex">
-        <Drawer > 
-          <DrawerItems active={activeItem === "TRADE"} onClick={() => handleItemClick("TRADE")} icon={<LineChart className="text-tBase" size={18} />} text="TRADE"  />
-          <DrawerItems active={activeItem === "SUPPORT"} onClick={() => handleItemClick("SUPPORT")} icon={<LayoutDashboard  className="text-tBase"  size={18} />} text="SUPPORT"  />
-          <DrawerItems active={activeItem === "ACCOUNT"} onClick={() => handleItemClick("ACCOUNT")} icon={<StickyNote className="text-tBase"   size={18} />} text="ACCOUNT"  />
-          <DrawerItems active={activeItem === "MATCHES"} onClick={() => handleItemClick("MATCHES")} icon={<Calendar  className="text-tBase"  size={18} />} text="MATCHES" />
-          <DrawerItems active={activeItem === "MARKET"} onClick={() => handleItemClick("MARKET")} icon={<Layers  className="text-tBase"  size={18} />} text="MARKET" />
-          <hr className="my-3" />
-          <DrawerItems active={activeItem === "SETTINGS"} onClick={() => handleItemClick("SETTINGS")} icon={<Settings size={18} />} text="Settings" />
-        </Drawer>
-      </div>
+    <div className="flex text-tBase">
+      <Drawer>
+        {sidebarItems.map((item) => (
+          <DrawerItems
+            key={item.key}
+            active={activeItem === item.key}
+            onClick={() => handleItemClick(item)}
+            icon={React.cloneElement(item.icon, {
+              className: "text-tBase",
+              size: 18,
+            })}
+            text={item.text}
+          />
+        ))}
+        <hr className="my-3" />
+      </Drawer>
+    </div>
   );
 };
 

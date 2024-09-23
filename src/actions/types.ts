@@ -1,6 +1,5 @@
 //src/actions/types.ts
 
-
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
@@ -20,6 +19,7 @@ import { UserState } from "../features/users/usersSlice";
 import { SymbolState } from "../features/symbol/symbolSlice";
 import { TradingDataState } from "../features/tradingData/tradingDataSlice";
 import { TradeState } from "../features/trades/tradeSlice";
+import { AccountState } from "../features/accounts/accountSlice";
 // User data interface
 export interface UserData {
   id: string;
@@ -39,15 +39,15 @@ export interface LoginData {
   email: string;
   password: string;
 }
-export interface OtpData{
+export interface OtpData {
   otp: string;
   otpToken: string;
 }
 
-export interface ResetData{
-  resetToken: string
-  id: string
-  newPassword: string
+export interface ResetData {
+  resetToken: string;
+  id: string;
+  newPassword: string;
 }
 // Register data interface
 export interface RegisterData {
@@ -58,14 +58,14 @@ export interface RegisterData {
   country: string;
 }
 
-export interface SymbolData{
+export interface SymbolData {
   _id: string;
   name: string;
   type: string;
   description: string;
-  createdAt:string | null;
+  createdAt: string | null;
 }
-export interface TradingData{
+export interface TradingData {
   timeStamps: string;
   open: number;
   close: number;
@@ -74,7 +74,7 @@ export interface TradingData{
   volume: number;
 }
 
-export interface TradesData{
+export interface TradesData {
   ticketNo: string;
   symbol: string;
   currency: string;
@@ -88,6 +88,12 @@ export interface TradesData{
   pnlValue: number | null;
 }
 
+export interface AccountsData {
+  equity: number;
+  accType: string;
+  accNo: string;
+  currency: string;
+}
 // Define the overall shape of your Redux store state
 export interface AppState {
   auth: AuthState;
@@ -95,7 +101,8 @@ export interface AppState {
   users: UserState;
   symbols: SymbolState;
   tradingData: TradingDataState;
-  trades: TradeState
+  trades: TradeState;
+  accounts: AccountState;
   // Add other slices of state as needed
 }
 

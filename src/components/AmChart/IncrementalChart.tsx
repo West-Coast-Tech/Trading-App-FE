@@ -13,12 +13,11 @@ import { TimeUnit } from "@amcharts/amcharts5/.internal/core/util/Time";
 import { createIndicatorIcon, createTimeIcon } from "./Icons";
 import SymbolBar from "../SymbolBar/SymbolBar";
 import { fetchTrades } from "../../actions/tradeActions";
+import { useTheme } from "../ThemeContext"; // Import the custom hook
 
 const selectSymbols = (state: AppState) => state.symbols.selectedSymbol;
 const selectTrades = (state: AppState) => state.trades.allTrades;
-interface IncrementalChartProps {
-  changeTheme: (theme: string) => void;
-}
+interface IncrementalChartProps {}
 
 //Setting config for Dark Theme
 const LabelColor = am5.color("rgb(0,255,255)"); //white
@@ -27,11 +26,12 @@ const PositiveColor = am5.color("rgb(0,0,255)"); //Positive Candle
 const NegativeColor = am5.color("rgb(255,0,255)"); //Negative Candle
 const BackGroundColor = am5.color("rgb(10, 20, 45)");
 
-const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
+const IncrementalChart: React.FC<IncrementalChartProps> = () => {
   const trades = useSelector(selectTrades);
   const tradeSeriesMapRef = useRef<{ [ticketNo: string]: am5xy.LineSeries }>(
     {}
   );
+  const { theme, toggleTheme } = useTheme(); // Access the current theme and toggle function
 
   const chartRef = useRef<HTMLDivElement | null>(null);
   const stockChartRef = useRef<am5stock.StockPanel | null>(null);
@@ -96,11 +96,12 @@ const IncrementalChart: React.FC<IncrementalChartProps> = ({ changeTheme }) => {
   ];
 
   useEffect(() => {
-    if (isDarkMode) {
-      changeTheme("black"); // Notify parent component about the theme change
-    } else {
-      changeTheme("white");
-    }
+    // if (isDarkMode) {
+    //   changeTheme("black"); // Notify parent component about the theme change
+    // } else {
+    //   changeTheme("white");
+    // }
+    toggleTheme();
     const theme = isDarkMode ? "dark" : "chart";
 
     // Remove the previous CSS if it exists
