@@ -105,7 +105,7 @@ const Settings: React.FC = () => {
             </button>
           </div>
           <div className="flex gap-5 text-gray-500 items-center text-sm ">
-            <div className="border-r-[0.1rem] border-solid border-white py-1 px-4 ">
+            <div className="border-r-[0.1rem] border-solid border-white  px-4 ">
               <p className="text-xs m-1 font-bold">My current Currency</p>
               <div className="flex flex-row space-x-2 text-tBase">
                 <FontAwesomeIcon
@@ -118,16 +118,16 @@ const Settings: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="border-r-[0.1rem] border-solid border-white py-1 px-4 ">
+            <div className="border-r-[0.1rem] border-solid border-white  px-4 ">
               <div className="text-xs font-bold">Available for withdrawal</div>
-              <div className="text-right font-bold text-lg text-tBase">
-                {realAccount?.equity}$
+              <div className="text-center font-bold text-lg text-tBase">
+                {realAccount?.equity} $
               </div>
             </div>
             <div className="pr-10">
               <div className="text-xs font-bold">In the Account</div>
-              <div className="text-right font-bold text-lg text-tBase">
-                {realAccount?.equity}$
+              <div className="text-center font-bold text-lg text-tBase">
+                {realAccount?.equity} $
               </div>
             </div>
           </div>

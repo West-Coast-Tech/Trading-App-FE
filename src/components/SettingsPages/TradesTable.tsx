@@ -35,6 +35,9 @@ const TradesTable: React.FC = () => {
   const [accountType, setAccountType] = useState<string>("real");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTrade, setSelectedTrade] = useState<TradesData | null>(null);
+  //For pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
 
   // Fetch all trades once when the component mounts
   useEffect(() => {
@@ -122,6 +125,14 @@ const TradesTable: React.FC = () => {
     });
   }, [trades, filters]);
 
+  // Get paginated trades
+  const paginatedTrades = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredTrades.slice(startIndex, endIndex);
+  }, [filteredTrades, currentPage, pageSize]);
+  const totalPages = Math.ceil(filteredTrades.length / pageSize);
+
   console.log("Filtered Trdes", filteredTrades);
   return (
     <div className="p-4 text-tBase">
@@ -180,21 +191,47 @@ const TradesTable: React.FC = () => {
           <div className="flex items-end">
             <button
               onClick={handleApplyFilters}
-              className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 px-4 mb-2 cursor-pointer text-white py-2 rounded hover:bg-blue-600 transition-colors"
             >
               Apply Filters
             </button>
           </div>
         </div>
         {/* Export Button */}
-        <div className="mt-4 sm:mt-0">
+        {/* <div className="mt-4 sm:mt-0">
           <button className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition-colors">
             Export
+          </button>
+        </div> */}
+        {/* Pagination Controls */}
+        <div className="flex justify-between items-center mt-4 space-x-2">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+            className={`px-4 text-white py-2 bg-blue-500 hover:cursor-pointer rounded hover:bg-blue-600 transition-colors ${
+              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Prev
+          </button>
+
+          <span className="text-sm">
+            {currentPage}/{totalPages}
+          </span>
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+            className={`px-4 text-white py-2 bg-blue-500 rounded hover:bg-blue-600 hover:cursor-pointer transition-colors ${
+              currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            Next
           </button>
         </div>
       </div>
 
-      {/* Table Section */}
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
           <thead className="text-xs uppercase text-center bg-gray-700">
@@ -214,6 +251,9 @@ const TradesTable: React.FC = () => {
               <th className="py-3 border-2 border-solid border-gray-600">
                 Amount
               </th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Profit/Loss
+              </th>
             </tr>
           </thead>
           <tbody className="text-center">
@@ -231,7 +271,7 @@ const TradesTable: React.FC = () => {
                 </td>
               </tr>
             )}
-            {!loading && !error && filteredTrades.length === 0 && (
+            {!loading && !error && paginatedTrades.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center py-4">
                   No trades found for the selected filters.
@@ -240,59 +280,51 @@ const TradesTable: React.FC = () => {
             )}
             {!loading &&
               !error &&
-              filteredTrades
-                .slice()
-                .reverse()
-                .map((tx: TradesData) => (
-                  <tr
-                    key={tx.ticketNo}
-                    className="bg-gray-800 border-2 border-solid border-gray-600 transition-colors"
-                  >
-                    <td className="px-3 py-1">{tx.symbol}</td>
-                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                      {tx.ticketNo}
-                    </td>
-                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                      <strong>{tx.openingPrice}</strong>
-                      <p className="text-[0.7rem]">
-                        {formatDate(tx.openingTime)}
-                      </p>
-                    </td>
-                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                      <strong>{tx.closingPrice}</strong>
-                      <p className="text-[0.7rem]">
-                        {formatDate(tx.closingTime)}
-                      </p>
-                    </td>
-                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                      <div className="flex items-center justify-center">
-                        {tx.tradeDirection === "down" ? (
-                          <FontAwesomeIcon
-                            color="red"
-                            icon={faCircleArrowDown}
-                            className="mr-2"
-                            aria-label="Trade Direction Down"
-                          />
-                        ) : (
-                          <FontAwesomeIcon
-                            className="text-green-600 mr-2"
-                            icon={faCircleArrowUp}
-                            aria-label="Trade Direction Up"
-                          />
-                        )}
-                        <span
-                          className={`text-sm ${
-                            tx.tradeDirection === "up"
-                              ? "text-green-500"
-                              : "text-red"
-                          }`}
-                        >
-                          {tx.amountInvested} $
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+              paginatedTrades.map((tx: TradesData) => (
+                <tr
+                  key={tx.ticketNo}
+                  className="bg-gray-800 border-2 border-solid border-gray-600 transition-colors"
+                >
+                  <td className="px-3 py-1">{tx.symbol}</td>
+                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                    {tx.ticketNo}
+                  </td>
+                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                    <strong>{tx.openingPrice}</strong>
+                    <p className="text-[0.7rem]">
+                      {formatDate(tx.openingTime)}
+                    </p>
+                  </td>
+                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                    <strong>{tx.closingPrice}</strong>
+                    <p className="text-[0.7rem]">
+                      {formatDate(tx.closingTime)}
+                    </p>
+                  </td>
+                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                    <span
+                      className={`text-sm ${
+                        tx.tradeDirection === "up"
+                          ? "text-green-500"
+                          : "text-red"
+                      }`}
+                    >
+                      {tx.amountInvested} $
+                    </span>
+                  </td>
+                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                    <span
+                      className={`text-sm ${
+                        tx.pnlValue && tx.pnlValue > 0
+                          ? "text-green-500"
+                          : "text-red"
+                      }`}
+                    >
+                      {tx.pnlValue} $
+                    </span>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
