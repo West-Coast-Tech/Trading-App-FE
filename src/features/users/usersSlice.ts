@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserData } from "../../actions/types";
 
 export interface UserState {
+  isDocumentUploaded: boolean;
   currentUser: UserData | null;
   users: Array<{ id: string; email: string }>;
   loading: boolean;
@@ -13,6 +14,7 @@ const initialState: UserState = {
   users: [],
   loading: false,
   error: null,
+  isDocumentUploaded: false,
 };
 
 export const userSlice = createSlice({
@@ -38,10 +40,29 @@ export const userSlice = createSlice({
       state.currentUser = action.payload;
       state.loading = false;
     },
+    documentUploadSuccess: (state, action: PayloadAction<File[]>) => {
+      if (state.currentUser) state.currentUser.documents = action.payload;
+      state.loading = false;
+    },
+    addFavoriteSuccess: (state, action: PayloadAction<string[]>) => {
+      if (state.currentUser) state.currentUser.favoriteSymbols = action.payload;
+      state.loading = false;
+    },
+    removeFavoriteSuccess: (state, action: PayloadAction<string[]>) => {
+      if (state.currentUser) state.currentUser.favoriteSymbols = action.payload;
+      state.loading = false;
+    },
   },
 });
 
-export const { getUsersSuccess, getUsersFail, getUsersStart, loadUser } =
-  userSlice.actions;
+export const {
+  getUsersSuccess,
+  getUsersFail,
+  getUsersStart,
+  loadUser,
+  documentUploadSuccess,
+  addFavoriteSuccess,
+  removeFavoriteSuccess,
+} = userSlice.actions;
 
 export default userSlice.reducer;

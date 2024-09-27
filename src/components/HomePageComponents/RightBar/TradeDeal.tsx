@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircle,
@@ -10,10 +10,12 @@ import {
 import { AppState } from "../../../actions/types";
 import { useSelector, useDispatch } from "react-redux";
 import { addTrade } from "../../../actions/tradeActions";
+import { getAccounts } from "../../../actions/accountActions";
 
 const selectCurrentSymbol = (state: AppState) => state.symbols.selectedSymbol;
 
 const TradeDeal = () => {
+  // Initialize time state
   const [time, setTime] = useState<Date>(() => {
     const now = new Date();
     const seconds = now.getSeconds();
@@ -22,12 +24,36 @@ const TradeDeal = () => {
     now.setMinutes(now.getMinutes() + minutesToAdd);
     return now;
   });
+  const selectedAccount = useSelector(
+    (state: AppState) => state.accounts.selectedAccount
+  );
   const [investment, setInvestment] = useState(100);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [isIntervalMode, setIsIntervalMode] = useState(false);
-  const [interval, setInterval] = useState<number>(60000); // Default 1 minute in milliseconds
+  const [intervalDuration, setIntervalDuration] = useState<number>(60000); // Default 1 minute in milliseconds
   const dispatch = useDispatch<any>();
   const currentSymbol = useSelector(selectCurrentSymbol);
+
+  // Access Redux state for accounts or other necessary data if needed
+
+  // Dynamic Timer: Update 'time' if current time has passed 'time' and not in interval mode
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      if (!isIntervalMode && now >= time) {
+        const seconds = now.getSeconds();
+        const minutesToAdd = seconds > 0 ? 2 : 1;
+        const newTime = new Date();
+        newTime.setSeconds(0, 0);
+        newTime.setMinutes(newTime.getMinutes() + minutesToAdd);
+        setTime(newTime);
+      }
+    };
+
+    const intervalId = setInterval(updateTime, 1000); // Check every second
+
+    return () => clearInterval(intervalId); // Cleanup on unmount or dependency change
+  }, [time, isIntervalMode]);
 
   const handleTimeClick = () => {
     setTimePickerVisible(!timePickerVisible);
@@ -44,23 +70,23 @@ const TradeDeal = () => {
   };
 
   const handleIntervalSelect = (selectedInterval: number) => {
-    setInterval(selectedInterval);
+    setIntervalDuration(selectedInterval);
     setTimePickerVisible(false);
   };
 
   const increaseTime = () => {
     if (isIntervalMode) {
-      setInterval((prev) => prev + 60000);
+      setIntervalDuration((prev) => prev + 60000); // Increase by 1 minute
     } else {
-      setTime((prevTime) => new Date(prevTime.getTime() + 60000));
+      setTime((prevTime) => new Date(prevTime.getTime() + 60000)); // Increase by 1 minute
     }
   };
 
   const decreaseTime = () => {
     if (isIntervalMode) {
-      setInterval((prev) => Math.max(5000, prev - 60000));
+      setIntervalDuration((prev) => Math.max(5000, prev - 60000)); // Decrease by 1 minute, minimum 5 seconds
     } else {
-      setTime((prevTime) => new Date(prevTime.getTime() - 60000));
+      setTime((prevTime) => new Date(prevTime.getTime() - 60000)); // Decrease by 1 minute
     }
   };
 
@@ -123,13 +149,13 @@ const TradeDeal = () => {
     return String(Math.floor(Math.random() * (max - min + 1) + min));
   };
 
-  const handleSubmit = (direction: string) => {
+  const handleSubmit = async (direction: string) => {
     const ticketNo = generateRandomTicketNumber();
     const openingTime = new Date();
     let closingTime: Date;
 
     if (isIntervalMode) {
-      closingTime = new Date(openingTime.getTime() + interval);
+      closingTime = new Date(openingTime.getTime() + intervalDuration);
     } else {
       closingTime = time;
     }
@@ -151,10 +177,11 @@ const TradeDeal = () => {
       openingPrice: null,
       closingPrice: null,
       pnlValue: null,
-      accountType: "demo",
+      accountNo: selectedAccount?.accNo as string,
     };
     try {
-      dispatch(addTrade(payload));
+      await dispatch(addTrade(payload));
+      dispatch(getAccounts());
     } catch (error) {
       console.error("Sending Trade Failed", error);
     }
@@ -200,7 +227,7 @@ const TradeDeal = () => {
             />
             <b>
               {isIntervalMode
-                ? formatInterval(interval)
+                ? formatInterval(intervalDuration)
                 : time.toLocaleTimeString([], {
                     hour12: false,
                     hour: "2-digit",
@@ -220,7 +247,7 @@ const TradeDeal = () => {
       </div>
 
       {timePickerVisible && (
-        <div className="absolute grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md mt-[3rem] z-50">
+        <div className="absolute grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md mt-[3rem] z-20">
           {isIntervalMode
             ? generateIntervalOptions().map((option, index) => (
                 <div
@@ -260,7 +287,7 @@ const TradeDeal = () => {
             onClick={() => setInvestment((prev) => Math.max(1, prev - 1))}
           />
           <input
-            type="number"
+            type="text"
             min="1"
             value={investment}
             onChange={(e) => setInvestment(Number(e.target.value))}
@@ -279,30 +306,31 @@ const TradeDeal = () => {
         <button
           type="button"
           className="
-      bg-green-500 
-      text-white 
-      font-extrabold 
-      flex 
-      items-center 
-      justify-between 
-      rounded-md 
-      px-4 
-      h-full 
-      w-full 
-      hover:bg-green-600 
-      hover:shadow-lg 
-      hover:cursor-pointer
-      active:bg-green-400 
-      active:brightness-110 
-      active:outline-none 
-      active:ring-2 
-      active:ring-green-300 
-      transition 
-      transform 
-      duration-200 
-      ease-in-out 
-      active:scale-95
-    "
+            bg-green-500 
+            text-white 
+            font-extrabold 
+            flex 
+            items-center 
+            justify-between 
+            rounded-md 
+            px-4 
+            h-full 
+            w-full 
+            hover:bg-green-600 
+            hover:scale-105
+            hover:shadow-lg 
+            hover:cursor-pointer
+            active:bg-green-400 
+            active:brightness-110 
+            active:outline-none 
+            active:ring-2 
+            active:ring-green-300 
+            transition 
+            transform 
+            duration-200 
+            ease-in-out 
+            active:scale-95
+          "
           onClick={() => handleSubmit("up")}
           aria-label="Submit Up Trade"
         >
@@ -320,27 +348,28 @@ const TradeDeal = () => {
         <button
           type="button"
           className="bg-red
-          text-white 
-          font-extrabold 
-          flex 
-          items-center 
-          justify-between 
-          rounded-md 
-          px-4 
-          h-full 
-          w-full 
-          hover:brightness-90
-          hover:shadow-lg 
-          hover:cursor-pointer
-          active:brightness-110
-          active:outline-none 
-          active:ring-2 
-          active:ring-green-300 
-          transition 
-          transform 
-          duration-200 
-          ease-in-out 
-          active:scale-95"
+            text-white 
+            font-extrabold 
+            flex 
+            items-center 
+            justify-between 
+            rounded-md 
+            px-4 
+            h-full 
+            w-full 
+            hover:brightness-75
+            hover:shadow-lg 
+            hover:cursor-pointer
+            hover:scale-105
+            active:brightness-110
+            active:outline-none 
+            active:ring-2 
+            active:ring-green-300 
+            transition 
+            transform 
+            duration-200 
+            ease-in-out 
+            active:scale-95"
           onClick={() => handleSubmit("down")}
         >
           <p>Down</p>

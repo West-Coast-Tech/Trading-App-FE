@@ -30,6 +30,8 @@ export interface UserData {
   emailStatus: string | null;
   userStatus: string | null;
   country: string | null;
+  documents: File[] | null;
+  favoriteSymbols: string[] | null;
 }
 
 // Error data interface
@@ -91,12 +93,12 @@ export interface TradesData {
   closingTime: string;
   isComplete: boolean;
   pnlValue: number | null;
-  accountType: string;
+  accountNo: string;
 }
 
 export interface AccountsData {
   equity: number;
-  accType: string;
+  accountType: string;
   accNo: string;
   currency: string;
 }

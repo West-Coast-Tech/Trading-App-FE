@@ -1,20 +1,23 @@
+// components/AccountSettings.tsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserData, updateUser } from "../../actions/userActions"; // Ensure updateUser is imported
+import { getUserData, updateUser } from "../../actions/userActions";
 import { AppState } from "../../actions/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExclamationCircle,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import UploadDocument from "./UploadDocument";
+import { changePassword } from "../../actions/authActions";
+import { hashPassword } from "../../services/auth";
 
 const AccountSettings: React.FC = () => {
   const dispatch = useDispatch<any>();
   const userData = useSelector((state: AppState) => state.users.currentUser);
-
+  console.log("UserData", userData);
   // Local state for form fields
   const [fullName, setFullName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
+  const [oldPassword, setOldPassword] = useState<string>("");
+  const [newPassword, setnewPassword] = useState<string>("");
 
   useEffect(() => {
     dispatch(getUserData());
@@ -24,7 +27,7 @@ const AccountSettings: React.FC = () => {
   useEffect(() => {
     if (userData) {
       setFullName(userData.name || "");
-      setDateOfBirth(userData.dateOfBirth || ""); // Assuming dateOfBirth exists
+      setDateOfBirth(userData.dateOfBirth || "");
     }
   }, [userData]);
 
@@ -42,9 +45,16 @@ const AccountSettings: React.FC = () => {
         console.error("Error updating user:", error);
       });
   };
-
-  console.log("UserData", userData);
-
+  const hanldeChangePassword = async (e: any) => {
+    e.preventDefault();
+    try {
+      const hashedOldPassword = await hashPassword(oldPassword);
+      const hashedNewPassword = await hashPassword(newPassword);
+      await dispatch(changePassword(hashedOldPassword, hashedNewPassword));
+    } catch (error) {
+      console.error("Error changing password", error);
+    }
+  };
   return (
     <div className="text-tBase">
       <div className="grid grid-cols-4 gap-4">
@@ -139,7 +149,7 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {/* Second Column: Documents Verification */}
-        {userData?.emailStatus == "verdified" ? (
+        {userData?.emailStatus === "veified" ? (
           <div className="bg-[rgba(200,23,23,0.3)] h-[30vh] border-4 border-solid border-[rgba(200,23,23)] text-white p-6 rounded-lg flex items-center space-x-4 shadow-md">
             {/* Icon Section */}
             <div className="flex-shrink-0">
@@ -162,43 +172,7 @@ const AccountSettings: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-[rgba(22,22,100,0.1)] border-4 border-solid border-blue-900 rounded-xl flex flex-col p-6 space-y-6">
-            {/* Header Section */}
-            <div className="flex items-center space-x-4 border-b border-dashed border-gray-500 pb-2">
-              {/* Icon */}
-              <FontAwesomeIcon
-                icon={faExclamationCircle}
-                className="text-blue-900 text-3xl"
-                aria-label="Exclamation Icon"
-              />
-
-              {/* Title */}
-              <h4 className="text-lg font-semibold m-0">
-                Verification of Documents
-              </h4>
-            </div>
-
-            {/* Body Content */}
-            <div className="flex flex-col space-y-4">
-              {/* Instruction Text */}
-              <p className="text-base m-0">
-                Please upload a color photo or scanned image of your regular
-                civil passport, driving license, or National Identity card.
-              </p>
-
-              {/* Upload Button */}
-              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Upload Documents
-              </button>
-
-              {/* Additional Information */}
-              <p className="text-xs text-gray-600 m-0">
-                Profile verification means the provision of an official document
-                certifying the Client's identity. This procedure can be
-                initiated by the Company's security department at any time.
-              </p>
-            </div>
-          </div>
+          <UploadDocument />
         )}
 
         {/* Third Column: Security Settings */}
@@ -208,16 +182,7 @@ const AccountSettings: React.FC = () => {
             <span>Two-step verification</span>
             <span className="text-green-400">Enabled</span>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span>To enter the platform</span>
-              <input type="checkbox" checked className="accent-blue-500" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span>To withdraw funds</span>
-              <input type="checkbox" checked className="accent-blue-500" />
-            </div>
-          </div>
+
           <div className="space-y-2">
             <div className="flex flex-col space-y-1">
               <label htmlFor="oldPassword" className="text-sm">
@@ -226,6 +191,8 @@ const AccountSettings: React.FC = () => {
               <input
                 type="password"
                 id="oldPassword"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
                 className="bg-gray-700 text-white p-2 rounded"
               />
             </div>
@@ -236,6 +203,8 @@ const AccountSettings: React.FC = () => {
               <input
                 type="password"
                 id="newPassword"
+                value={newPassword}
+                onChange={(e) => setnewPassword(e.target.value)}
                 className="bg-gray-700 text-white p-2 rounded"
               />
             </div>
@@ -249,7 +218,10 @@ const AccountSettings: React.FC = () => {
                 className="bg-gray-700 text-white p-2 rounded"
               />
             </div>
-            <button className="bg-blue-600 px-4 py-2 rounded text-sm text-tBase">
+            <button
+              className="bg-blue-600 px-4 py-2 rounded text-sm text-tBase"
+              onClick={hanldeChangePassword}
+            >
               Change Password
             </button>
           </div>

@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
 
         {/* Page Content */}
         <div className="p-4 overflow-auto">
-          <Outlet /> {/* This renders the child route components */}
+          <Outlet />
         </div>
       </div>
     </div>

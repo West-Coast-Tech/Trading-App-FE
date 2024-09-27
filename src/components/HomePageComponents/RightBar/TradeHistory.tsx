@@ -80,7 +80,7 @@ const TradeHistory: React.FC = () => {
       setExpandedTradeId(ticketNo);
     }
   };
-
+  console.log("Trades In TradeSHIstor", trades);
   return (
     <div className="flex flex-col">
       {/* Tabs */}
@@ -124,7 +124,7 @@ const TradeHistory: React.FC = () => {
           trades.length ? (
             <div className="">
               <div className="flex text-gray-500 text-xs gap-3 font-semibold p-2 justify-center items-center">
-                <span>19 September</span>
+                <span>{currentTime.toDateString()}</span>
                 <span className="px-[0.23rem] rounded-xl text-[0.66rem] bg-gray-500 text-primary">
                   {trades.length}
                 </span>
@@ -215,7 +215,7 @@ const TradeHistory: React.FC = () => {
                               }`}
                             >
                               {trade.pnlValue !== null
-                                ? `${trade.pnlValue.toFixed(2)} $`
+                                ? `${trade.pnlValue || 0} $`
                                 : "0 $"}
                             </span>
                           </div>

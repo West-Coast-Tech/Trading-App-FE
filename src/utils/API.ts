@@ -71,6 +71,14 @@ export default {
       },
     });
   },
+
+  changePassword(token: string, payload: any): Promise<AxiosResponse<void>> {
+    return apiClient.post("/auth/change-password", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
   getSymbols(token: string): Promise<AxiosResponse<SymbolData[]>> {
     return apiClient.get("/symbols", {
       headers: { Authorization: `Bearer ${token}` },
@@ -138,5 +146,44 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+  },
+
+  //API to upload documents
+  uploadDocuments(
+    token: string,
+    formData: FormData
+  ): Promise<AxiosResponse<{ documents: File[] }>> {
+    console.log("Sending document upload request", formData);
+    return apiClient.post("/upload-documents", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`, // Adjust if you use a different auth mechanism
+      },
+    });
+  },
+
+  //API to handle favorite symbols
+  addFavoriteSymbol(
+    token: string,
+    symbolId: string,
+    userId: string
+  ): Promise<AxiosResponse<string[]>> {
+    return apiClient.post(
+      "/users/favorite-symbol",
+      { symbolId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  },
+  //API to handle favorite symbols
+  removeFavoriteSymbol(
+    token: string,
+    symbolId: string,
+    userId: string
+  ): Promise<AxiosResponse<string[]>> {
+    return apiClient.delete(`/users/favorite-symbol/${symbolId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
   },
 };

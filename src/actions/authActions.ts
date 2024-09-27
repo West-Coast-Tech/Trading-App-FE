@@ -108,6 +108,22 @@ export const resetPassword =
     }
   };
 
+export const changePassword =
+  (oldPassword: string, newPassword: string) => async (dispatch: Dispatch) => {
+    try {
+      const id = sessionStorage.getItem("id") || "";
+      const token = sessionStorage.getItem("token") || "";
+      const payload = {
+        id,
+        oldPassword,
+        newPassword,
+      };
+      const response = await API.changePassword(token, payload);
+    } catch (error) {
+      console.error("Error changing password", error);
+    }
+  };
+
 // Action to logout user
 export const logoutUser = () => (dispatch: Dispatch) => {
   dispatch(logoutSuccess());

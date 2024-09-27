@@ -15,6 +15,7 @@ import {
 } from "../features/trades/tradeSlice"; // Import actions from your trade slice
 import API from "../utils/API"; // Import API client
 import { TradesData } from "./types";
+import { getAccounts } from "./accountActions";
 
 // Action to fetch trades
 export const fetchTrades = () => async (dispatch: Dispatch) => {
@@ -41,6 +42,7 @@ export const addTrade =
       const userId = sessionStorage.getItem("id") || "";
       console.log("userId", userId);
       const response = await API.addTrade(tradeData, userId); // API call to create a trade
+
       dispatch(addTradeSuccess(response.data));
     } catch (err: any) {
       dispatch(addTradeFail(err.response?.data || "Failed to add trade"));

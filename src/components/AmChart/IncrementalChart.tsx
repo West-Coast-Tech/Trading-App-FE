@@ -14,6 +14,7 @@ import { createIndicatorIcon, createTimeIcon } from "./Icons";
 import SymbolBar from "../SymbolBar/SymbolBar";
 import { fetchTrades } from "../../actions/tradeActions";
 import { useTheme } from "../ThemeContext"; // Import the custom hook
+import { getAccounts } from "../../actions/accountActions";
 
 const selectSymbols = (state: AppState) => state.symbols.selectedSymbol;
 const selectTrades = (state: AppState) => state.trades.allTrades;
@@ -32,7 +33,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     {}
   );
   const { theme, toggleTheme } = useTheme(); // Access the current theme and toggle function
-
+  const themeFileName = theme === "black" ? "dark" : "chart";
   const chartRef = useRef<HTMLDivElement | null>(null);
   const stockChartRef = useRef<am5stock.StockPanel | null>(null);
   const rootRef = useRef<am5.Root | null>(null); // Use ref to persist root
@@ -57,7 +58,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
   const [selectedSeriesType, setSelectedSeriesType] =
     useState<string>("candlestick"); // default series type
 
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const currentLinkRef = useRef<HTMLLinkElement | null>(null);
 
   //variables for live data chart
@@ -97,12 +97,10 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
 
   useEffect(() => {
     // if (isDarkMode) {
-    //   changeTheme("black"); // Notify parent component about the theme change
     // } else {
     //   changeTheme("white");
-    // }
-    toggleTheme();
-    const theme = isDarkMode ? "dark" : "chart";
+    // }b
+    const themeFileName = theme === "black" ? "dark" : "chart";
 
     // Remove the previous CSS if it exists
     if (currentLinkRef.current) {
@@ -112,7 +110,10 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     // Create a new link element
     const linkElement = document.createElement("link");
     linkElement.rel = "stylesheet";
-    linkElement.href = new URL(`./${theme}.css`, import.meta.url).toString();
+    linkElement.href = new URL(
+      `./${themeFileName}.css`,
+      import.meta.url
+    ).toString();
     linkElement.type = "text/css";
 
     // Append the new link element to the document head
@@ -128,7 +129,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         currentLinkRef.current = null;
       }
     };
-  }, [isDarkMode]);
+  }, [theme]);
 
   useEffect(() => {
     setDrawingSelection(
@@ -164,6 +165,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       console.log("Current Price");
       if (data.type == "TRADE_COMPLETED") {
         dispatch(fetchTrades());
+        dispatch(getAccounts());
       }
     };
 
@@ -209,7 +211,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     myTheme.rule("InterfaceColors").setAll({
       background: am5.color("#f7f7f7"),
     });
-    if (isDarkMode) {
+    if (theme == "black") {
       root.setThemes([dark]); // Set dark theme
       // loadCSS("./dark.css"); // Load dark CSS
     } else {
@@ -231,7 +233,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       })
     );
     stockChartRef.current = chart;
-
+    chart.panelControls.set("forceHidden", true);
     // chart.get('colors')?.set('step', 2);
 
     const valueAxis = chart.yAxes.push(
@@ -250,13 +252,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       centerY: am5.percent(100),
       maxPosition: 0.98,
     });
-
-    // valueAxis.axisHeader.children.push(am5.Label.new(root, {
-    //   text: 'Value',
-    //   fontWeight: 'bold',
-    //   paddingBottom: 5,
-    //   paddingTop: 5
-    // }));
 
     const volumeAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
@@ -302,10 +297,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     );
     dateAxisRef.current = dateAxis;
 
-    // dateAxis.get('renderer')?.labels.template.setAll({
-    //   minPosition: 0.01,
-    //   maxPosition: 0.99
-    // });
     const color = root.interfaceColors.get("background");
 
     const candleStickSettings = {
@@ -362,16 +353,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     }
 
     stockChart.set("stockSeries", valueSeries);
-
-    // const valueTooltip = valueSeries.set('tooltip', am5.Tooltip.new(root, {
-    //   getFillFromSprite: false,
-    //   getStrokeFromSprite: true,
-    //   getLabelFillFromSprite: true,
-    //   autoTextColor: false,
-    //   pointerOrientation: 'horizontal',
-    //   labelText: '{name}: {valueY} {valueYChangePreviousPercent.formatNumber("[#00ff00]+#,###.##|[#ff0000]#,###.##|[#999999]0")}%'
-    // }));
-    // valueTooltip.get('background')?.set('fill', root.interfaceColors.get('background'));
 
     const volumePanel = stockChart.panels.push(
       am5stock.StockPanel.new(root, {
@@ -772,28 +753,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       }
     };
 
-    // document.getElementById('btn_h')?.addEventListener('click', () => {
-    //   if (currentUnit !== 'hour') {
-    //     currentUnit = 'hour';
-    //     loadData('hour', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-    //   }
-    // });
-
-    // document.getElementById('btn_d')?.addEventListener('click', () => {c
-    //   if (currentUnit !== 'day') {
-    //     currentUnit = 'day';
-    //     loadData('day', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-    //   }
-    // });
-
-    // document.getElementById('btn_m')?.addEventListener('click', () => {
-    //     console.log("button month")
-    //   if (currentUnit !== 'month') {
-    //     currentUnit = 'month';
-    //     loadData('month', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-    //   }
-    // });
-
     const currentDate = new Date();
     const min =
       currentDate.getTime() -
@@ -912,25 +871,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     intervalSwitcher.events.on("selected", (ev) => {
       const newInterval = ev.item.interval;
       const newTimeUnit = newInterval.timeUnit;
-      // if (newTimeUnit==currentInterval.timeUnit){
-      //   dateAxis.set('groupInterval', newInterval);
-      //   setCurrentInterval(newInterval)
-      // } else {
-      //   switch(newTimeUnit){
-      //     case 'minute':
-      //       loadData('minute', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      //       break;
-      //     case 'hour':
-      //       loadData('hour', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      //       break;
-      //     case 'day':
-      //       loadData('day', dateAxis.getPrivate('selectionMin') as number, dateAxis.getPrivate('selectionMax') as number, 'none');
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      //   setCurrentInterval(newInterval)
-      // }
+
       setCurrentInterval(newInterval);
       dateAxis.setAll({
         groupIntervals: [
@@ -950,34 +891,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         ],
       });
       console.log("groupintervals", dateAxis.get("groupIntervals"));
-
-      // const min = dateAxis.getPrivate('min') as number;
-      // const selectionMin = Math.max(dateAxis.getPrivate('selectionMin') as number, absoluteMin);
-      // loadData(currentUnit,selectionMin,min,"left")
-      // // chart.invalidateRawData();
-      // // chart.appear(500, 100);
-      // loadSomeData()
-      // valueSeries.set('xAxis',dateAxis)
-      // stockChart.set('stockSeries',valueSeries)
     });
 
-    //reapplying axis settings after indicator
-
-    // const drawingControl = am5stock.DrawingControl.new(root, {
-    //     stockChart: stockChart,
-    //   });
-
-    //   stockChart.events.on('drawingadded', () => {
-    //     console.log('drawwing added')
-    //     drawingControl.set('active',false)
-    //   });
-    //   stockChart.events.on('drawingselected', () => {
-    //     console.log('drawwing select')
-    //     drawingControl.set('active',true)
-    //   });
-    //    Function to activate drawing mode
-
-    // Add the toolbar
     const toolbar = am5stock.StockToolbar.new(root, {
       container: document.getElementById("chartcontrols")!,
       stockChart: stockChart,
@@ -989,25 +904,15 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
           // icon: createIndicatorIcon()
         }),
         intervalSwitcher,
-        periodSelector,
         seriesSwitcher,
         //  drawingControl,
-        am5stock.ResetControl.new(root, {
-          stockChart: stockChart,
-        }),
+
         am5stock.SettingsControl.new(root, {
           stockChart: stockChart,
         }),
       ],
     });
 
-    //   const toggleDarkMode = () => {
-    //     setIsDarkMode((prevMode) => !prevMode);
-    //   };
-    //   const darkModeButton = document.getElementById('darkmode-toggle');
-    //   if (darkModeButton) {
-    //     darkModeButton.addEventListener('click', toggleDarkMode);
-    //   }
     const toggleFullscreen = () => {
       const chartDiv = document.getElementById("chartdiv");
 
@@ -1073,20 +978,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       setSelectedDrawing(ev.target);
     });
 
-    // Add drawingselected event listener
-    //   stockChart.events.on('drawingselected', (ev) => {
-    //     const selectedDrawing = ev.target;
-    //     const drawingType = selectedDrawing.get('type'); // Assuming the drawing tool has a 'type' property
-
-    //     // Deactivate any active tool
-    //     if (activeTool) {
-    //       activeTool.set('active', false);
-    //       setActiveTool(null);
-    //     }
-
-    //     // Activate controls for the selected drawing
-    //     activateDrawingTool(drawingType);
-    //   });
     const handleClickOutside = (event: MouseEvent) => {
       const drawingToolsElement = document.getElementById("drawing-tools");
       if (
@@ -1099,70 +990,6 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    // //Function to create trade events
-    // const createEventSeries = (priceLevel: number, closingTime: number) => {
-    //   // Define your event dates and price level
-    //   // The y-axis value where events occur
-    //   const openingTime = currentDate.getTime();
-    //   const eventData = [
-    //     { date: openingTime, value: priceLevel },
-    //     { date: closingTime, value: priceLevel },
-    //   ];
-
-    //   // Create an event series for the markers
-    //   const eventSeries = chart.series.push(
-    //     am5xy.LineSeries.new(root, {
-    //       xAxis: dateAxis,
-    //       yAxis: valueAxis,
-    //       valueXField: "date",
-    //       valueYField: "value",
-    //       name: "Events",
-    //     })
-    //   );
-
-    //   // Set the data for the event series
-    //   eventSeries.data.setAll(eventData);
-
-    //   // Add bullets (markers) to the event series
-    //   eventSeries.bullets.push(function () {
-    //     const container = am5.Container.new(root, {});
-
-    //     const circle = container.children.push(
-    //       am5.Circle.new(root, {
-    //         radius: 8,
-    //         fill: am5.color(0xff0000),
-    //         tooltipText: "Event at {valueY}",
-    //         tooltipY: 0,
-    //       })
-    //     );
-
-    //     return am5.Bullet.new(root, {
-    //       sprite: container,
-    //     });
-    //   });
-
-    //   // Create a line series to connect the two events
-    //   const eventLineSeries = chart.series.push(
-    //     am5xy.LineSeries.new(root, {
-    //       xAxis: dateAxis,
-    //       yAxis: valueAxis,
-    //       valueXField: "date",
-    //       valueYField: "value",
-    //       stroke: am5.color(0x0000ff),
-    //       strokeWidth: 2,
-    //     })
-    //   );
-
-    //   // Set the data for the line series
-    //   eventLineSeries.data.setAll(eventData);
-
-    //   // Optional: Customize the line appearance
-    //   eventLineSeries.strokes.template.setAll({
-    //     strokeWidth: 4, // Dashed line
-    //   });
-    // };
-
-    // createEventSeries(141.8, 1726663836000);
     root.addDisposer(
       am5.utils.addEventListener(root.dom, "contextmenu", function (ev) {
         ev.preventDefault();
@@ -1178,7 +1005,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         fullscreenButton.removeEventListener("click", toggleFullscreen);
       }
     };
-  }, [isDarkMode, currentSymbol, currentInterval]);
+  }, [theme, currentSymbol, currentInterval]);
 
   //UseEffect hook to create new trade event series
   useEffect(() => {
@@ -1294,7 +1121,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         delete tradeSeriesMap[ticketNo];
       }
     });
-  }, [trades, currentSymbol, isDarkMode]);
+  }, [trades, currentSymbol]);
 
   //UseEffect for live Data feed
   useEffect(() => {
@@ -1617,7 +1444,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
               <i className="fas fa-expand-arrows-alt"></i>
             </button>
             <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
+              onClick={toggleTheme}
               className="relative mr-10 cursor-pointer mt-4 border-none h-[1.2rem] text-tBase bg-transparent"
             >
               <i className={`fas fa-moon`}></i>

@@ -32,7 +32,7 @@ const TradesTable: React.FC = () => {
 
   const [fromDate, setFromDate] = useState<string>(getDefaultFromDate());
   const [toDate, setToDate] = useState<string>(getDefaultToDate());
-  const [accountType, setAccountType] = useState<string>("");
+  const [accountType, setAccountType] = useState<string>("real");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTrade, setSelectedTrade] = useState<TradesData | null>(null);
 
@@ -66,12 +66,6 @@ const TradesTable: React.FC = () => {
   };
 
   // Apply Filters Handler
-  const [filters, setFilters] = useState({
-    fromDate: getDefaultFromDate(),
-    toDate: getDefaultToDate(),
-    accountType: "",
-  });
-
   const handleApplyFilters = () => {
     setFilters({
       fromDate,
@@ -80,64 +74,109 @@ const TradesTable: React.FC = () => {
     });
   };
 
+  // Define the filters state
+  const [filters, setFilters] = useState({
+    fromDate: getDefaultFromDate(),
+    toDate: getDefaultToDate(),
+    accountType: "real",
+  });
+
+  // Helper function to parse fromDate with start of the day
+  const parseFromDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day, 0, 0, 0, 0); // 00:00:00.000
+  };
+
+  // Helper function to parse toDate with end of the day
+  const parseToDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day, 23, 59, 59, 999); // 23:59:59.999
+  };
   // Memoized Filtered Trades
   const filteredTrades = useMemo(() => {
     return trades.filter((trade) => {
       const tradeDate = new Date(trade.openingTime);
-      const from = new Date(filters.fromDate);
-      const to = new Date(filters.toDate);
+      const from = parseFromDate(filters.fromDate);
+      const to = parseToDate(filters.toDate);
       const withinDateRange = tradeDate >= from && tradeDate <= to;
+      console.log(tradeDate, from, to);
+      if (!trade.accountNo || !/^(\d{2})\d+$/.test(trade.accountNo)) {
+        // Optionally, log or handle invalid accNo
+        // console.log("trade account no", trade.accountNo);
+        // console.log(
+        //   "does it pass the test",
+        //   !/^(\d{2})\d+$/.test(trade.accountNo)
+        // );
+        return false;
+      }
+
+      // Derive accountType based on accountNo prefix
+      const accPrefix = trade.accountNo.substring(0, 2);
+      const derivedAccountType =
+        accPrefix === "45" ? "real" : accPrefix === "26" ? "demo" : "";
       const matchesAccountType =
-        filters.accountType === "" || trade.accountType === filters.accountType;
+        filters.accountType === "" ||
+        derivedAccountType === filters.accountType;
+      console.log(matchesAccountType, withinDateRange);
       return withinDateRange && matchesAccountType;
     });
   }, [trades, filters]);
 
+  console.log("Filtered Trdes", filteredTrades);
   return (
-    <div className="p-4  text-tBase min-h-screen">
+    <div className="p-4 text-tBase">
       {/* Filter Section */}
       <div className="flex flex-col sm:flex-row justify-between mb-4">
-        <div className="flex flex-wrap gap-4">
-          <div>
-            <label htmlFor="fromDate" className="block text-sm mb-1">
+        <div className="flex flex-row gap-4">
+          {/* From Date Filter */}
+          <div className="flex flex-row items-center">
+            <label htmlFor="fromDate" className="block text-sm mr-2">
               From:
             </label>
-            <input
-              id="fromDate"
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="bg-gray-800 text-white p-2 rounded"
-            />
+            <div>
+              <input
+                id="fromDate"
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="bg-gray-800 text-white p-2 rounded"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="toDate" className="block text-sm mb-1">
+          {/* To Date Filter */}
+          <div className="flex flex-row items-center">
+            <label htmlFor="toDate" className="block text-sm mr-2">
               To:
             </label>
-            <input
-              id="toDate"
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="bg-gray-800 text-white p-2 rounded"
-            />
+            <div>
+              <input
+                id="toDate"
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="bg-gray-800 text-white p-2 rounded"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="accountType" className="block text-sm mb-1">
+          {/* Account Type Filter */}
+          <div className="flex flex-row items-center">
+            <label htmlFor="accountType" className="block text-sm mr-2">
               Account Type:
             </label>
-            <select
-              id="accountType"
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              className="bg-gray-800 text-white p-2 rounded"
-            >
-              <option value="">All Accounts</option>
-              <option value="demo">Demo Account</option>
-              <option value="real">Real Account</option>
-              {/* Add more account types as necessary */}
-            </select>
+            <div>
+              <select
+                id="accountType"
+                value={accountType}
+                onChange={(e) => setAccountType(e.target.value)}
+                className="bg-gray-800 text-white p-2 rounded"
+              >
+                <option value="real">Real Account</option>
+                <option value="demo">Demo Account</option>
+                {/* Add more account types as necessary */}
+              </select>
+            </div>
           </div>
+          {/* Apply Filters Button */}
           <div className="flex items-end">
             <button
               onClick={handleApplyFilters}
@@ -147,6 +186,7 @@ const TradesTable: React.FC = () => {
             </button>
           </div>
         </div>
+        {/* Export Button */}
         <div className="mt-4 sm:mt-0">
           <button className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition-colors">
             Export
@@ -156,37 +196,44 @@ const TradesTable: React.FC = () => {
 
       {/* Table Section */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-400">
+        <table className="w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
           <thead className="text-xs uppercase text-center bg-gray-700">
             <tr>
-              <th className="py-3">Asset</th>
-              <th className="py-3">Ticket No</th>
-              <th className="py-3">Info</th>
-              <th className="py-3">Opening Quote</th>
-              <th className="py-3">Closing Quote</th>
-              <th className="py-3">IP</th>
-              <th className="py-3">Amount</th>
-              <th className="py-3">Income</th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Asset
+              </th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Ticket No
+              </th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Opening Quote
+              </th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Closing Quote
+              </th>
+              <th className="py-3 border-2 border-solid border-gray-600">
+                Amount
+              </th>
             </tr>
           </thead>
           <tbody className="text-center">
             {loading && (
               <tr>
-                <td colSpan={8} className="text-center py-4">
+                <td colSpan={7} className="text-center py-4">
                   Loading trades...
                 </td>
               </tr>
             )}
             {error && (
               <tr>
-                <td colSpan={8} className="text-center py-4 text-red">
+                <td colSpan={7} className="text-center py-4 text-red">
                   Error: {error}
                 </td>
               </tr>
             )}
             {!loading && !error && filteredTrades.length === 0 && (
               <tr>
-                <td colSpan={8} className="text-center py-4">
+                <td colSpan={7} className="text-center py-4">
                   No trades found for the selected filters.
                 </td>
               </tr>
@@ -199,67 +246,50 @@ const TradesTable: React.FC = () => {
                 .map((tx: TradesData) => (
                   <tr
                     key={tx.ticketNo}
-                    className="bg-gray-800 border-b border-gray-700 hover:bg-gray-600 transition-colors"
+                    className="bg-gray-800 border-2 border-solid border-gray-600 transition-colors"
                   >
-                    <td className="px-6 py-4">{tx.symbol}</td>
-                    <td className="px-6 py-4">{tx.ticketNo}</td>
-                    <td className="px-6 py-4 text-center">
-                      <FontAwesomeIcon
-                        icon={faInfoCircle}
-                        className=" hover:cursor-pointer"
-                        onClick={() => handleInfoClick(tx)}
-                      />
+                    <td className="px-3 py-1">{tx.symbol}</td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      {tx.ticketNo}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
                       <strong>{tx.openingPrice}</strong>
                       <p className="text-[0.7rem]">
                         {formatDate(tx.openingTime)}
                       </p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
                       <strong>{tx.closingPrice}</strong>
                       <p className="text-[0.7rem]">
                         {formatDate(tx.closingTime)}
                       </p>
                     </td>
-                    <td className="px-6 py-4">{"-"}</td>
-                    <td className="flex items-center text-center py-9 justify-center">
-                      {tx.tradeDirection === "down" ? (
-                        <FontAwesomeIcon
-                          color="red"
-                          icon={faCircleArrowDown}
-                          className="mr-2"
-                          aria-label="Trade Direction Down"
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          className="text-green-600 mr-2"
-                          icon={faCircleArrowUp}
-                          aria-label="Trade Direction Up"
-                        />
-                      )}
-                      <span
-                        className={`text-sm ${
-                          tx.tradeDirection === "up"
-                            ? "text-green-500"
-                            : "text-red"
-                        }`}
-                      >
-                        {tx.amountInvested} $
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`text-sm ${
-                          tx.pnlValue && tx.pnlValue >= 0
-                            ? "text-green-500"
-                            : "text-red"
-                        }`}
-                      >
-                        {tx.pnlValue !== null
-                          ? `${tx.pnlValue.toFixed(2)} $`
-                          : "0 $"}
-                      </span>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      <div className="flex items-center justify-center">
+                        {tx.tradeDirection === "down" ? (
+                          <FontAwesomeIcon
+                            color="red"
+                            icon={faCircleArrowDown}
+                            className="mr-2"
+                            aria-label="Trade Direction Down"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            className="text-green-600 mr-2"
+                            icon={faCircleArrowUp}
+                            aria-label="Trade Direction Up"
+                          />
+                        )}
+                        <span
+                          className={`text-sm ${
+                            tx.tradeDirection === "up"
+                              ? "text-green-500"
+                              : "text-red"
+                          }`}
+                        >
+                          {tx.amountInvested} $
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))}
