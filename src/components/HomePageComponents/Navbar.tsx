@@ -12,12 +12,17 @@ import {
   faPaperPlane,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import { Menu } from "lucide-react";
 
 export type NavbarType = {
   className?: string;
+  onHamburgerClick: () => void;
 };
 
-const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
+const Navbar: FunctionComponent<NavbarType> = ({
+  className = "",
+  onHamburgerClick,
+}) => {
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
   const accounts = useSelector((state: AppState) => state.accounts.accounts);
@@ -92,10 +97,10 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
   );
   return (
     <div
-      className={`w-full h-[5vh] pl-5 pr-7 text-tBase m-0 border-solid border-borderColor tracking-wide border-b-[0.5px] relative top-0 left-0 shrink-0 flex flex-row items-center justify-between box-border gap-5 text-center text-xl ${className}`}
+      className={`md:w-full h-[5vh] pl-5 md:pr-7 pr-3 text-tBase m-0 border-solid border-borderColor tracking-wide border-b-[0.5px] relative top-0 left-0 shrink-0 flex flex-row items-center justify-between box-border md:gap-5 text-center text-xl ${className}`}
     >
       {/* Logo Section */}
-      <div className="flex flex-row items-center justify-start">
+      <div className="md:flex hidden flex-row items-center justify-start">
         <div className="w-[215px] flex flex-row">
           <img
             className="h-12 relative overflow-hidden shrink-0"
@@ -103,14 +108,17 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             alt="Logo"
             src={logo}
           />
-          <div className="flex-1 flex flex-col items-start justify-start pt-[12.5px] px-0 pb-0">
+          <div className="flex-1 md:flex flex-col items-start justify-start pt-[12.5px] px-0 pb-0 hidden">
             <b className="relative leading-[23px]">BINARRY</b>
           </div>
         </div>
       </div>
-
+      {/* Hamburger Menu for Mobile */}
+      <div className="md:hidden focus:outline-none" onClick={onHamburgerClick}>
+        <Menu />
+      </div>
       {/* Account Selector and Actions */}
-      <div className="flex flex-row items-center justify-start gap-16 max-w-full">
+      <div className="flex flex-row items-center justify-start md:gap-16 space-x-2 max-w-full">
         {/* Account Selector */}
         <div
           className="flex flex-row items-center  relative "
@@ -127,7 +135,8 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
             </div>
             <div className="flex flex-row items-center space-x-2">
               <div className="text-[0.6rem] font-extrabold uppercase">
-                {matchedAccount?.accountType} ACCOUNT
+                {matchedAccount?.accountType}{" "}
+                <div className="hidden">ACCOUNT</div>
               </div>
               <div className="text-xs font-bold">
                 $ {matchedAccount?.equity}
@@ -200,22 +209,22 @@ const Navbar: FunctionComponent<NavbarType> = ({ className = "" }) => {
 
         {/* Logout Button */}
         <button
-          className="h-[1.5rem] w-[8rem] rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
+          className="h-[1.5rem]  rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center"
           onClick={handleLogout}
         >
           Logout
         </button>
 
         {/* Deposit and Withdrawal Buttons */}
-        <div className="flex flex-row items-center gap-3 w-[12rem]">
+        <div className="flex flex-row items-center gap-3 md:w-[12rem]">
           <div
-            className="h-[2rem] rounded-md bg-green-600 flex items-center justify-center w-full cursor-pointer hover:bg-green-700"
+            className="h-[2rem] rounded-md bg-green-600 flex items-center justify-center px-2 w-full cursor-pointer hover:bg-green-700"
             onClick={() => navigate("/deposit")} // Assuming you have a deposit route
           >
             <b className="text-tBase text-[0.875rem]">+ Deposit</b>
           </div>
           <div
-            className="h-[2rem] rounded-md bg-secondary flex items-center justify-center px-2 w-full cursor-pointer hover:bg-gray-700"
+            className="h-[2rem] hidden rounded-md bg-secondary md:flex items-center justify-center px-2 w-full cursor-pointer hover:bg-gray-700"
             onClick={() => navigate("/withdrawal")} // Assuming you have a withdrawal route
           >
             <b className="text-tBase text-[0.875rem]">Withdrawal</b>

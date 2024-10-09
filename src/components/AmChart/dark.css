@@ -9,7 +9,11 @@
   height: 86vh;
   background-color: rgb(25, 25, 45);
 }
-
+@media only screen and (max-width: 640px) {
+  #chartdiv {
+    height: 54vh;
+  }
+}
 #drawing-tools {
   position: absolute;
   left: -10px;
@@ -72,7 +76,7 @@
 
 /* Chart Controls Styles */
 #chartcontrols {
-  z-index: 1000;
+  z-index: 20;
 }
 #chartcontrols .am5stock-control-button {
   border: 0;

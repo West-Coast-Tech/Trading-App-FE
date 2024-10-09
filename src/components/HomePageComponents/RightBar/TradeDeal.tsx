@@ -191,190 +191,195 @@ const TradeDeal = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-5 pt-4 gap-3 text-tBase">
-      <div className="flex flex-row text-xs gap-4">
-        <FontAwesomeIcon icon={faCircle} className="text-gray-400" />
-        <b>USD/BRL (OTC) 93%</b>
-      </div>
-      <div className="flex flex-row text-xs gap-4 text-blue-600">
-        <b>Pending Trade</b>
-        <FontAwesomeIcon icon={faCircle} className="text-blue-400" />
+    <div className="flex flex-col items-center justify-center md:p-5 pt-4 gap-3 text-tBase ">
+      <div className="flex md:flex-col flex-row w-[90%] justify-between md:space-y-2">
+        <div className="flex flex-row text-xs gap-4">
+          <FontAwesomeIcon icon={faCircle} className="text-gray-400" />
+          <b>USD/BRL (OTC) 93%</b>
+        </div>
+        <div className="flex flex-row justify-between text-xs gap-4 text-blue-600">
+          <b>Pending Trade</b>
+          <FontAwesomeIcon icon={faCircle} className="text-blue-400" />
+        </div>
       </div>
 
-      {/* Time Form */}
-      <div className="relative w-full">
-        <div className="flex items-center justify-between">
-          <b>{isIntervalMode ? "Interval" : "Time"}</b>
-          <b
-            className="text-xs text-blue-600 hover:cursor-pointer"
-            onClick={handleSwitch}
+      <div className="flex flex-row md:flex-col w-[90%] md:space-x-0 space-x-4 md:space-y-2">
+        {/* Time Form */}
+        <div className="relative w-full">
+          <div className="flex items-center justify-between">
+            <b>{isIntervalMode ? "Interval" : "Time"}</b>
+            <b
+              className="text-xs text-blue-600 hover:cursor-pointer"
+              onClick={handleSwitch}
+            >
+              Switch
+            </b>
+          </div>
+          <div
+            className="mt-2 flex items-center justify-between border-2 border-gray-600 border-solid rounded-md p-2 cursor-pointer"
+            onClick={handleTimeClick}
           >
-            Switch
-          </b>
+            <div className="flex items-center justify-between gap-2 w-full">
+              <FontAwesomeIcon
+                icon={faMinus}
+                className="text-gray-400 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  decreaseTime();
+                }}
+              />
+              <b>
+                {isIntervalMode
+                  ? formatInterval(intervalDuration)
+                  : time.toLocaleTimeString([], {
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+              </b>
+              <FontAwesomeIcon
+                icon={faPlus}
+                className="text-gray-400 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  increaseTime();
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <div
-          className="mt-2 flex items-center justify-between border-2 border-gray-600 border-solid rounded-md p-2 cursor-pointer"
-          onClick={handleTimeClick}
-        >
-          <div className="flex items-center justify-between gap-2 w-full">
+        {timePickerVisible && (
+          <div className="absolute grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md mt-[3rem] z-20">
+            {isIntervalMode
+              ? generateIntervalOptions().map((option, index) => (
+                  <div
+                    key={index}
+                    className="p-1 bg-gray-800 text-white rounded cursor-pointer hover:bg-gray-600"
+                    onClick={() => handleIntervalSelect(option)}
+                  >
+                    {formatInterval(option)}
+                  </div>
+                ))
+              : generateTimeIntervals().map((intervalTime, index) => (
+                  <div
+                    key={index}
+                    className="p-1 bg-gray-800 text-white rounded cursor-pointer hover:bg-gray-600"
+                    onClick={() => handleTimeSelect(intervalTime)}
+                  >
+                    {intervalTime.toLocaleTimeString([], {
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                ))}
+          </div>
+        )}
+        {/* Investment Form */}
+        <div className="relative w-full">
+          <div className="flex items-center justify-between">
+            <b>Investment</b>
+            <b className="text-xs text-blue-600 hover:cursor-pointer">Switch</b>
+          </div>
+          <div className="mt-2 flex items-center justify-between border-2 border-solid border-gray-600 rounded-md p-2">
             <FontAwesomeIcon
               icon={faMinus}
               className="text-gray-400 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                decreaseTime();
-              }}
+              onClick={() => setInvestment((prev) => Math.max(1, prev - 1))}
             />
-            <b>
-              {isIntervalMode
-                ? formatInterval(intervalDuration)
-                : time.toLocaleTimeString([], {
-                    hour12: false,
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-            </b>
+            <input
+              type="text"
+              min="1"
+              value={investment}
+              onChange={(e) => setInvestment(Number(e.target.value))}
+              className="bg-transparent text-center w-full text-tBase"
+            />
             <FontAwesomeIcon
               icon={faPlus}
               className="text-gray-400 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                increaseTime();
-              }}
+              onClick={() => setInvestment((prev) => prev + 1)}
             />
           </div>
         </div>
       </div>
-
-      {timePickerVisible && (
-        <div className="absolute grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md mt-[3rem] z-20">
-          {isIntervalMode
-            ? generateIntervalOptions().map((option, index) => (
-                <div
-                  key={index}
-                  className="p-1 bg-gray-800 text-white rounded cursor-pointer hover:bg-gray-600"
-                  onClick={() => handleIntervalSelect(option)}
-                >
-                  {formatInterval(option)}
-                </div>
-              ))
-            : generateTimeIntervals().map((intervalTime, index) => (
-                <div
-                  key={index}
-                  className="p-1 bg-gray-800 text-white rounded cursor-pointer hover:bg-gray-600"
-                  onClick={() => handleTimeSelect(intervalTime)}
-                >
-                  {intervalTime.toLocaleTimeString([], {
-                    hour12: false,
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </div>
-              ))}
-        </div>
-      )}
-
-      {/* Investment Form */}
-      <div className="relative w-full">
-        <div className="flex items-center justify-between">
-          <b>Investment</b>
-          <b className="text-xs text-blue-600 hover:cursor-pointer">Switch</b>
-        </div>
-        <div className="mt-2 flex items-center justify-between border-2 border-solid border-gray-600 rounded-md p-2">
-          <FontAwesomeIcon
-            icon={faMinus}
-            className="text-gray-400 cursor-pointer"
-            onClick={() => setInvestment((prev) => Math.max(1, prev - 1))}
-          />
-          <input
-            type="text"
-            min="1"
-            value={investment}
-            onChange={(e) => setInvestment(Number(e.target.value))}
-            className="bg-transparent text-center w-full text-tBase"
-          />
-          <FontAwesomeIcon
-            icon={faPlus}
-            className="text-gray-400 cursor-pointer"
-            onClick={() => setInvestment((prev) => prev + 1)}
-          />
-        </div>
+      <div className="flex text-sm  md:hidden w-[90%] justify-between">
+        <div>Your Payout</div>
+        <div> {investment} $</div>
       </div>
-
-      {/* Up Button */}
-      <div className="flex flex-col items-start h-10 w-full">
-        <button
-          type="button"
-          className="
-            bg-green-500 
-            text-white 
-            font-extrabold 
-            flex 
-            items-center 
-            justify-between 
-            rounded-md 
-            px-4 
-            h-full 
-            w-full 
-            hover:bg-green-600 
-            hover:scale-105
-            hover:shadow-lg 
-            hover:cursor-pointer
-            active:bg-green-400 
-            active:brightness-110 
-            active:outline-none 
-            active:ring-2 
-            active:ring-green-300 
-            transition 
-            transform 
-            duration-200 
-            ease-in-out 
-            active:scale-95
-          "
-          onClick={() => handleSubmit("up")}
-          aria-label="Submit Up Trade"
-        >
-          <p>Up</p>
-          <FontAwesomeIcon icon={faArrowCircleUp} className="text-white" />
-        </button>
-      </div>
-
-      <div className="text-center text-sm">
-        <b>Your payout 1.90 $</b>
-      </div>
-
-      {/* Down Button */}
-      <div className="flex flex-col items-start h-10 w-full">
-        <button
-          type="button"
-          className="bg-red
-            text-white 
-            font-extrabold 
-            flex 
-            items-center 
-            justify-between 
-            rounded-md 
-            px-4 
-            h-full 
-            w-full 
-            hover:brightness-75
-            hover:shadow-lg 
-            hover:cursor-pointer
-            hover:scale-105
-            active:brightness-110
-            active:outline-none 
-            active:ring-2 
-            active:ring-green-300 
-            transition 
-            transform 
-            duration-200 
-            ease-in-out 
-            active:scale-95"
-          onClick={() => handleSubmit("down")}
-        >
-          <p>Down</p>
-          <FontAwesomeIcon icon={faArrowCircleDown} />
-        </button>
+      <div className="w-[90%] flex flex-row md:flex-col md:space-y-2 space-x-4 md:space-x-0">
+        {/* Up Button */}
+        <div className="flex flex-col items-start h-10 w-full">
+          <button
+            type="button"
+            className="
+              bg-green-500
+              text-white
+              font-extrabold
+              flex
+              items-center
+              justify-between
+              rounded-md
+              px-4
+              h-full
+              w-full
+              hover:bg-green-600
+              hover:scale-105
+              hover:shadow-lg
+              hover:cursor-pointer
+              active:bg-green-400
+              active:brightness-110
+              active:outline-none
+              active:ring-2
+              active:ring-green-300
+              transition
+              transform
+              duration-200
+              ease-in-out
+              active:scale-95
+            "
+            onClick={() => handleSubmit("up")}
+            aria-label="Submit Up Trade"
+          >
+            <p>Up</p>
+            <FontAwesomeIcon icon={faArrowCircleUp} className="text-white" />
+          </button>
+        </div>
+        <div className="text-center text-sm hidden md:block">
+          <b>Your payout {investment} $</b>
+        </div>
+        {/* Down Button */}
+        <div className="flex flex-col items-start h-10 w-full">
+          <button
+            type="button"
+            className="bg-red
+              text-white
+              font-extrabold
+              flex
+              items-center
+              justify-between
+              rounded-md
+              px-4
+              h-full
+              w-full
+              hover:brightness-75
+              hover:shadow-lg
+              hover:cursor-pointer
+              hover:scale-105
+              active:brightness-110
+              active:outline-none
+              active:ring-2
+              active:ring-green-300
+              transition
+              transform
+              duration-200
+              ease-in-out
+              active:scale-95"
+            onClick={() => handleSubmit("down")}
+          >
+            <p>Down</p>
+            <FontAwesomeIcon icon={faArrowCircleDown} />
+          </button>
+        </div>
       </div>
     </div>
   );

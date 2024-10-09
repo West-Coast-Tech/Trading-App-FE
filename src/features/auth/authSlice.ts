@@ -1,22 +1,22 @@
 // src/features/auth/authSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RegisterData } from '../../actions/types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RegisterData } from "../../actions/types";
 export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   currentUser: { email: string } | null;
   id: string | null;
   otpToken: string | null;
-  error:string|null;
+  error: string | null;
   loading: boolean;
   resetToken: string | null;
   registerData: RegisterData | null;
 }
 
 const initialState: AuthState = {
-  token: sessionStorage.getItem('token'),
-  isAuthenticated: !!sessionStorage.getItem('token'),
-  id: sessionStorage.getItem('id'), // Initialize with value from sessionStorage
+  token: sessionStorage.getItem("token"),
+  isAuthenticated: !!sessionStorage.getItem("token"),
+  id: sessionStorage.getItem("id"), // Initialize with value from sessionStorage
   currentUser: null,
   otpToken: null,
   error: null,
@@ -26,16 +26,18 @@ const initialState: AuthState = {
 };
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    loadingStart: state => {
+    loadingStart: (state) => {
       state.loading = true;
-      
     },
-    registerSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
-      sessionStorage.setItem('token', action.payload.token);
-      sessionStorage.setItem('id', action.payload.id);
+    registerSuccess: (
+      state,
+      action: PayloadAction<{ token: string; email: string; id: string }>
+    ) => {
+      sessionStorage.setItem("token", action.payload.token);
+      sessionStorage.setItem("id", action.payload.id);
       state.token = action.payload.token;
       state.id = action.payload.id;
       state.currentUser = { email: action.payload.email };
@@ -43,19 +45,30 @@ export const authSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
-    
-    resetState: state => {
+    registerFail: (state, action: PayloadAction<string>) => {
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("id"); // Remove user ID from sessionStorage
+      state.token = null;
+      state.id = null; // Reset user ID in state
+      state.isAuthenticated = false;
+      state.currentUser = null;
+      state.error = action.payload;
+      state.loading = false;
+    },
+    resetState: (state) => {
       return initialState;
     },
-    resetVerificationSuccess: (state, action: PayloadAction<{ id: string, passwordResetToken: string }>) => {
+    resetVerificationSuccess: (
+      state,
+      action: PayloadAction<{ id: string; passwordResetToken: string }>
+    ) => {
       state.resetToken = action.payload.passwordResetToken;
-      
-      state.id=action.payload.id
+
+      state.id = action.payload.id;
       state.error = null;
       state.loading = false;
     },
-    otpLoaded: (state, action: PayloadAction<{ otpToken: string}>) => {
-      
+    otpLoaded: (state, action: PayloadAction<{ otpToken: string }>) => {
       state.otpToken = action.payload.otpToken;
       state.error = null;
       state.loading = false;
@@ -64,14 +77,16 @@ export const authSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    setError: (state,action: PayloadAction<string>) =>{
+    setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
-    
 
-    loginSuccess: (state, action: PayloadAction<{ token: string; email: string; id: string }>) => {
-      sessionStorage.setItem('token', action.payload.token);
-      sessionStorage.setItem('id', action.payload.id); // Save user ID to sessionStorage
+    loginSuccess: (
+      state,
+      action: PayloadAction<{ token: string; email: string; id: string }>
+    ) => {
+      sessionStorage.setItem("token", action.payload.token);
+      sessionStorage.setItem("id", action.payload.id); // Save user ID to sessionStorage
       state.token = action.payload.token;
       state.id = action.payload.id; // Update state with user ID
       state.currentUser = { email: action.payload.email };
@@ -80,55 +95,48 @@ export const authSlice = createSlice({
       state.error = null;
       state.loading = false;
     },
-    registerFail: (state, action: PayloadAction<string>) => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('id'); // Remove user ID from sessionStorage
-      state.token = null;
-      state.id = null; // Reset user ID in state
-      state.isAuthenticated = false;
-      state.currentUser = null;
-      state.error = action.payload;
-      state.loading = false;
-    },
+
     loginFail: (state, action: PayloadAction<string>) => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('id'); // Remove user ID from sessionStorage
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("id"); // Remove user ID from sessionStorage
       state.token = null;
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
-      
+
       state.error = action.payload;
       state.loading = false;
     },
-    authError: state => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('id'); // Remove user ID from sessionStorage
+    authError: (state) => {
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("id"); // Remove user ID from sessionStorage
       state.token = null;
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
       state.loading = false;
     },
-    logoutSuccess: state => {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('id'); // Remove user ID from sessionStorage
+    logoutSuccess: (state) => {
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("id"); // Remove user ID from sessionStorage
       state.token = null;
       state.id = null; // Reset user ID in state
       state.isAuthenticated = false;
       state.currentUser = null;
-      state.error= null;
+      state.error = null;
       state.loading = false;
     },
     refreshSuccess: (state, action: PayloadAction<{ token: string }>) => {
-      
-      sessionStorage.setItem('token', action.payload.token);
+      sessionStorage.setItem("token", action.payload.token);
       state.token = action.payload.token;
       state.isAuthenticated = true;
       state.error = null;
       state.loading = false;
     },
-    userLoaded: (state, action: PayloadAction<{ email: string; id: string }>) => {
+    userLoaded: (
+      state,
+      action: PayloadAction<{ email: string; id: string }>
+    ) => {
       state.currentUser = action.payload;
       state.isAuthenticated = true;
       state.id = action.payload.id; // Update user ID in state
@@ -150,7 +158,7 @@ export const {
   otpFailed,
   resetVerificationSuccess,
   resetState,
-  setError
+  setError,
 } = authSlice.actions;
 
 export default authSlice.reducer;

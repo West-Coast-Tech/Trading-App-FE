@@ -1391,7 +1391,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
 
       <div className="flex relative">
         <div className="flex-grow">
-          <div className="flex w-full items-center justify-start pl-5 pt-[1.5vh] h-[3vh]">
+          <div className="flex md:w-full items-center justify-start pl-5 pt-[1.5vh] h-[3vh]">
             {/* Chart Controls */}
             <SymbolBar />
             <div id="chartcontrols"></div>
@@ -1445,7 +1445,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
             </button>
             <button
               onClick={toggleTheme}
-              className="relative mr-10 cursor-pointer mt-4 border-none h-[1.2rem] text-tBase bg-transparent"
+              className="relative mr-5 cursor-pointer mt-4 border-none h-[1.2rem] text-tBase bg-transparent"
             >
               <i className={`fas fa-moon`}></i>
             </button>

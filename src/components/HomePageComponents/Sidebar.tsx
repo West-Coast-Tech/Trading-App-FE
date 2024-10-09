@@ -12,6 +12,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 export type SidebarType = {
   className?: string;
+  isSidebarExpanded: boolean;
+  setIsSidebarExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 // Define the sidebar items in a configuration array
@@ -43,13 +45,16 @@ const sidebarItems = [
   },
   {
     key: "SETTINGS",
-    text: "Settings",
+    text: "SETTINGS",
     icon: <Settings size={18} />,
     path: "/settings",
   },
 ];
 
-const Sidebar: React.FC<SidebarType> = () => {
+const Sidebar: React.FC<SidebarType> = ({
+  isSidebarExpanded,
+  setIsSidebarExpanded,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeItem, setActiveItem] = useState<string>("TRADE");
@@ -90,7 +95,10 @@ const Sidebar: React.FC<SidebarType> = () => {
 
   return (
     <div className="flex text-tBase">
-      <Drawer>
+      <Drawer
+        isSidebarExpanded={isSidebarExpanded}
+        setIsSidebarExpanded={setIsSidebarExpanded}
+      >
         {sidebarItems.map((item) => (
           <DrawerItems
             key={item.key}

@@ -9,6 +9,7 @@ import { AppState } from "../../actions/types";
 import StringArrayDropdown from "./StringArrayDropdown";
 import VerifyOtp from "./VerifyOtp";
 import { hashPassword } from "../../services/auth";
+import useReferral from "../../middleware/useReferral";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -57,6 +58,8 @@ const Register = () => {
   }>({ email: "", password: "", fullName: "", currency: "", country: "" });
 
   const [passwordError, setPasswordError] = useState("");
+
+  const referralId = useReferral();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -114,6 +117,7 @@ const Register = () => {
     // const hashedPassword = await bcrypt.hash(password, salt);
 
     // Create a payload object
+    console.log("referralId", referralId);
     const payload = {
       email,
       password: hashedPassword,
@@ -121,6 +125,7 @@ const Register = () => {
       currency,
       country,
       dateOfBirth: null,
+      referralCode: referralId,
     };
     try {
       await dispatch(registerUser(payload)); // Dispatch the login action

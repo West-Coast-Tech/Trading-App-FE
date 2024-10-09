@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getUserData } from "../../actions/userActions";
 import { AccountsData, AppState } from "../../actions/types";
+import Deposit from "./Deposit";
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -30,7 +31,6 @@ const Settings: React.FC = () => {
       }
     }
   });
-  console.log("RealAccount", realAccount);
   const renderContent = () => {
     switch (activeTab) {
       case "account":
@@ -40,7 +40,11 @@ const Settings: React.FC = () => {
           </div>
         );
       case "deposit":
-        return <div>Deposit Section</div>;
+        return (
+          <div>
+            <Deposit />
+          </div>
+        );
       case "withdrawal":
         return <div>Withdrawal Section</div>;
       case "transactions":
@@ -52,7 +56,11 @@ const Settings: React.FC = () => {
           </div>
         );
       default:
-        return <div>Deposit Section</div>;
+        return (
+          <div>
+            <AccountSettings />
+          </div>
+        );
     }
   };
 

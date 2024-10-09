@@ -37,7 +37,7 @@ const TradesTable: React.FC = () => {
   const [selectedTrade, setSelectedTrade] = useState<TradesData | null>(null);
   //For pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
+  const pageSize = 20;
 
   // Fetch all trades once when the component mounts
   useEffect(() => {

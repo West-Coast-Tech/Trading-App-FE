@@ -74,7 +74,7 @@ const SymbolBar = () => {
           {isOpen ? "×" : "+"}
         </button>
 
-        <div className="ml-2 flex space-x-2">
+        <div className="ml-2 flex space-x-2 hidden">
           {favoriteSymbols.map((symbolId) => {
             const isFavorited = favoriteSymbols.includes(symbolId);
             const symbol = symbols.find((s) => s._id === symbolId);
@@ -113,7 +113,7 @@ const SymbolBar = () => {
         </div>
       </div>
       <div
-        className={`absolute z-50 w-[60vh] bg-secondary rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
+        className={`absolute z-50 md:w-[60vh] md:h-fit w-[40vh] bg-secondary rounded-lg shadow-2xl shadow-black transition-all duration-500 ease-in-out transform ${
           isOpen
             ? "opacity-100 translate-y-2"
             : "opacity-0 -translate-y-5 pointer-events-none"
@@ -162,7 +162,6 @@ const SymbolBar = () => {
                   <th className="py-1 px-2 text-left text-xs">Name</th>
                   <th className="py-1 px-2 text-left text-xs">Type</th>
                   <th className="py-1 px-2 text-left text-xs">Description</th>
-                  <th className="py-1 px-2 text-left text-xs">Created At</th>
                 </tr>
               </thead>
               <tbody>
