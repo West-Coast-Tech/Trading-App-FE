@@ -186,4 +186,17 @@ export default {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
+
+  //API for transactions
+  createDeposit(
+    userId: string,
+    accountNo: string,
+    amount: number
+  ): Promise<AxiosResponse<void>> {
+    return apiClient.post("/transactions/deposit", {
+      userId,
+      accountNo,
+      amount,
+    });
+  },
 };

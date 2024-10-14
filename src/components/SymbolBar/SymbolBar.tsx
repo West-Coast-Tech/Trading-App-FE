@@ -32,10 +32,7 @@ const SymbolBar = () => {
   const [category, setCategory] = useState<"forex" | "crypto" | "stock">(
     "forex"
   );
-  console.log(
-    "Favorite Symbols",
-    useSelector((state: AppState) => state.users.currentUser?.favoriteSymbols)
-  );
+  console.log("Favorite Symbols", favoriteSymbols);
   useEffect(() => {
     dispatch(getUserData());
     dispatch(fetchSymbols());
@@ -74,7 +71,7 @@ const SymbolBar = () => {
           {isOpen ? "×" : "+"}
         </button>
 
-        <div className="ml-2 flex space-x-2 hidden">
+        <div className="ml-2 md:flex space-x-2 hidden">
           {favoriteSymbols.map((symbolId) => {
             const isFavorited = favoriteSymbols.includes(symbolId);
             const symbol = symbols.find((s) => s._id === symbolId);
