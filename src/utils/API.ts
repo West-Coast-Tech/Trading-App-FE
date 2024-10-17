@@ -199,4 +199,9 @@ export default {
       amount,
     });
   },
+
+  //API to update clicks for affiliate
+  updateClicksForAffiliate(linkCode: string): Promise<AxiosResponse<void>> {
+    return apiClient.post("/affiliate/clicks", { linkCode });
+  },
 };

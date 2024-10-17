@@ -249,7 +249,7 @@ const TradeDeal = () => {
           </div>
         </div>
         {timePickerVisible && (
-          <div className="absolute grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md mt-[3rem] z-20">
+          <div className="absolute !mt-[4rem] !ml-0  grid grid-cols-3 gap-2 bg-gray-700 p-1 rounded-md  z-20">
             {isIntervalMode
               ? generateIntervalOptions().map((option, index) => (
                   <div

@@ -1,6 +1,7 @@
-// useReferral.js
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import API from "../utils/API";
+import Cookies from "js-cookie";
 
 const useReferral = () => {
   const location = useLocation();
@@ -9,16 +10,28 @@ const useReferral = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const ref = params.get("ref");
-    console.log("Referral", ref);
+    const storedRef = localStorage.getItem("referralId");
+    const cookieRef = Cookies.get("referralId");
+
     if (ref && /[A-Za-z0-9]+/i.test(ref)) {
-      // Validate ObjectId
-      setReferralId(ref);
-      localStorage.setItem("referralId", ref);
-    } else {
-      const storedRef = localStorage.getItem("referralId");
-      if (storedRef) {
-        setReferralId(storedRef);
+      if (ref !== storedRef && ref !== cookieRef) {
+        setReferralId(ref);
+        localStorage.setItem("referralId", ref);
+        Cookies.set("referralId", ref, { expires: 30 });
+
+        try {
+          const response = API.updateClicksForAffiliate(ref);
+          console.log("Link click added successfully");
+        } catch (error) {
+          console.error("Error adding link click", error);
+        }
+      } else {
+        console.log("Referral is the same, no need to update clicks");
       }
+    } else if (cookieRef) {
+      setReferralId(cookieRef);
+    } else if (storedRef) {
+      setReferralId(storedRef);
     }
   }, [location]);
 
