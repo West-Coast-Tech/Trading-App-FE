@@ -16,7 +16,7 @@ const PWD_REGEX =
 
 const Register = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, otpToken } = useSelector(
+  const { isAuthenticated, otpToken, error } = useSelector(
     (state: AppState) => state.auth
   );
   const dispatch = useDispatch<any>();
@@ -365,6 +365,7 @@ const Register = () => {
         <h1 className="text-2xl mb-8 text-center font-sheriff text-white">
           Sign Up to Trading App
         </h1>
+
         <div>
           {!otpToken ? (
             <div>
@@ -504,6 +505,10 @@ const Register = () => {
                       className={inputClassCSS}
                       style={{ color: "#ffffff", caretColor: "#ffffff" }}
                     />
+                    <p className="text-red mt-2 text-sm text-center w-[90%]">
+                      {error}
+                    </p>
+
                     {passwordError && (
                       <p className="text-red mt-2 text-sm">{passwordError}</p>
                     )}

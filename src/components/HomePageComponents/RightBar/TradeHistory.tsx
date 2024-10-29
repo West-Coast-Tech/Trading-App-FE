@@ -33,7 +33,7 @@ const TradeHistory: React.FC = () => {
     dispatch(fetchTrades());
 
     // Set up WebSocket connection
-    const ws = new WebSocket("ws://localhost:8080"); // Replace with your WebSocket URL
+    const ws = new WebSocket("ws://localhost:8081"); // Replace with your WebSocket URL
 
     ws.onopen = () => {
       console.log("WebSocket connected");

@@ -62,7 +62,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
 
   //variables for live data chart
   const [prices, setPrices] = useState<number | null>();
-  const socketUrl = `ws://localhost:8080`;
+  const socketUrl = `ws://localhost:8081`;
   const [lastCandleTime, setLastCandleTime] = useState(0);
   const currentLabelRef = useRef<am5xy.AxisLabel | null>(null);
   const currentValueDataItemRef =
@@ -568,7 +568,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         console.log("min after minus", min);
 
         max = new Date().getTime();
-        const url = `http://localhost:8080/tradingData`;
+        const url = `http://localhost:8081/tradingData`;
         const params = {
           symbol: currentSymbol?.name || "EUR/USD",
           unit: unit,
