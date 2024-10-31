@@ -10,11 +10,11 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import ContextMenu from "./ContextMenu"; // Import your ContextMenu component
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 import { TimeUnit } from "@amcharts/amcharts5/.internal/core/util/Time";
-import { createIndicatorIcon, createTimeIcon } from "./Icons";
 import SymbolBar from "../SymbolBar/SymbolBar";
 import { fetchTrades } from "../../actions/tradeActions";
 import { useTheme } from "../ThemeContext"; // Import the custom hook
 import { getAccounts } from "../../actions/accountActions";
+import { DrawingTools } from "@amcharts/amcharts5/.internal/charts/stock/toolbar/DrawingToolControl";
 
 const selectSymbols = (state: AppState) => state.symbols.selectedSymbol;
 const selectTrades = (state: AppState) => state.trades.allTrades;
@@ -48,7 +48,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
   const [drawingSelection, setDrawingSelection] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const [selectedDrawing, setSelectedDrawing] = useState(null);
+  const [selectedDrawing, setSelectedDrawing] = useState<any>(null);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const [currentInterval, setCurrentInterval] = useState<any>({
@@ -481,13 +481,17 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       let series: am5xy.XYSeries | undefined;
       switch (seriesType) {
         case "line":
-          series = chart.series.push(am5xy.LineSeries.new(root, newSettings));
+          series = chart.series.push(
+            am5xy.LineSeries.new(root, newSettings as am5xy.ILineSeriesSettings)
+          );
           series.set("stroke", LabelColor);
           series.set("fill", PositiveColor);
-          series.strokes.template.setAll({
+
+          (series as any).strokes.template.setAll({
             strokeWidth: 3,
           });
-          series.fills.template.setAll({
+
+          (series as any).fills.template.setAll({
             fillOpacity: 0.1,
             visible: true,
           });
@@ -496,15 +500,24 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         case "procandlestick":
           newSettings.clustered = false;
           series = chart.series.push(
-            am5xy.CandlestickSeries.new(root, newSettings)
+            am5xy.CandlestickSeries.new(
+              root,
+              newSettings as am5xy.ICandlestickSeriesSettings
+            )
           );
           if (seriesType === "procandlestick") {
+            // @ts-ignore
             series.columns.template.get("themeTags").push("pro");
           }
           break;
         case "ohlc":
           newSettings.clustered = false;
-          series = chart.series.push(am5xy.OHLCSeries.new(root, newSettings));
+          series = chart.series.push(
+            am5xy.OHLCSeries.new(
+              root,
+              newSettings as am5xy.ICandlestickSeriesSettings
+            )
+          );
           break;
       }
 
@@ -517,7 +530,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         valueSeries = series; // Update the reference to valueSeries
 
         // Reattach cursor to the new series
-        const cursor = chart.get("cursor") as am5xy.XYCursor;
+        // const cursor = chart.get("cursor") as am5xy.XYCursor;
         // if (cursor) {
         //   cursor.set('snapToSeries', [series]);
         // }
@@ -659,64 +672,69 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
             ],
           });
 
-          const seriesFirst: Record<string, number> = {};
-          seriesFirst[valueSeries.uid] = valueSeries.data.getIndex(0)
-            ?.date as number;
-          seriesFirst[volumeSeries.uid] = volumeSeries.data.getIndex(0)
-            ?.date as number;
+          if (valueSeries) {
+            const seriesFirst: Record<string, number> = {};
+            seriesFirst[valueSeries.uid] = (valueSeries.data.getIndex(0) as any)
+              ?.date as number;
+            seriesFirst[volumeSeries.uid] = (
+              volumeSeries.data.getIndex(0) as any
+            )?.date as number;
 
-          console.log("seriesFirst", seriesFirst);
+            console.log("seriesFirst", seriesFirst);
 
-          for (let i = data.length - 1; i >= 0; i--) {
-            const date = data[i].date;
-            if (seriesFirst[valueSeries.uid] > date) {
-              valueSeries.data.unshift(data[i]);
+            for (let i = data.length - 1; i >= 0; i--) {
+              const date = data[i].date;
+              if (seriesFirst[valueSeries.uid] > date) {
+                valueSeries.data.unshift(data[i]);
+              }
+              if (seriesFirst[volumeSeries.uid] > date) {
+                volumeSeries.data.unshift(data[i]);
+              }
             }
-            if (seriesFirst[volumeSeries.uid] > date) {
-              volumeSeries.data.unshift(data[i]);
-            }
+
+            const data2 = valueSeries;
+
+            valueSeries.data.setAll(data2.data.values);
+            volumeSeries.data.setAll(data2.data.values);
+
+            const currentSeries = stockChart.get(
+              "stockSeries"
+            ) as am5xy.XYSeries;
+            currentSeries.data = valueSeries.data;
+
+            console.log("valueSeries data after loading", valueSeries.data);
+            console.log(
+              "current series data after loading",
+              currentSeries.data
+            );
           }
-
-          const data2 = valueSeries;
-
-          valueSeries.data.setAll(data2.data.values);
-          volumeSeries.data.setAll(data2.data.values);
-
-          const currentSeries = stockChart.get("stockSeries") as am5xy.XYSeries;
-          currentSeries.data = valueSeries.data;
-
-          console.log("valueSeries data after loading", valueSeries.data);
-          console.log("current series data after loading", currentSeries.data);
-
           min = Math.max(min, absoluteMin);
           dateAxis.set("min", min);
           dateAxis.setPrivate("min", min);
           dateAxis.set("start", 0);
           dateAxis.set("end", (end - start) / (1 - start));
         } else if (side === "right") {
-          const seriesLast: Record<string, number> = {};
-          seriesLast[valueSeries.uid] = valueSeries.data.getIndex(
-            valueSeries.data.length - 1
-          )?.date as number;
-          seriesLast[volumeSeries.uid] = volumeSeries.data.getIndex(
-            volumeSeries.data.length - 1
-          )?.date as number;
-
-          for (let i = 0; i < data.length; i++) {
-            const date = data[i].date;
-            if (seriesLast[valueSeries.uid] < date) {
-              valueSeries.data.push(data[i]);
-            }
-            if (seriesLast[volumeSeries.uid] < date) {
-              volumeSeries.data.push(data[i]);
-            }
-          }
-
-          max = Math.min(max, absoluteMax);
-          dateAxis.set("max", max);
-          dateAxis.setPrivate("max", max);
-          dateAxis.set("start", start / end);
-          dateAxis.set("end", 1);
+          // const seriesLast: Record<string, number> = {};
+          // seriesLast[valueSeries.uid] = valueSeries.data.getIndex(
+          //   valueSeries.data.length - 1
+          // )?.date as number;
+          // seriesLast[volumeSeries.uid] = volumeSeries.data.getIndex(
+          //   volumeSeries.data.length - 1
+          // )?.date as number;
+          // for (let i = 0; i < data.length; i++) {
+          //   const date = data[i].date;
+          //   if (seriesLast[valueSeries.uid] < date) {
+          //     valueSeries.data.push(data[i]);
+          //   }
+          //   if (seriesLast[volumeSeries.uid] < date) {
+          //     volumeSeries.data.push(data[i]);
+          //   }
+          // }
+          // max = Math.min(max, absoluteMax);
+          // dateAxis.set("max", max);
+          // dateAxis.setPrivate("max", max);
+          // dateAxis.set("start", start / end);
+          // dateAxis.set("end", 1);
         }
       } catch (error) {
         console.error("Error fetching or processing data:", error);
@@ -868,9 +886,8 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         },
       ],
     });
-    intervalSwitcher.events.on("selected", (ev) => {
+    intervalSwitcher.events.on("selected", (ev: any) => {
       const newInterval = ev.item.interval;
-      const newTimeUnit = newInterval.timeUnit;
 
       setCurrentInterval(newInterval);
       dateAxis.setAll({
@@ -1140,7 +1157,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         "stockSeries" as keyof am5.ISpriteSettings
       );
       const livePrice = prices;
-
+      if (!livePrice) return;
       // Update the current value label
       currentValueDataItem?.animate({
         key: "value",
@@ -1259,7 +1276,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
   const root = rootRef.current;
   const stockChart = root?.container.children.getIndex(0);
 
-  stockChart?.events.on("drawingadded", (ev) => {
+  stockChart?.events.on("drawingadded" as keyof am5.ISpriteEvents, (ev) => {
     if (activeTool) {
       const currentDrawing = activeTool.serializeDrawings("object");
       activeTool.set("active", false);
@@ -1268,14 +1285,16 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         "drawControlSettings"
       );
 
-      drawControlSettings.style.display = "none";
+      if (drawControlSettings) {
+        drawControlSettings.style.display = "none";
+      }
     }
   });
 
   console.log(drawingSelection);
   const activateDrawingTool = (toolType: string) => {
     const root = rootRef.current;
-    const stockChart = root?.container.children.getIndex(0);
+    const stockChart = root?.container.children.getIndex(0) as any;
 
     const drawControlSettings = document.getElementById("drawControlSettings");
     if (!drawControlSettings) return;
@@ -1294,12 +1313,15 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
       setActiveTool(null);
     }
 
-    stockChart.set("drawingSelectionEnabled", true);
+    stockChart.set(
+      "drawingSelectionEnabled" as keyof am5.ISpriteSettings,
+      true
+    );
     setDrawingSelection(true);
 
     // Reset and activate the selected drawing tool
     drawingTool.setAll({
-      tool: toolType,
+      tool: toolType as DrawingTools,
       active: true,
     });
 
@@ -1307,12 +1329,21 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
     if (toolType === "Eraser") {
       drawingTool.set("active", false);
       drawingTool.setEraser(true);
-      stockChart.set("drawingSelectionEnabled", false);
+      stockChart.set(
+        "drawingSelectionEnabled" as keyof am5.ISpriteSettings,
+        false
+      );
       setDrawingSelection(false);
       drawControlSettings.style.display = "none";
     } else if (toolType === "Select") {
-      stockChart.set("drawingSelectionEnabled", false);
-      stockChart.set("drawingSelectionEnabled", true);
+      stockChart.set(
+        "drawingSelectionEnabled" as keyof am5.ISpriteSettings,
+        false
+      );
+      stockChart.set(
+        "drawingSelectionEnabled" as keyof am5.ISpriteSettings,
+        true
+      );
       drawControlSettings.style.display = "none";
     } else {
       setActiveTool(drawingTool);
