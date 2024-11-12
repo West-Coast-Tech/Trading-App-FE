@@ -20,13 +20,19 @@ const formatTime = (milliseconds: number): string => {
   const paddedSeconds = String(seconds).padStart(2, "0");
   return `${paddedMinutes}:${paddedSeconds}`;
 };
-
+const selectAccount = (state: AppState) => state?.accounts?.selectedAccount;
 const TradeHistory: React.FC = () => {
+  const selectedAccount = useSelector(selectAccount);
+
   const [activeTab, setActiveTab] = useState("trades");
   const [expandedTradeId, setExpandedTradeId] = useState<number | null>(null);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const trades = useSelector((state: AppState) => state.trades.allTrades);
   const dispatch = useDispatch<any>();
+  //Filter Trades based on selectedAccount.accNo
+  const filteredTrades = trades.filter(
+    (trade) => trade.accountNo === selectedAccount?.accNo
+  );
 
   useEffect(() => {
     // Fetch initial trades from the backend
@@ -130,7 +136,7 @@ const TradeHistory: React.FC = () => {
                 </span>
               </div>
               <ul className="list-none pl-0">
-                {trades
+                {filteredTrades
                   .slice()
                   .reverse()
                   .map((trade) => {
