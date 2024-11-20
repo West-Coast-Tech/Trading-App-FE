@@ -29,7 +29,7 @@ const sidebarItems = [
     key: "ACCOUNT",
     text: "ACCOUNT",
     icon: <StickyNote size={18} />,
-    path: "/settings",
+    path: "/settings/account",
   },
   {
     key: "MATCHES",
@@ -47,7 +47,7 @@ const sidebarItems = [
     key: "SETTINGS",
     text: "SETTINGS",
     icon: <Settings size={18} />,
-    path: "/settings",
+    path: "",
   },
 ];
 
@@ -74,18 +74,18 @@ const Sidebar: React.FC<SidebarType> = ({
     }
   }, [location.pathname]);
 
-  // On initial render, check sessionStorage for active tab
-  useEffect(() => {
-    const storedTab = sessionStorage.getItem("activeTab");
-    if (storedTab) {
-      setActiveItem(storedTab);
-      // Navigate to the stored path if needed
-      const storedItem = sidebarItems.find((item) => item.key === storedTab);
-      if (storedItem && location.pathname !== storedItem.path) {
-        navigate(storedItem.path, { replace: true });
-      }
-    }
-  }, []); // Run only once on mount
+  // // On initial render, check sessionStorage for active tab
+  // useEffect(() => {
+  //   const storedTab = sessionStorage.getItem("activeTab");
+  //   if (storedTab) {
+  //     setActiveItem(storedTab);
+  //     // Navigate to the stored path if needed
+  //     const storedItem = sidebarItems.find((item) => item.key === storedTab);
+  //     if (storedItem && location.pathname !== storedItem.path) {
+  //       navigate(storedItem.path, { replace: true });
+  //     }
+  //   }
+  // }, []); // Run only once on mount
 
   const handleItemClick = (item: { key: string; path: string }) => {
     setActiveItem(item.key);

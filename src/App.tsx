@@ -13,9 +13,14 @@ import ForgotPassword from "./components/LoginComponent/ForgotPassword";
 import ResetPassword from "./components/LoginComponent/ResetPassword";
 import LiveDataChart from "./components/AmChart/LiveDataChart";
 import Layout from "./components/Layout";
-import { ThemeProvider } from "./components/ThemeContext"; // Import the ThemeProvider
+import { ThemeProvider } from "./components/ThemeContext";
 import Settings from "./components/SettingsPages/Settings";
-
+import Deposit from "./components/SettingsPages/Deposit";
+import Withdrawal from "./components/SettingsPages/Withdrawal";
+// import Transactions from "./components/SettingsPages/Transactions";
+import AccountSettings from "./components/SettingsPages/AccountSettings";
+import TradesTable from "./components/SettingsPages/TradesTable";
+import DepositForm from "./components/SettingsPages/DepositForm";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -31,7 +36,16 @@ const router = createBrowserRouter(
         <Route element={<ProtectedRoute />}>
           <Route index element={<HomePage />} />
           <Route path="home" element={<HomePage />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="deposit" element={<DepositForm />} />
+
+          <Route path="settings" element={<Settings />}>
+            <Route path="account" element={<AccountSettings />} />
+            <Route path="deposit" element={<Deposit />} />
+
+            <Route path="deposit/:coin" element={<DepositForm />} />
+            <Route path="withdrawal" element={<Withdrawal />} />
+            <Route path="tradeHistory" element={<TradesTable />} />
+          </Route>
         </Route>
       </Route>
     </Route>
@@ -41,8 +55,6 @@ const router = createBrowserRouter(
 const App: React.FC = () => {
   return (
     <ThemeProvider>
-      {" "}
-      {/* Wrap with ThemeProvider */}
       <RouterProvider router={router} />
     </ThemeProvider>
   );

@@ -1,119 +1,92 @@
 import React, { useEffect, useState } from "react";
-import AccountSettings from "./AccountSettings";
-import TradesTable from "./TradesTable";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCircleDollarToSlot,
-  faDollarSign,
-  faFilterCircleDollar,
-} from "@fortawesome/free-solid-svg-icons";
+import { faDollarSign } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserData } from "../../actions/userActions";
 import { AccountsData, AppState } from "../../actions/types";
-import Deposit from "./Deposit";
 
 const Settings: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("account");
-  const [realAccount, setRealAccount] = useState<AccountsData>();
-  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const accountsData = useSelector(
     (state: AppState) => state.accounts.accounts
   );
+  const [activeTab, setActiveTab] = useState("");
+  const [realAccount, setRealAccount] = useState<AccountsData>();
+
   useEffect(() => {
-    // Render content based on active tab
+    const currentTab = location.pathname.split("/").pop();
+    if (currentTab) setActiveTab(currentTab);
+  }, [location.pathname]);
+  useEffect(() => {
+    const pathSegments = location.pathname.split("/");
+    if (pathSegments.length > 2) {
+      setActiveTab(pathSegments[2]); // Assuming '/settings/:tab' structure
+    }
+  }, [location.pathname]);
+  useEffect(() => {
     if (accountsData.length > 0) {
-      // Automatically select the first demo account found
       const realAcc = accountsData.find(
         (account: AccountsData) => account.accountType === "real"
       );
-      if (realAcc) {
-        setRealAccount(realAcc);
-      }
+      if (realAcc) setRealAccount(realAcc);
     }
-  });
-  const renderContent = () => {
-    switch (activeTab) {
-      case "account":
-        return (
-          <div>
-            <AccountSettings />
-          </div>
-        );
-      case "deposit":
-        return (
-          <div>
-            <Deposit />
-          </div>
-        );
-      case "withdrawal":
-        return <div>Withdrawal Section</div>;
-      case "transactions":
-        return <div>Transactions Section</div>;
-      case "tradeHistory":
-        return (
-          <div>
-            <TradesTable />
-          </div>
-        );
-      default:
-        return (
-          <div>
-            <AccountSettings />
-          </div>
-        );
-    }
+  }, [accountsData]);
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    navigate(`/settings/${tab}`);
   };
 
   return (
     <div className="flex flex-col items-center p-8 pl-3 ml-3 pt-1 bg-secondary ">
-      {/* Tab Bar */}
-      <div className=" w-full rounded-md p-2 ">
-        {/* Tabs */}
-        <div className="flex   justify-between border-b-2 mb-4 ">
-          <div className="p-1 bg-gray-700 rounded-md space-x-5">
+      <div className="w-full rounded-md p-2 ">
+        <div className="flex justify-between border-b-2 mb-4">
+          <div className="p-1 bg-gray-700 rounded-md space-x-5 [&>*]:cursor-pointer">
             <button
-              className={`bg-gray-700 p-3 ml-2 text-sm text-tBase font-bold rounded-md  hover:cursor-pointer ${
-                activeTab === "deposit" ? "brightness-125 " : ""
+              className={`bg-gray-700 p-3 ml-2 text-sm text-tBase font-bold rounded-md ${
+                activeTab === "deposit" ? "brightness-125" : ""
               }`}
-              onClick={() => setActiveTab("deposit")}
+              onClick={() => handleTabClick("deposit")}
             >
               Deposit
             </button>
             <button
-              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md  hover:cursor-pointer ${
-                activeTab === "withdrawal" ? "brightness-125 " : ""
+              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md ${
+                activeTab === "withdrawal" ? "brightness-125" : ""
               }`}
-              onClick={() => setActiveTab("withdrawal")}
+              onClick={() => handleTabClick("withdrawal")}
             >
               Withdrawal
             </button>
             <button
-              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md  hover:cursor-pointer ${
-                activeTab === "transactions" ? "brightness-125 " : ""
+              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md ${
+                activeTab === "transactions" ? "brightness-125" : ""
               }`}
-              onClick={() => setActiveTab("transactions")}
+              onClick={() => handleTabClick("transactions")}
             >
               Transactions
             </button>
             <button
-              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md  hover:cursor-pointer ${
-                activeTab === "account" ? "brightness-125 " : ""
+              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md ${
+                activeTab === "account" ? "brightness-125" : ""
               }`}
-              onClick={() => setActiveTab("account")}
+              onClick={() => handleTabClick("account")}
             >
               Account
             </button>
             <button
-              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md  hover:cursor-pointer ${
-                activeTab === "tradeHistory" ? "brightness-125 " : ""
+              className={`bg-gray-700 p-3 text-sm text-tBase font-bold rounded-md ${
+                activeTab === "tradeHistory" ? "brightness-125" : ""
               }`}
-              onClick={() => setActiveTab("tradeHistory")}
+              onClick={() => handleTabClick("tradeHistory")}
             >
               Trade History
             </button>
           </div>
-          <div className="flex gap-5 text-gray-500 items-center text-sm ">
-            <div className="border-r-[0.1rem] border-solid border-white  px-4 ">
+
+          <div className="flex gap-5 text-gray-500 items-center text-sm">
+            <div className="border-r-[0.1rem] border-solid border-white px-4">
               <p className="text-xs m-1 font-bold">My current Currency</p>
               <div className="flex flex-row space-x-2 text-tBase">
                 <FontAwesomeIcon
@@ -126,7 +99,7 @@ const Settings: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="border-r-[0.1rem] border-solid border-white  px-4 ">
+            <div className="border-r-[0.1rem] border-solid border-white px-4">
               <div className="text-xs font-bold">Available for withdrawal</div>
               <div className="text-center font-bold text-lg text-tBase">
                 {realAccount?.equity} $
@@ -141,8 +114,10 @@ const Settings: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab Content */}
-        <div>{renderContent()}</div>
+        {/* Rendered content based on activeTab */}
+        <div>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

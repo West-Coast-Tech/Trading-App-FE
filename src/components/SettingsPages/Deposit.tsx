@@ -1,124 +1,73 @@
-// src/components/DepositForm.tsx
-import React, { useState } from "react";
-import API from "../../utils/API";
-import { useSelector } from "react-redux";
-import { AccountsData, AppState } from "../../actions/types";
-const DepositForm: React.FC = () => {
-  // Assuming userId is stored in Redux store under users.currentUser.id
-  const userId = sessionStorage.getItem("id");
-  const accountNo = useSelector(
-    (state: AppState) => state.accounts.accounts
-  ).find((account: AccountsData) => account.accountType === "real")?.accNo;
-  // Local state for form fields
-  const [amount, setAmount] = useState<number>(0);
+import {
+  faBitcoinSign,
+  faCreditCard,
+  faMinus,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import APECoin from "../../../public/cyrptoIcons/apecoin.svg";
+import { CryptoCard } from "./CryptoCard";
 
-  // State for handling feedback
-  const [loading, setLoading] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+const iconPath = "/cryptoIcons/";
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+const cryptoItems = [
+  { title: "Bitcoin (BTC)", code: "BTC" },
+  { title: "Binance Pay", code: "binance" },
+  { title: "USD Tether (TRC-20)", code: "USDT.TRC20" },
+  //   { title: "USD Tether (ERC-20)", code: "usdt_erc20" },
+  //   { title: "USD Tether (Polygon)", code: "usdt_polygon" },
+  { title: "USD Coin (Polygon)", code: "POL" },
+  //   { title: "USD Coin (ERC-20)", code: "usdc" },
+  //   { title: "USD Tether (BEP-20)", code: "usdt_bep20" },
+  { title: "Ethereum (ETH)", code: "ETH" },
+  { title: "Litecoin (LTC)", code: "LTC" },
+  //   { title: "Bitcoin Cash", code: "crypto-bch" },
+  { title: "Tron (TRX)", code: "TRX" },
+  { title: "Dash", code: "DASH" },
+  { title: "Polygon (MATIC)", code: "POL" },
+  //   { title: "Dai", code: "dai" },
+  { title: "Solana", code: "SOL" },
+  //   { title: "Polkadot", code: "polkadot" },
+  //   { title: "Shiba Inu (ERC-20)", code: "crypto-shiba_erc20" },
+  { title: "Zcash (ZEC)", code: "ZEC" },
+  { title: "Dogecoin", code: "DOGE" },
+  //   { title: "Ripple", code: "crypto-xpr" },
+  //   { title: "ApeCoin (APE)", code: "apecoin" },
+  //   { title: "Uniswap (UNI)", code: "uniswap" },
+  //   { title: "Avalanche (AVAX)", code: "avalance" },
+];
 
-    // Reset messages
-    setSuccessMessage("");
-    setErrorMessage("");
-
-    // Basic validation
-    if (!userId) {
-      setErrorMessage("User not authenticated.");
-      return;
-    }
-
-    if (!accountNo || !amount) {
-      setErrorMessage("Please provide all required fields.");
-      return;
-    }
-
-    if (amount <= 0) {
-      setErrorMessage("Deposit amount must be greater than zero.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // Call the createDeposit API
-      const response = await API.createDeposit(userId, accountNo, amount);
-
-      // Handle successful response
-      setSuccessMessage("Deposit successful!");
-      setAmount(0);
-    } catch (error: any) {
-      // Handle errors
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        console.log("Error", error);
-        setErrorMessage("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const Deposit = () => {
   return (
-    <div className="max-w-md mx-auto p-6 bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-white">Deposit Funds</h2>
-
-      {successMessage && (
-        <div className="mb-4 p-3 bg-green-500 text-white rounded">
-          {successMessage}
-        </div>
-      )}
-
-      {errorMessage && (
-        <div className="mb-4 p-3 bg-red-500 text-white rounded">
-          {errorMessage}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Account Number Field */}
-
-        {/* Amount Field */}
-        <div>
-          <label htmlFor="amount" className="block text-white mb-1">
-            Amount (USD)
-          </label>
-          <input
-            type="number"
-            id="amount"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-            className="w-full p-2 bg-gray-700 text-white rounded"
-            placeholder="Enter amount to deposit"
-            required
-            min="0.01"
-            step="0.01"
+    // <div className="grid grid-cols-5 text-tBase mt-4">
+    //   <div className="col-span-1">
+    //     <div className="flex flex-row gap-2 items-center justify-center">
+    //       <FontAwesomeIcon icon={faCreditCard} />
+    //       <h3 className="my-0 "> Bank Cards</h3>
+    //     </div>
+    //   </div>
+    <div className="text-tBase space-y-4">
+      <div className="flex flex-row gap-2 items-center justify-center">
+        <FontAwesomeIcon icon={faBitcoinSign} />
+        <h3 className="my-0 "> Crypto Payments</h3>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 m-4">
+        {cryptoItems.map((item) => (
+          <CryptoCard
+            key={item.code}
+            title={item.title}
+            icon={<img src={`${iconPath}${item.code}.svg`} alt={item.title} />}
+            url={item.code}
           />
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className={`w-full p-2 text-white rounded ${
-            loading
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Deposit"}
-        </button>
-      </form>
+        ))}
+      </div>
     </div>
+    //   <div className="col-span-1">
+    //     <div className="flex flex-row gap-2 items-center justify-center">
+    //       <CreditCard />
+    //       <h3 className="my-0 "> E Payments</h3>
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
-
-export default DepositForm;
+export default Deposit;
