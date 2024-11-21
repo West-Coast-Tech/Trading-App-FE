@@ -149,10 +149,10 @@ const Navbar: FunctionComponent<NavbarType> = ({
 
           {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute top-full mt-2 w-64 bg-secondary text-xs border border-gray-200 rounded-md shadow-lg z-50">
+            <div className="absolute top-full mt-2 w-64 bg-secondary text-xs border border-gray-200 rounded-md shadow-md shadow-black z-50">
               <div className="flex">
                 {/* Left Column */}
-                <div className="w-1/2 p-4 border-r border-gray-200">
+                <div className="p-4 border-r border-gray-200">
                   {/* Row 1: Standard Profit */}
                   <div className="mb-4">
                     <span className="font-semibold">Standard Profit:</span> 0%
@@ -194,7 +194,7 @@ const Navbar: FunctionComponent<NavbarType> = ({
                 {/* Right Column */}
                 <div className="w-1/2 p-4">
                   {/* You can add content for the right column here */}
-                  <div className="text-gray-700">
+                  <div className="text-white">
                     {/* Placeholder for additional details */}
                     <h3 className="font-semibold mb-2">Account Information</h3>
                     <p>Account ID: {selectedAccount?.accNo}</p>

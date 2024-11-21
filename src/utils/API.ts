@@ -190,16 +190,31 @@ export default {
   //API for transactions
   createDeposit(
     userId: string,
-    accountNo: string,
     amount: number,
     currency: string
   ): Promise<AxiosResponse<void>> {
     return apiClient.post("/transactions/deposit-wallet", {
       userId,
-      accountNo,
       amount,
       currency,
     });
+  },
+  createWithdrawalRequest(
+    userId: string,
+    amount: string,
+    currency: string,
+    token: string
+  ): Promise<AxiosResponse> {
+    const data = { userId, amount, currency };
+    return apiClient.post(
+      "/transactions/withdrawal-request",
+      {
+        data,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
   },
 
   //API to update clicks for affiliate
