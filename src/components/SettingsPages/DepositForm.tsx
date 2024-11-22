@@ -79,10 +79,17 @@ const DepositForm: React.FC = () => {
     }
 
     setLoading(true);
-    const currency = coin;
+    const sourceCurrency = coin;
+    const currency = "USD";
     try {
       // Call the createDeposit API
-      await API.createDeposit(userId, accountNo, amount, currency);
+      await API.createDeposit(
+        userId,
+        accountNo,
+        amount,
+        currency,
+        sourceCurrency
+      );
 
       // Handle successful response
       setSuccessMessage("Deposit successful!");

@@ -16,6 +16,7 @@ import {
 } from "../features/auth/authSlice";
 import { LoginData, OtpData, RegisterData, ResetData } from "./types";
 import API from "../utils/API"; // Import the updated API client
+import { loadUser } from "../features/users/usersSlice";
 
 // Action to register new users
 export const registerUser =
@@ -72,6 +73,7 @@ export const verifyOtp = (data: OtpData) => async (dispatch: Dispatch) => {
     dispatch(loadingStart());
     const response = await API.verifyOtp(data);
     dispatch(loginSuccess(response.data));
+    dispatch(loadUser(response.data));
   } catch (err: any) {
     dispatch(otpFailed(err.response.data));
   }

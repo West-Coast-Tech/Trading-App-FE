@@ -135,7 +135,7 @@ const Navbar: FunctionComponent<NavbarType> = ({
             </div>
             <div className="flex flex-row items-center space-x-2">
               <div className="text-[0.6rem] font-extrabold uppercase">
-                {matchedAccount?.accountType}{" "}
+                {matchedAccount?.accountType}
                 <div className="hidden">ACCOUNT</div>
               </div>
               <div className="text-xs font-bold">

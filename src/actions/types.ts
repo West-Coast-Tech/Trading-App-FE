@@ -32,6 +32,7 @@ export interface UserData {
   country: string | null;
   documents: File[] | null;
   favoriteSymbols: string[] | null;
+  activeStatus: string;
 }
 
 // Error data interface

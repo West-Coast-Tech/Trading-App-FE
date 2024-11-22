@@ -1,6 +1,6 @@
 // src/features/auth/authSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RegisterData } from "../../actions/types";
+import { RegisterData, UserData } from "../../actions/types";
 export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
@@ -83,7 +83,11 @@ export const authSlice = createSlice({
 
     loginSuccess: (
       state,
-      action: PayloadAction<{ token: string; email: string; id: string }>
+      action: PayloadAction<{
+        token: string;
+        email: string;
+        id: string;
+      }>
     ) => {
       sessionStorage.setItem("token", action.payload.token);
       sessionStorage.setItem("id", action.payload.id); // Save user ID to sessionStorage

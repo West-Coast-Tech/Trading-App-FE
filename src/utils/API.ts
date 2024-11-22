@@ -190,13 +190,17 @@ export default {
   //API for transactions
   createDeposit(
     userId: string,
+    accountNo: string,
     amount: number,
-    currency: string
+    currency: string,
+    sourceCurrency: string
   ): Promise<AxiosResponse<void>> {
-    return apiClient.post("/transactions/deposit-wallet", {
+    return apiClient.post("/transactions/deposit", {
       userId,
+      accountNo,
       amount,
       currency,
+      sourceCurrency,
     });
   },
   createWithdrawalRequest(

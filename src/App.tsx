@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Route,
   createRoutesFromElements,
@@ -21,6 +21,8 @@ import Withdrawal from "./components/SettingsPages/Withdrawal";
 import AccountSettings from "./components/SettingsPages/AccountSettings";
 import TradesTable from "./components/SettingsPages/TradesTable";
 import DepositForm from "./components/SettingsPages/DepositForm";
+import { AppState } from "./actions/types";
+import { useSelector } from "react-redux";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
