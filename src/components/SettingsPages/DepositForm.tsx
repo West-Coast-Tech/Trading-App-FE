@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { AccountsData, AppState } from "../../actions/types";
 import { client } from "./CoinPayments";
 import { CryptoCard } from "./CryptoCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const iconPath = "/cryptoIcons/";
 
@@ -14,6 +14,7 @@ const DepositForm: React.FC = () => {
   if (!coin) {
     return <div>No Coin Found</div>;
   }
+  const navigate = useNavigate();
   //CoinPayments
   const fetchCoinPayments = async () => {
     const response = await client.getBasicInfo();
@@ -83,16 +84,16 @@ const DepositForm: React.FC = () => {
     const currency = "USD";
     try {
       // Call the createDeposit API
-      await API.createDeposit(
+      const response = await API.createDeposit(
         userId,
         accountNo,
         amount,
         currency,
         sourceCurrency
       );
-
-      // Handle successful response
-      setSuccessMessage("Deposit successful!");
+      console.log("response", response.data);
+      const paymentId = response.data.payment_id;
+      navigate(`/settings/deposit/confirm/${paymentId}`);
       setAmount(0);
     } catch (error: any) {
       // Handle errors

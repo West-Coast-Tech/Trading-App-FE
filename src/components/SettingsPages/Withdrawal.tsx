@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import API from "../../utils/API";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AccountsData, AppState } from "../../actions/types";
 import { useSelector } from "react-redux";
-
+import toast, { Toaster } from "react-hot-toast";
 const selectAccount = (state: AppState) =>
   state.accounts.accounts.find(
     (account: AccountsData) => account.accountType === "real"
@@ -14,7 +13,6 @@ const Withdrawal = () => {
   const [amount, setAmount] = useState("");
   const account = useSelector(selectAccount);
   const handleSubmit = async () => {
-    toast.success("hanlding withdrawal request");
     try {
       const currency = "USD";
       const userId = sessionStorage.getItem("id") || "";
@@ -37,14 +35,17 @@ const Withdrawal = () => {
       } else {
         toast.error("Failed to create withdrawal request");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("catch error");
-      toast.error("Failed to create withdrawal request");
+      toast.error(
+        `Failed to create withdrawal request ${error.response.data.message}`
+      );
       console.error(error);
     }
   };
   return (
     <div className="w-full grid grid-cols-1 xl:grid-cols-2 text-tBase">
+      <Toaster />
       <div className="col-span-1 grid grid-cols-1 sm:grid-cols-3 grid-rows-2 gap-6">
         <div className="col-span-1 flex flex-col p-1 border-r border-dashed border-gray-500">
           <h4>Account</h4>

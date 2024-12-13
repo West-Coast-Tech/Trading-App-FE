@@ -194,8 +194,8 @@ export default {
     amount: number,
     currency: string,
     sourceCurrency: string
-  ): Promise<AxiosResponse<void>> {
-    return apiClient.post("/transactions/deposit", {
+  ): Promise<AxiosResponse> {
+    return apiClient.post("/transactions/deposit-wallet", {
       userId,
       accountNo,
       amount,
@@ -219,6 +219,27 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+  },
+
+  //Get NowPayment Record
+  getNowPaymentRecord(
+    token: string,
+    paymentId: string
+  ): Promise<AxiosResponse> {
+    return apiClient.post(
+      "/nowpayment/record",
+      {
+        paymentId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  },
+
+  //API to get affiliate link
+  getAffiliateLink(userId: string): Promise<AxiosResponse<string>> {
+    return apiClient.post("/affiliate/link", { userId });
   },
 
   //API to update clicks for affiliate
