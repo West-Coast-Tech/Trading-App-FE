@@ -204,12 +204,13 @@ export default {
     });
   },
   createWithdrawalRequest(
+    token: string,
     userId: string,
     amount: string,
     currency: string,
-    token: string
+    userWalletAddress: string
   ): Promise<AxiosResponse> {
-    const data = { userId, amount, currency };
+    const data = { userId, amount, currency, userWalletAddress };
     return apiClient.post(
       "/transactions/withdrawal-request",
       {

@@ -18,10 +18,6 @@ export const store = configureStore({
     trades: tradeDataReducer,
     accounts: accountDataReducer,
   },
-  // No need to manually add redux-thunk here since it's included by default
-  // If you had a custom middleware, you could modify getDefaultMiddleware like this:
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware().concat(myCustomMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
