@@ -142,7 +142,7 @@ export const ConfirmPayment = () => {
 
         {/* Error Message */}
         {errorMessage && (
-          <div className="mt-6 p-4  border border-red-400 text-xs italic text-red rounded-lg">
+          <div className="mt-6 p-4  border border-red-400 text-xs italic text-red-600 rounded-lg">
             {errorMessage}
           </div>
         )}

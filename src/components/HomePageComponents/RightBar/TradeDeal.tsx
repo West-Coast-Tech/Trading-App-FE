@@ -351,7 +351,7 @@ const TradeDeal = () => {
         <div className="flex flex-col items-start h-10 w-full">
           <button
             type="button"
-            className="bg-red
+            className="bg-red-500
               text-white
               font-extrabold
               flex

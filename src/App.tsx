@@ -24,6 +24,7 @@ import DepositForm from "./components/SettingsPages/DepositForm";
 import { AppState } from "./actions/types";
 import { useSelector } from "react-redux";
 import { ConfirmPayment } from "./components/SettingsPages/ConfirmPayment";
+import { Transactions } from "./components/SettingsPages/Transactions";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
               element={<ConfirmPayment />}
             />
             <Route path="deposit/:coin" element={<DepositForm />} />
+            <Route path="transactions" element={<Transactions />} />
             <Route path="withdrawal" element={<Withdrawal />} />
             <Route path="tradeHistory" element={<TradesTable />} />
           </Route>

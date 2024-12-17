@@ -152,7 +152,7 @@ const DepositForm: React.FC = () => {
           {paymentComponent()}
           {/* Submit Button */}
           {errorMessage && (
-            <div className=" text-red text-xs italic rounded">
+            <div className=" text-red-600 text-xs italic rounded">
               {errorMessage}
             </div>
           )}

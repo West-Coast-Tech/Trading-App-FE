@@ -97,6 +97,17 @@ export interface TradesData {
   accountNo: string;
 }
 
+export interface TransactionsData {
+  accountNo: string;
+  amount: number;
+  currency: string;
+  transactionType: "deposit" | "withdrawal";
+  sourceCurrency: string;
+  finalBalance: number;
+  status: "pending" | "completed" | "failed";
+  merchant: string;
+}
+
 export interface AccountsData {
   equity: number;
   accountType: string;

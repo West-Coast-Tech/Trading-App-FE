@@ -420,7 +420,7 @@ const Register = () => {
                       id="emailnote"
                       className={`${
                         emailFocus && email && !validEmail
-                          ? "text-red flex items-center"
+                          ? "text-red-600 flex items-center"
                           : "hidden"
                       }`}
                     >
@@ -505,12 +505,14 @@ const Register = () => {
                       className={inputClassCSS}
                       style={{ color: "#ffffff", caretColor: "#ffffff" }}
                     />
-                    <p className="text-red mt-2 text-sm text-center w-[90%]">
+                    <p className="text-red-600 mt-2 text-sm text-center w-[90%]">
                       {error}
                     </p>
 
                     {passwordError && (
-                      <p className="text-red mt-2 text-sm">{passwordError}</p>
+                      <p className="text-red-600 mt-2 text-sm">
+                        {passwordError}
+                      </p>
                     )}
                   </div>
 

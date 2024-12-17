@@ -125,7 +125,7 @@ const UploadDocument = () => {
                 <li key={index} className="flex items-center justify-between">
                   <span className="text-sm">{file.name}</span>
                   <div
-                    className="text-red-500 hover:text-red cursor-pointer"
+                    className="text-red-500 hover:text-red-600 cursor-pointer"
                     onClick={() => handleRemoveFile(index)}
                   >
                     <FontAwesomeIcon icon={faTrashAlt} />

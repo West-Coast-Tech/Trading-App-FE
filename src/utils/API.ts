@@ -222,6 +222,33 @@ export default {
     );
   },
 
+  getTransactions(token: string, userId: string): Promise<AxiosResponse> {
+    return apiClient.post(
+      "/transactions",
+      {
+        userId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  },
+
+  //API to create NowPayment Record
+  createNowPaymentRecord(
+    userId: string,
+    amount: string,
+    currency: string,
+    paymentId: string
+  ): Promise<AxiosResponse> {
+    return apiClient.post("/nowpayment/create", {
+      userId,
+      amount,
+      currency,
+      paymentId,
+    });
+  },
+
   //Get NowPayment Record
   getNowPaymentRecord(
     token: string,

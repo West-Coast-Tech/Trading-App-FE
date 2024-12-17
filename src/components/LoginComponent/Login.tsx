@@ -4,33 +4,38 @@ import { useSelector, useDispatch } from "react-redux";
 import { loginUser, verifyOtp } from "../../actions/authActions";
 import { AppState } from "../../actions/types";
 import VerifyOtp from "./VerifyOtp";
-import {hashPassword} from "../../services/auth"
+import { hashPassword } from "../../services/auth";
 const Login = (_props: any) => {
   const navigate = useNavigate();
-  const { isAuthenticated, otpToken, error, loading } = useSelector((state: AppState) => state.auth);
+  const { isAuthenticated, otpToken, error, loading } = useSelector(
+    (state: AppState) => state.auth
+  );
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/home');
+      navigate("/home");
     }
   }, [isAuthenticated, navigate]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [resendPayload, setResendPayload] = useState<{ email: string, password: string }>({ email: "", password: "" });
-  
+  const [resendPayload, setResendPayload] = useState<{
+    email: string;
+    password: string;
+  }>({ email: "", password: "" });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     if (otpToken) {
       return;
     }
-    
+
     e.preventDefault();
-    const hashedPassword = await hashPassword(password)
+    const hashedPassword = await hashPassword(password);
     // Create a payload object
     const payload = {
       email,
-      password:hashedPassword,
+      password: hashedPassword,
     };
 
     try {
@@ -39,7 +44,7 @@ const Login = (_props: any) => {
 
       // If successful, navigate to the home page
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       // Handle any additional error handling if needed
     }
   };
@@ -77,7 +82,10 @@ const Login = (_props: any) => {
                   <div className="mb-4">
                     <label className="flex justify-between text-[#f0f6fc] mb-2">
                       Password
-                      <a href="/forgot-password" className="text-blue-500 hover:text-blue-600">
+                      <a
+                        href="/forgot-password"
+                        className="text-blue-500 hover:text-blue-600"
+                      >
                         Forgot password?
                       </a>
                     </label>
@@ -93,21 +101,43 @@ const Login = (_props: any) => {
                       }}
                     />
                   </div>
-                  <p className="text-red text-xs text-center italic">{error}</p>
+                  <p className="text-red-600 text-xs text-center italic">
+                    {error}
+                  </p>
                   <button
                     type="submit"
-                    className={`w-full p-3 ${loading ? 'bg-[#1c7c36]' : 'bg-[#238636]'} text-white font-semibold rounded ${loading ? 'cursor-not-allowed' : 'hover:bg-[#249990]'}`}
+                    className={`w-full p-3 ${
+                      loading ? "bg-[#1c7c36]" : "bg-[#238636]"
+                    } text-white font-semibold rounded ${
+                      loading ? "cursor-not-allowed" : "hover:bg-[#249990]"
+                    }`}
                     disabled={loading}
                   >
                     {loading ? (
                       <div className="flex justify-center items-center">
-                        <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.961 7.961 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.961 7.961 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Logging In...
                       </div>
-                    ) : 'Sign in'}
+                    ) : (
+                      "Sign in"
+                    )}
                   </button>
                 </form>
               </div>

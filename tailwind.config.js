@@ -4,28 +4,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary:"var(--color-primary)",
-        secondary:"var(--color-secondary)",
-        background:"var(--color-background)",
-        tBase:"var(--color-text-base)",
+        primary: "var(--color-primary)",
+        secondary: "var(--color-secondary)",
+        background: "var(--color-background)",
+        tBase: "var(--color-text-base)",
         borderColor: "var(--color-border-color)",
         gray: {
-          "100": "#1c1f2d",
-          "200": "#030000",
-          "300": "rgba(255, 255, 255, 0.36)",
+          100: "#1c1f2d",
+          200: "#030000",
+          300: "rgba(255, 255, 255, 0.36)",
         },
         "border-brand-default": "#2c2c2c",
         darkgray: {
-          "100": "#aeaeae",
-          "200": "#a5a4a4",
+          100: "#aeaeae",
+          200: "#a5a4a4",
         },
         "grays-white": "#fff",
         royalblue: "#5d77ff",
-        red: "#ff0a0a",
+
         limegreen: {
-          "100": "#21dd03",
-          "200": "#08c400",
-          "300": "#18ac00",
+          100: "#21dd03",
+          200: "#08c400",
+          300: "#18ac00",
         },
         mediumblue: "#064bff",
         gainsboro: "rgba(217, 217, 217, 0)",
@@ -33,15 +33,15 @@ module.exports = {
       spacing: {
         "space-200": "8px",
       },
-      
+
       borderRadius: {
         "81xl": "100px",
       },
     },
-    
+
     fontFamily: {
-      roboto: ['Roboto', 'sans-serif'],
-      proxima: ['Proxima Nova', 'sans-serif'],
+      roboto: ["Roboto", "sans-serif"],
+      proxima: ["Proxima Nova", "sans-serif"],
     },
   },
   corePlugins: {

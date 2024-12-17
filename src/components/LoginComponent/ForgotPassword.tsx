@@ -46,7 +46,7 @@ const ForgotPassword: React.FC = () => {
         <div>
           {!otpToken ? (
             <div>
-              <p className="text-red text-xs text-center italic">{error}</p>
+              <p className="text-red-600 text-xs text-center italic">{error}</p>
               <div className="bg-gray-100 p-8 rounded-lg border-[#30363d] shadow-xl shadow-black sm:w-96">
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
