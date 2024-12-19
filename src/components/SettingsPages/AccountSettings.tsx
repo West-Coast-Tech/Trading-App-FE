@@ -57,9 +57,9 @@ const AccountSettings: React.FC = () => {
   };
   return (
     <div className="text-tBase">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {/* First Column: Account Form */}
-        <div className="p-4 space-y-4 border-r-[0.1rem] border-dashed border-gray-500">
+        <div className="p-4 space-y-4 border-r-[0.1rem] lg:border-dashed border-gray-500 bg-gray-100 sm:bg-transparent">
           <h3 className="font-bold text-lg">Personal Data:</h3>
           <form className="space-y-2" onSubmit={handleSubmit}>
             <div className="flex items-center space-x-2">
@@ -150,7 +150,7 @@ const AccountSettings: React.FC = () => {
 
         {/* Second Column: Documents Verification */}
         {userData?.emailStatus === "veified" ? (
-          <div className="bg-[rgba(200,23,23,0.3)] h-[30vh] border-4 border-solid border-[rgba(200,23,23)] text-white p-6 rounded-lg flex items-center space-x-4 shadow-md">
+          <div className="bg-[rgba(200,23,23,0.3)] h-[30vh] lg:border-4 border-solid border-[rgba(200,23,23)] text-white p-6 rounded-lg flex items-center space-x-4 shadow-md">
             {/* Icon Section */}
             <div className="flex-shrink-0">
               <FontAwesomeIcon
@@ -176,7 +176,7 @@ const AccountSettings: React.FC = () => {
         )}
 
         {/* Third Column: Security Settings */}
-        <div className="p-4 space-y-4 border-l-[0.1rem] border-dashed border-gray-500">
+        <div className="p-4 space-y-4 border-l-[0.1rem] lg:border-dashed border-gray-500 bg-gray-100 sm:bg-transparent">
           <h3 className="font-bold text-lg">Security:</h3>
           <div className="flex items-center justify-between">
             <span>Two-step verification</span>
@@ -228,7 +228,7 @@ const AccountSettings: React.FC = () => {
         </div>
 
         {/* Fourth Column: Preferences */}
-        <div className="p-4 space-y-4 border-l-[0.1rem] border-dashed border-gray-500">
+        <div className="p-4 space-y-4 border-l-[0.1rem] lg:border-dashed border-gray-500 bg-gray-100 sm:bg-transparent">
           <h3 className="font-bold text-lg">Preferences:</h3>
           <div className="flex flex-col space-y-1">
             <label htmlFor="language" className="text-sm">
