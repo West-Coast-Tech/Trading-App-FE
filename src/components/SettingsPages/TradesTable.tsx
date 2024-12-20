@@ -135,207 +135,206 @@ const TradesTable: React.FC = () => {
 
   console.log("Filtered Trdes", filteredTrades);
   return (
-    <div className="p-4 text-tBase">
-      {/* Filter Section */}
-      <div className="flex flex-col sm:flex-row justify-between mb-4">
-        <div className="flex flex-row gap-4">
-          {/* From Date Filter */}
-          <div className="flex flex-row items-center">
-            <label htmlFor="fromDate" className="block text-sm mr-2">
-              From:
-            </label>
-            <div>
-              <input
-                id="fromDate"
-                type="date"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="bg-gray-800 text-white p-2 rounded"
-              />
+    <>
+      <div className="p-4 text-tBase">
+        {/* Filter Section */}
+        <div className="flex flex-col sm:flex-row justify-between mb-4">
+          <div className="flex flex-wrap gap-4">
+            {/* From Date Filter */}
+            <div className="flex flex-row items-center w-full md:w-1/2 lg:w-1/4">
+              <fieldset className="border border-solid border-gray-300 px-10 py-1 rounded">
+                <legend className="text-xs">From</legend>
+                <input
+                  id="fromDate"
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="bg-gray-800 text-white p-2 rounded"
+                />
+              </fieldset>
             </div>
-          </div>
-          {/* To Date Filter */}
-          <div className="flex flex-row items-center">
-            <label htmlFor="toDate" className="block text-sm mr-2">
-              To:
-            </label>
-            <div>
-              <input
-                id="toDate"
-                type="date"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="bg-gray-800 text-white p-2 rounded"
-              />
+            {/* To Date Filter */}
+            <div className="flex flex-row items-center w-full md:w-1/2 lg:w-1/4">
+              <fieldset className="border border-solid border-gray-300 px-10 py-1 rounded">
+                <legend className="text-xs">To</legend>
+                <input
+                  id="toDate"
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="bg-gray-800 text-white p-2 rounded"
+                />
+              </fieldset>
             </div>
-          </div>
-          {/* Account Type Filter */}
-          <div className="flex flex-row items-center">
-            <label htmlFor="accountType" className="block text-sm mr-2">
-              Account Type:
-            </label>
-            <div>
-              <select
-                id="accountType"
-                value={accountType}
-                onChange={(e) => setAccountType(e.target.value)}
-                className="bg-gray-800 text-white p-2 rounded"
+            {/* Account Type Filter */}
+            <div className="flex flex-row items-center w-full md:w-1/2 lg:w-1/4">
+              <fieldset className="border border-solid border-gray-300 px-10 py-1 rounded">
+                <legend className="text-xs">Account Type</legend>
+                <select
+                  id="accountType"
+                  value={accountType}
+                  onChange={(e) => setAccountType(e.target.value)}
+                  className="bg-gray-800 text-white p-2 rounded"
+                >
+                  <option value="real">Real Account</option>
+                  <option value="demo">Demo Account</option>
+                  {/* Add more account types as necessary */}
+                </select>
+              </fieldset>
+            </div>
+            {/* Apply Filters Button */}
+            <div className="flex items-end w-full md:w-1/2 lg:w-1/4 ">
+              <button
+                onClick={handleApplyFilters}
+                className="bg-blue-500 px-4 mb-2 cursor-pointer text-white py-2 rounded hover:bg-blue-600 transition-colors"
               >
-                <option value="real">Real Account</option>
-                <option value="demo">Demo Account</option>
-                {/* Add more account types as necessary */}
-              </select>
+                Apply Filters
+              </button>
             </div>
           </div>
-          {/* Apply Filters Button */}
-          <div className="flex items-end">
-            <button
-              onClick={handleApplyFilters}
-              className="bg-blue-500 px-4 mb-2 cursor-pointer text-white py-2 rounded hover:bg-blue-600 transition-colors"
-            >
-              Apply Filters
-            </button>
-          </div>
-        </div>
-        {/* Export Button */}
-        {/* <div className="mt-4 sm:mt-0">
+          {/* Export Button */}
+          {/* <div className="mt-4 sm:mt-0">
           <button className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition-colors">
             Export
           </button>
         </div> */}
-        {/* Pagination Controls */}
-        <div className="flex justify-between items-center mt-4 space-x-2">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className={`px-4 text-white py-2 bg-blue-500 hover:cursor-pointer rounded hover:bg-blue-600 transition-colors ${
-              currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Prev
-          </button>
-
-          <span className="text-sm">
-            {currentPage}/{totalPages}
-          </span>
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className={`px-4 text-white py-2 bg-blue-500 rounded hover:bg-blue-600 hover:cursor-pointer transition-colors ${
-              currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Next
-          </button>
         </div>
-      </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
-          <thead className="text-xs uppercase text-center bg-gray-700">
-            <tr>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Asset
-              </th>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Ticket No
-              </th>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Opening Quote
-              </th>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Closing Quote
-              </th>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Amount
-              </th>
-              <th className="py-3 border-2 border-solid border-gray-600">
-                Profit/Loss
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-center">
-            {loading && (
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
+            <thead className="text-xs uppercase text-center bg-gray-700">
               <tr>
-                <td colSpan={7} className="text-center py-4">
-                  Loading trades...
-                </td>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Asset
+                </th>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Ticket No
+                </th>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Opening Quote
+                </th>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Closing Quote
+                </th>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Amount
+                </th>
+                <th className="py-3 border-2 border-solid border-gray-600">
+                  Profit/Loss
+                </th>
               </tr>
-            )}
-            {error && (
-              <tr>
-                <td colSpan={7} className="text-center py-4 text-red">
-                  Error: {error}
-                </td>
-              </tr>
-            )}
-            {!loading && !error && paginatedTrades.length === 0 && (
-              <tr>
-                <td colSpan={7} className="text-center py-4">
-                  No trades found for the selected filters.
-                </td>
-              </tr>
-            )}
-            {!loading &&
-              !error &&
-              paginatedTrades.map((tx: TradesData) => (
-                <tr
-                  key={tx.ticketNo}
-                  className="bg-gray-800 border-2 border-solid border-gray-600 transition-colors"
-                >
-                  <td className="px-3 py-1">{tx.symbol}</td>
-                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                    {tx.ticketNo}
-                  </td>
-                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                    <strong>{tx.openingPrice}</strong>
-                    <p className="text-[0.7rem]">
-                      {formatDate(tx.openingTime)}
-                    </p>
-                  </td>
-                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                    <strong>{tx.closingPrice}</strong>
-                    <p className="text-[0.7rem]">
-                      {formatDate(tx.closingTime)}
-                    </p>
-                  </td>
-                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                    <span
-                      className={`text-sm ${
-                        tx.tradeDirection === "up"
-                          ? "text-green-500"
-                          : "text-red"
-                      }`}
-                    >
-                      {tx.amountInvested} $
-                    </span>
-                  </td>
-                  <td className="px-3 py-1 border-2 border-solid border-gray-600">
-                    <span
-                      className={`text-sm ${
-                        tx.pnlValue && tx.pnlValue > 0
-                          ? "text-green-500"
-                          : "text-red"
-                      }`}
-                    >
-                      {tx.pnlValue} $
-                    </span>
+            </thead>
+            <tbody className="text-center">
+              {loading && (
+                <tr>
+                  <td colSpan={7} className="text-center py-4">
+                    Loading trades...
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+              )}
+              {error && (
+                <tr>
+                  <td colSpan={7} className="text-center py-4 text-red">
+                    Error: {error}
+                  </td>
+                </tr>
+              )}
+              {!loading && !error && paginatedTrades.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center py-4">
+                    No trades found for the selected filters.
+                  </td>
+                </tr>
+              )}
+              {!loading &&
+                !error &&
+                paginatedTrades.map((tx: TradesData) => (
+                  <tr
+                    key={tx.ticketNo}
+                    className="bg-gray-800 border-2 border-solid border-gray-600 transition-colors"
+                  >
+                    <td className="px-3 py-1">{tx.symbol}</td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      {tx.ticketNo}
+                    </td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      <strong>{tx.openingPrice}</strong>
+                      <p className="text-[0.7rem]">
+                        {formatDate(tx.openingTime)}
+                      </p>
+                    </td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      <strong>{tx.closingPrice}</strong>
+                      <p className="text-[0.7rem]">
+                        {formatDate(tx.closingTime)}
+                      </p>
+                    </td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      <span
+                        className={`text-sm ${
+                          tx.tradeDirection === "up"
+                            ? "text-green-500"
+                            : "text-red"
+                        }`}
+                      >
+                        {tx.amountInvested} $
+                      </span>
+                    </td>
+                    <td className="px-3 py-1 border-2 border-solid border-gray-600">
+                      <span
+                        className={`text-sm ${
+                          tx.pnlValue && tx.pnlValue > 0
+                            ? "text-green-500"
+                            : "text-red"
+                        }`}
+                      >
+                        {tx.pnlValue} $
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
 
-      {/* Trade Info Modal */}
-      <TradeInfoModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        trade={selectedTrade}
-      />
-    </div>
+          {/* Pagination Controls */}
+          <div className="flex justify-end items-center mt-4 space-x-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className={`px-4 text-white py-2 bg-blue-500 hover:cursor-pointer rounded hover:bg-blue-600 transition-colors ${
+                currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              Prev
+            </button>
+
+            <span className="text-sm">
+              {currentPage}/{totalPages}
+            </span>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className={`px-4 text-white py-2 bg-blue-500 rounded hover:bg-blue-600 hover:cursor-pointer transition-colors ${
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        {/* Trade Info Modal */}
+        <TradeInfoModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          trade={selectedTrade}
+        />
+      </div>
+    </>
   );
 };
 

@@ -44,7 +44,7 @@ export const Transactions = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 ">
       <h1 className="text-2xl font-bold mb-4 text-white">Transactions</h1>
       {transactions.length === 0 ? (
         <div className="text-gray-500">No transactions found.</div>
