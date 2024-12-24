@@ -202,7 +202,7 @@ const TradesTable: React.FC = () => {
 
         {/* Table */}
         <div className=" overflow-auto">
-          <table className="min-w-full lg:w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
+          <table className="min-w-full lg:w-full text-xs text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
             <thead className="text-xs capitalize text-center bg-gray-700">
               <tr>
                 <th className="py-3 border-2 border-solid border-gray-600">
@@ -298,7 +298,7 @@ const TradesTable: React.FC = () => {
           </table>
 
           {/* Pagination Controls */}
-          <div className="flex justify-end items-center mt-4 space-x-2">
+          <div className="flex justify-end items-center mt-4 space-x-2 mb-4">
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}

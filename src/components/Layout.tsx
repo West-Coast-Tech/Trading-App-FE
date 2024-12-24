@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 xl:ml-20 flex flex-col">
+      <div className="flex-1 xl:ml-20 flex flex-col w-full">
         {/* Navbar */}
         <Navbar
           onHamburgerClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
