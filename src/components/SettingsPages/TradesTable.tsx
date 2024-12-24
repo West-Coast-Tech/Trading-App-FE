@@ -136,7 +136,7 @@ const TradesTable: React.FC = () => {
   console.log("Filtered Trdes", filteredTrades);
   return (
     <>
-      <div className="p-4 text-tBase">
+      <div className="pt-4 text-tBase">
         {/* Filter Section */}
         <div className="flex flex-col sm:flex-row justify-between mb-4">
           <div className="flex flex-wrap gap-4">
@@ -201,9 +201,9 @@ const TradesTable: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
-            <thead className="text-xs uppercase text-center bg-gray-700">
+        <div className=" overflow-auto">
+          <table className="min-w-full lg:w-full text-sm text-left text-gray-400 border-collapse border-2 border-solid border-gray-600">
+            <thead className="text-xs capitalize text-center bg-gray-700">
               <tr>
                 <th className="py-3 border-2 border-solid border-gray-600">
                   Asset
@@ -221,7 +221,7 @@ const TradesTable: React.FC = () => {
                   Amount
                 </th>
                 <th className="py-3 border-2 border-solid border-gray-600">
-                  Profit/Loss
+                  Profit Loss
                 </th>
               </tr>
             </thead>

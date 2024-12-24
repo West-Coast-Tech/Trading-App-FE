@@ -99,11 +99,15 @@ const Navbar: FunctionComponent<NavbarType> = ({
     <div
       className={`md:w-full h-[5vh] pl-5 md:pr-7 pr-3 text-tBase m-0 border-solid border-borderColor tracking-wide border-b-[0.5px] relative top-0 left-0 shrink-0 flex flex-row items-center justify-between box-border md:gap-5 text-center text-xl ${className}`}
     >
+      {/* Hamburger Menu for Mobile */}
+      <div className="xl:hidden focus:outline-none" onClick={onHamburgerClick}>
+        <Menu />
+      </div>
       {/* Logo Section */}
-      <div className="md:flex hidden flex-row items-center justify-start">
+      <div className="lg:flex hidden flex-row items-center justify-start">
         <div className="w-[215px] flex flex-row">
           <img
-            className="h-12 relative overflow-hidden shrink-0"
+            className="h-12 relative overflow-hidden shrink-1"
             loading="lazy"
             alt="Logo"
             src={logo}
@@ -112,10 +116,6 @@ const Navbar: FunctionComponent<NavbarType> = ({
             <b className="relative leading-[23px]">BINARRY</b>
           </div>
         </div>
-      </div>
-      {/* Hamburger Menu for Mobile */}
-      <div className="md:hidden focus:outline-none" onClick={onHamburgerClick}>
-        <Menu />
       </div>
       {/* Account Selector and Actions */}
       <div className="flex flex-row items-center justify-start md:gap-16 space-x-2 max-w-full">

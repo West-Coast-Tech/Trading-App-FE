@@ -56,8 +56,8 @@ const Withdrawal = () => {
   return (
     <div className="w-full grid grid-cols-1 xl:grid-cols-2 text-tBase">
       <Toaster />
-      <div className="col-span-1 grid grid-cols-1 sm:grid-cols-3 grid-rows-2 gap-6">
-        <div className="col-span-1 flex flex-col p-1 border-r border-dashed border-gray-500">
+      <div className="col-span-1 grid grid-cols-1 sm:grid-cols-3 grid-rows-1 md:gap-6">
+        <div className="col-span-1 flex flex-col p-1 md:border-r border-dashed border-gray-500 bg-slate-700 sm:bg-transparent">
           <h4>Account</h4>
           <div className="p-1 border-b border-solid border-gray-500 px-4 mx-3">
             <p className="text-xs">In the Account</p>
@@ -72,10 +72,7 @@ const Withdrawal = () => {
             <h3>0.00 $</h3>
           </div>
         </div>
-        <form
-          className="col-span-2 flex flex-col p-1 border-r border-dashed border-gray-500"
-          onSubmit={handleSubmit}
-        >
+        <form className="col-span-2 flex flex-col p-1" onSubmit={handleSubmit}>
           <h4>Withdraw Funds</h4>
           <div className="">
             <input

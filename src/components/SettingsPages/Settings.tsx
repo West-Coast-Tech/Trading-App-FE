@@ -59,7 +59,7 @@ const Settings: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center p-8 lg:pl-3 lg:ml-3 md:pl-3 md:ml-3 pt-1 bg-secondary min-h-[70vh] ">
+      <div className="flex flex-col items-center p-8 xl:ml-4 pt-1 bg-secondary min-h-[70vh]">
         <div className="w-full rounded-md p-2 ">
           <div className="flex justify-between border-b-2 mb-4">
             {/* Dropdown for small screens */}
