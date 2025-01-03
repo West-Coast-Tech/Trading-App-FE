@@ -4,8 +4,10 @@ import isTokenExpired from "../utils/tokenUtils"; // Import the token utility fu
 import history from "../customHistory"; // For redirection if needed
 import { store } from "../store";
 import { refreshToken } from "../actions/authActions";
+const SERVER_IP = import.meta.env.VITE_SERVER_IP || "localhost";
+
 const API = axios.create({
-  baseURL: "http://localhost:8081", // Your API base URL
+  baseURL: `http://${SERVER_IP}:8081`, // Your API base URL
 });
 
 // Request interceptor to check token expiry before sending requests

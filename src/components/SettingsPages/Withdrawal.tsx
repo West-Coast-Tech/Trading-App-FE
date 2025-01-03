@@ -16,6 +16,15 @@ const Withdrawal = () => {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
+    // Basic validation
+    if (!amount.trim()) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+    if (!userWalletAddress.trim()) {
+      alert("Please enter a valid wallet address.");
+      return;
+    }
     try {
       const currency = "USD";
       const userId = sessionStorage.getItem("id") || "";
@@ -72,35 +81,33 @@ const Withdrawal = () => {
             <h3>0.00 $</h3>
           </div>
         </div>
-        <form className="col-span-2 flex flex-col p-1" onSubmit={handleSubmit}>
+        <div className="col-span-2 flex flex-col p-1">
           <h4>Withdraw Funds</h4>
           <div className="">
             <input
               type="text"
               placeholder="Enter Amount in USD"
-              className="p-2 rounded-md "
+              className="p-2 rounded-md"
               value={amount}
-              required
               onChange={(e) => setAmount(e.target.value)}
             />
             <br />
             <input
               type="text"
               placeholder="Enter Wallet Address"
-              className="p-2 rounded-md mt-2 "
+              className="p-2 rounded-md mt-2"
               value={userWalletAddress}
-              required
               onChange={(e) => setUserWalletAddress(e.target.value)}
             />
             <br />
             <button
-              className="text-sm bg-green-500 rounded-md mt-3 p-2 cursor-pointer active:scale-95 active:border-solid text-white font-bold"
-              type="submit"
+              className="text-sm bg-green-500 rounded-md mt-3 p-2 cursor-pointer active:scale-95 text-white font-bold"
+              onClick={handleSubmit}
             >
               Withdraw
             </button>
           </div>
-        </form>
+        </div>
         <div className="col-span-full hidden">History</div>
       </div>
       <div className="col-span-1 hidden"> FAQs</div>

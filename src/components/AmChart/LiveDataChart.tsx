@@ -3,11 +3,12 @@ import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import * as am5stock from "@amcharts/amcharts5/stock";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+const SERVER_IP = import.meta.env.VITE_SERVER_IP || "SERVER_IP";
 
 const LiveDataChart = () => {
   const [prices, setPrices] = useState();
 
-  const socketUrl = `ws://localhost:8081`;
+  const socketUrl = `ws://${SERVER_IP}:8081`;
   const [lastCandleTime, setLastCandleTime] = useState(0);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<am5.Root | null>(null); // Use ref to persist root

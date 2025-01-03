@@ -43,9 +43,16 @@ const Navbar: FunctionComponent<NavbarType> = ({
     dispatch(getAccounts());
   }, [dispatch]);
 
-  // Automatically select the first demo account found if no account is selected
+  // Automatically select the first account found if no account is selected
   useEffect(() => {
     if (accounts.length > 0 && !selectedAccount) {
+      const realAccount = accounts.find(
+        (account: AccountsData) => account.accountType === "real"
+      );
+      if (realAccount && realAccount?.equity > 0 && !selectedAccount) {
+        dispatch(selectAccount(realAccount));
+        return;
+      }
       const demoAccount = accounts.find(
         (account: AccountsData) => account.accountType === "demo"
       );

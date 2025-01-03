@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState, TradesData } from "../../../actions/types";
 import { fetchTrades } from "../../../actions/tradeActions"; // Import update action
 import { updateTradeSuccess } from "../../../features/trades/tradeSlice"; // Import the update action
+const SERVER_IP = import.meta.env.VITE_SERVER_IP || "localhost";
 
 // Helper function to format milliseconds to mm:ss
 const formatTime = (milliseconds: number): string => {
@@ -39,7 +40,7 @@ const TradeHistory: React.FC = () => {
     dispatch(fetchTrades());
 
     // Set up WebSocket connection
-    const ws = new WebSocket("ws://localhost:8081"); // Replace with your WebSocket URL
+    const ws = new WebSocket(`ws://${SERVER_IP}:8081`); // Replace with your WebSocket URL
 
     ws.onopen = () => {
       console.log("WebSocket connected");

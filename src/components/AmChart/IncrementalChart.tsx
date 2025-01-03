@@ -15,6 +15,7 @@ import { fetchTrades } from "../../actions/tradeActions";
 import { useTheme } from "../ThemeContext"; // Import the custom hook
 import { getAccounts } from "../../actions/accountActions";
 import { DrawingTools } from "@amcharts/amcharts5/.internal/charts/stock/toolbar/DrawingToolControl";
+const SERVER_IP = import.meta.env.VITE_SERVER_IP || "localhost";
 
 const selectSymbols = (state: AppState) => state.symbols.selectedSymbol;
 const selectTrades = (state: AppState) => state.trades.allTrades;
@@ -62,7 +63,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
 
   //variables for live data chart
   const [prices, setPrices] = useState<number | null>();
-  const socketUrl = `ws://localhost:8081`;
+  const socketUrl = `ws://${SERVER_IP}:8081`;
   const [lastCandleTime, setLastCandleTime] = useState(0);
   const currentLabelRef = useRef<am5xy.AxisLabel | null>(null);
   const currentValueDataItemRef =
@@ -581,7 +582,7 @@ const IncrementalChart: React.FC<IncrementalChartProps> = () => {
         console.log("min after minus", min);
 
         max = new Date().getTime();
-        const url = `http://localhost:8081/tradingData`;
+        const url = `http://${SERVER_IP}:8081/tradingData`;
         const params = {
           symbol: currentSymbol?.name || "EUR/USD",
           unit: unit,
